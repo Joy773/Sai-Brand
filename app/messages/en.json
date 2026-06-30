@@ -1,0 +1,201 @@
+{
+  "_comment": "English (EN) locale — UI copy for the Sai Brand site",
+
+  "navbar": {
+    "_comment": "Navigation bar strings used in app/components/Navbar.tsx",
+    "tagline": "Made In Germany",
+    "navLinks": [
+      { "label": "Home", "href": "#hero" },
+      { "label": "Products", "href": "#products" },
+      { "label": "About", "href": "#about" },
+      { "label": "FAQs", "href": "#faqs" },
+      { "label": "Contact", "href": "#contact" }
+    ],
+    "_navLinks_comment": "Main menu items — label is visible text, href is the link target",
+    "languages": ["EN", "DE", "AR"],
+    "_languages_comment": "Language switcher options (not functional yet)",
+    "defaultLanguage": "EN",
+    "_defaultLanguage_comment": "Highlighted language in the switcher on load",
+    "menu": {
+      "_comment": "Mobile hamburger button accessibility labels",
+      "open": "Open menu",
+      "close": "Close menu"
+    }
+  },
+
+  "hero": {
+    "_comment": "Hero section strings used in app/components/Hero.tsx",
+    "imageAlt": "Sai Luxe Skincare – Radiance Serum",
+    "eyebrow": "Authentic German Care Inspired Products",
+    "headline": ["Premium Skincare", "You Can Trust"],
+    "description": "Discover a range of high-quality products designed with precision and care to deliver comfort, nurture your well-being, and give you the confidence you deserve in everyday life.",
+    "shopNow": { "label": "Shop Now", "href": "#" },
+    "exploreProducts": { "label": "Explore Products", "href": "#" }
+  },
+
+  "trustBatch": {
+    "_comment": "Trust badges section used in app/components/TrustBatch.tsx",
+    "eyebrow": "Why Sai",
+    "title": "Everything you need, in one trusted place",
+    "description": "From premium ingredients to fast delivery, Sai brings together the standards and care your skin deserves. All in one, seamless experience.",
+    "items": [
+      {
+        "id": "premium-ingredients",
+        "title": "Premium Quality Ingredients",
+        "description": "Every formula is crafted with carefully selected, high-grade ingredients chosen for purity, performance, and results you can see and feel every day.",
+        "variant": "light"
+      },
+      {
+        "id": "dermatologically-tested",
+        "title": "Safe & Dermatologically Tested",
+        "description": "Our products undergo rigorous dermatological testing to ensure they are gentle, effective, and suitable for confident daily use on all skin types.",
+        "variant": "light"
+      },
+      {
+        "id": "german-standards",
+        "title": "Inspired by German Standards",
+        "description": "Rooted in German precision and care, each product reflects a commitment to quality manufacturing, consistency, and excellence in every detail.",
+        "variant": "light"
+      },
+      {
+        "id": "fast-delivery",
+        "title": "Fast Delivery",
+        "description": "Order with confidence and receive your essentials quickly, with secure packaging and reliable shipping straight to your door.",
+        "highlight": "24–48h",
+        "variant": "dark"
+      }
+    ],
+    "_items_comment": "id maps to icons in TrustBatch.tsx — variant is light or dark"
+  },
+
+  "products": {
+    "_comment": "Products section used in app/components/Products.tsx",
+    "eyebrow": "Our Products",
+    "title": "Skincare crafted with care",
+    "description": "Explore our collection of premium formulas, each designed to deliver comfort, confidence, and visible results.",
+    "addToCartShort": "Shop Now",
+    "addToCart": "Shop Now",
+    "items": [
+      {
+        "name": "Hydrating Face Cream",
+        "description": "Rich, nourishing cream for daily moisture and soft, supple skin.",
+        "price": "€24.90",
+        "image": "/p-1.jpg"
+      },
+      {
+        "name": "Nourishing Face Serum",
+        "description": "Revitalizing serum with squalane and hyaluronic acid for a refreshed glow.",
+        "price": "€29.90",
+        "image": "/p-2.jpg"
+      },
+      {
+        "name": "Repair Serum",
+        "description": "Advanced formula with barrier-strengthening peptides for resilient skin.",
+        "price": "€34.90",
+        "image": "/p-3.jpg"
+      },
+      {
+        "name": "Radiance Serum",
+        "description": "Lightweight serum that brightens and nourishes for a luminous complexion.",
+        "price": "€27.90",
+        "image": "/p-4.jpg"
+      }
+    ]
+  },
+
+  "ourStory": {
+    "_comment": "Our Story section used in app/components/OurStory.tsx",
+    "eyebrow": "Our Story",
+    "title": "Rooted in German care, built for everyday confidence",
+    "description": "Sai was founded on a simple belief. Everyone deserves access to high-quality skincare inspired by German standards of precision, safety, and care. From ingredient selection to final delivery, every step reflects our commitment to your well-being.",
+    "learnMore": { "label": "Learn More", "href": "#" },
+    "stats": [
+      {
+        "value": "10+",
+        "description": "Years of German-inspired skincare expertise and innovation."
+      },
+      {
+        "value": "98%",
+        "description": "Customer satisfaction rate across our product range."
+      },
+      {
+        "value": "30+",
+        "description": "Countries where Sai is trusted for daily skincare."
+      },
+      {
+        "value": "4.9★",
+        "description": "Average rating from verified customer reviews."
+      }
+    ]
+  },
+
+  "faq": {
+    "_comment": "FAQ section used in app/components/FAQ.tsx",
+    "eyebrow": "FAQ",
+    "title": "Frequently asked questions",
+    "description": "Find quick and helpful answers about Sai Brand, our products, shipping, and everything you need to know for a smooth and confident shopping experience.",
+    "contactUs": { "label": "Contact Us", "href": "#" },
+    "items": [
+      {
+        "question": "What is Sai Brand?",
+        "answer": "Sai Brand is a modern lifestyle and care brand focused on delivering high-quality products designed for comfort, care, and confidence in everyday use."
+      },
+      {
+        "question": "Are Sai products safe to use?",
+        "answer": "Yes, all Sai products are carefully developed with skin-friendly and quality-focused ingredients to ensure safe everyday use."
+      },
+      {
+        "question": "Where are Sai products made?",
+        "answer": "Sai products are developed following modern quality standards with a focus on premium formulation and consistency."
+      },
+      {
+        "question": "Do you offer international shipping?",
+        "answer": "Yes, Sai Brand supports shipping to multiple locations depending on availability and logistics coverage."
+      },
+      {
+        "question": "Can I return a product if I'm not satisfied?",
+        "answer": "We aim for customer satisfaction. Return and refund policies depend on the product and order conditions."
+      },
+      {
+        "question": "Are Sai products suitable for all skin types?",
+        "answer": "Yes, Sai products are designed to be gentle and suitable for a wide range of skin types."
+      }
+    ]
+  },
+
+  "cta": {
+    "_comment": "Call-to-action section used in app/components/CTA.tsx",
+    "title": "Experience the difference Sai makes in your everyday care.",
+    "description": "Discover premium-quality products designed to bring comfort, care, and confidence into your daily routine. Start your journey with Sai today.",
+    "shopNow": { "label": "Shop Now", "href": "#" },
+    "exploreProducts": { "label": "Explore Products", "href": "#" }
+  },
+
+  "footer": {
+    "_comment": "Footer section used in app/components/Footer.tsx",
+    "brandName": "Sai Brand",
+    "description": "Premium-quality products designed for comfort, care, and confidence in your everyday life.",
+    "quickLinksTitle": "Quick Links",
+    "quickLinks": [
+      { "label": "Home", "href": "#hero" },
+      { "label": "Shop / Products", "href": "#products" },
+      { "label": "About Us", "href": "#about" },
+      { "label": "Contact", "href": "#contact" },
+      { "label": "FAQs", "href": "#faqs" }
+    ],
+    "supportTitle": "Customer Support",
+    "supportLinks": [
+      { "label": "Shipping & Delivery", "href": "#" },
+      { "label": "Returns & Refunds", "href": "#" },
+      { "label": "Privacy Policy", "href": "#" },
+      { "label": "Terms & Conditions", "href": "#" }
+    ],
+    "contactTitle": "Contact Info",
+    "contactPrompt": "Have questions?",
+    "contactEmail": "support@saibrand.com",
+    "contactAvailability": "Available Worldwide (depending on shipping zones)",
+    "trustLine": "Secure payments • Fast shipping • Trusted quality",
+    "copyright": "© 2026 Sai Brand. All rights reserved.",
+    "tagline": "Crafted with care for your everyday confidence."
+  }
+}

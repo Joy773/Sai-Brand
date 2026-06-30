@@ -1,0 +1,201 @@
+{
+  "_comment": "Deutsche (DE) Lokalisierung — UI-Texte für die Sai Brand Website",
+
+  "navbar": {
+    "_comment": "Navigationsleiste — verwendet in app/components/Navbar.tsx",
+    "tagline": "Hergestellt in Deutschland",
+    "navLinks": [
+      { "label": "Startseite", "href": "#hero" },
+      { "label": "Produkte", "href": "#products" },
+      { "label": "Über uns", "href": "#about" },
+      { "label": "FAQ", "href": "#faqs" },
+      { "label": "Kontakt", "href": "#contact" }
+    ],
+    "_navLinks_comment": "Hauptmenü — label ist der sichtbare Text, href ist das Linkziel",
+    "languages": ["EN", "DE", "AR"],
+    "_languages_comment": "Sprachumschalter-Optionen (noch nicht funktional)",
+    "defaultLanguage": "DE",
+    "_defaultLanguage_comment": "Beim Laden hervorgehobene Sprache im Umschalter",
+    "menu": {
+      "_comment": "Barrierefreiheits-Labels für den mobilen Hamburger-Button",
+      "open": "Menü öffnen",
+      "close": "Menü schließen"
+    }
+  },
+
+  "hero": {
+    "_comment": "Hero-Bereich — verwendet in app/components/Hero.tsx",
+    "imageAlt": "Sai Luxe Skincare – Radiance Serum",
+    "eyebrow": "Authentische Pflege – inspiriert von deutscher Qualität",
+    "headline": ["Premium-Hautpflege", "der Sie vertrauen können"],
+    "description": "Entdecken Sie hochwertige Produkte, die mit Präzision und Sorgfalt entwickelt wurden, um Komfort zu schenken, Ihr Wohlbefinden zu fördern und Ihnen das Selbstvertrauen zu geben, das Sie im Alltag verdienen.",
+    "shopNow": { "label": "Jetzt shoppen", "href": "#" },
+    "exploreProducts": { "label": "Produkte entdecken", "href": "#" }
+  },
+
+  "trustBatch": {
+    "_comment": "Vertrauens-Bereich — verwendet in app/components/TrustBatch.tsx",
+    "eyebrow": "Warum Sai",
+    "title": "Alles, was Sie brauchen – an einem vertrauenswürdigen Ort",
+    "description": "Von Premium-Inhaltsstoffen bis zur schnellen Lieferung vereint Sai die Standards und die Pflege, die Ihre Haut verdient. Alles in einem nahtlosen Erlebnis.",
+    "items": [
+      {
+        "id": "premium-ingredients",
+        "title": "Premium-Inhaltsstoffe",
+        "description": "Jede Formel wird aus sorgfältig ausgewählten, hochwertigen Inhaltsstoffen entwickelt – für Reinheit, Wirksamkeit und Ergebnisse, die Sie jeden Tag sehen und spüren können.",
+        "variant": "light"
+      },
+      {
+        "id": "dermatologically-tested",
+        "title": "Sicher & dermatologisch getestet",
+        "description": "Unsere Produkte durchlaufen strenge dermatologische Tests, um sicherzustellen, dass sie sanft, wirksam und für den täglichen Gebrauch auf allen Hauttypen geeignet sind.",
+        "variant": "light"
+      },
+      {
+        "id": "german-standards",
+        "title": "Inspiriert von deutschen Standards",
+        "description": "Verwurzelt in deutscher Präzision und Sorgfalt spiegelt jedes Produkt unser Engagement für qualitativ hochwertige Herstellung, Beständigkeit und Exzellenz in jedem Detail wider.",
+        "variant": "light"
+      },
+      {
+        "id": "fast-delivery",
+        "title": "Schnelle Lieferung",
+        "description": "Bestellen Sie mit Vertrauen und erhalten Sie Ihre Essentials schnell – mit sicherer Verpackung und zuverlässigem Versand direkt an Ihre Tür.",
+        "highlight": "24–48 Std.",
+        "variant": "dark"
+      }
+    ],
+    "_items_comment": "id wird in TrustBatch.tsx Icons zugeordnet — variant ist light oder dark"
+  },
+
+  "products": {
+    "_comment": "Produktbereich — verwendet in app/components/Products.tsx",
+    "eyebrow": "Unsere Produkte",
+    "title": "Hautpflege mit Sorgfalt entwickelt",
+    "description": "Entdecken Sie unsere Kollektion Premium-Formeln, die jeweils Komfort, Selbstvertrauen und sichtbare Ergebnisse liefern sollen.",
+    "addToCartShort": "Jetzt shoppen",
+    "addToCart": "Jetzt shoppen",
+    "items": [
+      {
+        "name": "Feuchtigkeitsspendende Gesichtscreme",
+        "description": "Reichhaltige, nährende Creme für tägliche Feuchtigkeit und weiche, geschmeidige Haut.",
+        "price": "€24,90",
+        "image": "/p-1.jpg"
+      },
+      {
+        "name": "Nährendes Gesichtsserum",
+        "description": "Belebendes Serum mit Squalan und Hyaluronsäure für einen erfrischten Glow.",
+        "price": "€29,90",
+        "image": "/p-2.jpg"
+      },
+      {
+        "name": "Reparatur-Serum",
+        "description": "Fortschrittliche Formel mit barrierstärkenden Peptiden für widerstandsfähige Haut.",
+        "price": "€34,90",
+        "image": "/p-3.jpg"
+      },
+      {
+        "name": "Radiance Serum",
+        "description": "Leichtes Serum, das aufhellt und nährt – für einen strahlenden Teint.",
+        "price": "€27,90",
+        "image": "/p-4.jpg"
+      }
+    ]
+  },
+
+  "ourStory": {
+    "_comment": "Unsere Geschichte — verwendet in app/components/OurStory.tsx",
+    "eyebrow": "Unsere Geschichte",
+    "title": "Deutsche Pflege als Fundament – für Ihr tägliches Selbstvertrauen",
+    "description": "Sai wurde aus einer einfachen Überzeugung gegründet: Jeder verdient Zugang zu hochwertiger Hautpflege, inspiriert von deutschen Standards für Präzision, Sicherheit und Sorgfalt. Von der Auswahl der Inhaltsstoffe bis zur Lieferung spiegelt jeder Schritt unser Engagement für Ihr Wohlbefinden wider.",
+    "learnMore": { "label": "Mehr erfahren", "href": "#" },
+    "stats": [
+      {
+        "value": "10+",
+        "description": "Jahre Expertise und Innovation in deutsch inspirierter Hautpflege."
+      },
+      {
+        "value": "98%",
+        "description": "Kundenzufriedenheit in unserem gesamten Produktsortiment."
+      },
+      {
+        "value": "30+",
+        "description": "Länder, in denen Sai für die tägliche Hautpflege vertraut wird."
+      },
+      {
+        "value": "4.9★",
+        "description": "Durchschnittliche Bewertung aus verifizierten Kundenrezensionen."
+      }
+    ]
+  },
+
+  "faq": {
+    "_comment": "FAQ-Bereich — verwendet in app/components/FAQ.tsx",
+    "eyebrow": "FAQ",
+    "title": "Häufig gestellte Fragen",
+    "description": "Finden Sie schnelle und hilfreiche Antworten zu Sai Brand, unseren Produkten, dem Versand und allem, was Sie für ein reibungsloses und selbstbewusstes Einkaufserlebnis wissen müssen.",
+    "contactUs": { "label": "Kontaktieren Sie uns", "href": "#" },
+    "items": [
+      {
+        "question": "Was ist Sai Brand?",
+        "answer": "Sai Brand ist eine moderne Lifestyle- und Pflegemarke, die sich auf hochwertige Produkte konzentriert – entwickelt für Komfort, Pflege und Selbstvertrauen im Alltag."
+      },
+      {
+        "question": "Sind Sai-Produkte sicher in der Anwendung?",
+        "answer": "Ja, alle Sai-Produkte werden sorgfältig mit hautfreundlichen und qualitätsorientierten Inhaltsstoffen entwickelt, um eine sichere tägliche Anwendung zu gewährleisten."
+      },
+      {
+        "question": "Wo werden Sai-Produkte hergestellt?",
+        "answer": "Sai-Produkte werden nach modernen Qualitätsstandards entwickelt – mit Fokus auf Premium-Formulierung und Beständigkeit."
+      },
+      {
+        "question": "Bieten Sie internationalen Versand an?",
+        "answer": "Ja, Sai Brand unterstützt den Versand in mehrere Regionen – abhängig von Verfügbarkeit und logistischer Abdeckung."
+      },
+      {
+        "question": "Kann ich ein Produkt zurückgeben, wenn ich nicht zufrieden bin?",
+        "answer": "Kundenzufriedenheit ist unser Ziel. Rückgabe- und Erstattungsrichtlinien hängen vom Produkt und den Bestellbedingungen ab."
+      },
+      {
+        "question": "Sind Sai-Produkte für alle Hauttypen geeignet?",
+        "answer": "Ja, Sai-Produkte sind sanft formuliert und für eine breite Palette von Hauttypen geeignet."
+      }
+    ]
+  },
+
+  "cta": {
+    "_comment": "Call-to-Action-Bereich — verwendet in app/components/CTA.tsx",
+    "title": "Erleben Sie den Unterschied, den Sai in Ihrer täglichen Pflege macht.",
+    "description": "Entdecken Sie Premium-Produkte, die Komfort, Pflege und Selbstvertrauen in Ihre tägliche Routine bringen. Starten Sie noch heute Ihre Reise mit Sai.",
+    "shopNow": { "label": "Jetzt shoppen", "href": "#" },
+    "exploreProducts": { "label": "Produkte entdecken", "href": "#" }
+  },
+
+  "footer": {
+    "_comment": "Footer-Bereich — verwendet in app/components/Footer.tsx",
+    "brandName": "Sai Brand",
+    "description": "Premium-Produkte für Komfort, Pflege und Selbstvertrauen in Ihrem Alltag.",
+    "quickLinksTitle": "Schnellzugriff",
+    "quickLinks": [
+      { "label": "Startseite", "href": "#hero" },
+      { "label": "Shop / Produkte", "href": "#products" },
+      { "label": "Über uns", "href": "#about" },
+      { "label": "Kontakt", "href": "#contact" },
+      { "label": "FAQ", "href": "#faqs" }
+    ],
+    "supportTitle": "Kundenservice",
+    "supportLinks": [
+      { "label": "Versand & Lieferung", "href": "#" },
+      { "label": "Rückgabe & Erstattung", "href": "#" },
+      { "label": "Datenschutz", "href": "#" },
+      { "label": "AGB", "href": "#" }
+    ],
+    "contactTitle": "Kontakt",
+    "contactPrompt": "Haben Sie Fragen?",
+    "contactEmail": "support@saibrand.com",
+    "contactAvailability": "Weltweit verfügbar (je nach Versandzonen)",
+    "trustLine": "Sichere Zahlung • Schneller Versand • Vertrauenswürdige Qualität",
+    "copyright": "© 2026 Sai Brand. Alle Rechte vorbehalten.",
+    "tagline": "Mit Sorgfalt entwickelt – für Ihr tägliches Selbstvertrauen."
+  }
+}
