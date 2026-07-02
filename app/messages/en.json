@@ -75,30 +75,43 @@
     "description": "Explore our collection of premium formulas, each designed to deliver comfort, confidence, and visible results.",
     "addToCartShort": "Shop Now",
     "addToCart": "Shop Now",
+    "kit": {
+      "name": "German Care Complete Kit",
+      "description": "Includes all four premium products. Daily Use Shampoo, Deodorant Roller, Sunblock SPF 50+, and Anti-Chafing Body Cream in one complete kit designed for everyday comfort and reliable protection.",
+      "price": "€79.90",
+      "includes": [
+        "Shampoo",
+        "Deodorant",
+        "Sunblock",
+        "Anti-Chafing Cream"
+      ],
+      "imageAlt": "German Care Complete Kit view {index}",
+      "showImageLabel": "Show kit image {index}"
+    },
     "items": [
       {
-        "name": "Hydrating Face Cream",
-        "description": "Rich, nourishing cream for daily moisture and soft, supple skin.",
+        "name": "Anti-Chafing Body Cream",
+        "description": "Protective daily body cream formulated to help soothe friction-prone skin and keep it comfortable, calm, and cared for.",
         "price": "€24.90",
-        "image": "/p-1.jpg"
+        "image": "/anti-chafing-main.png"
       },
       {
-        "name": "Nourishing Face Serum",
-        "description": "Revitalizing serum with squalane and hyaluronic acid for a refreshed glow.",
-        "price": "€29.90",
-        "image": "/p-2.jpg"
+        "name": "Deodorant Roller",
+        "description": "Gentle everyday deodorant roller that helps you stay fresh with long-lasting comfort and a clean, skin-friendly feel.",
+        "price": "€19.90",
+        "image": "/deodoran-main.png"
       },
       {
-        "name": "Repair Serum",
-        "description": "Advanced formula with barrier-strengthening peptides for resilient skin.",
-        "price": "€34.90",
-        "image": "/p-3.jpg"
+        "name": "Daily Use Shampoo",
+        "description": "Mild daily shampoo designed to cleanse the hair and scalp while leaving it feeling fresh, soft, and balanced.",
+        "price": "€22.90",
+        "image": "/shampoo-main.png"
       },
       {
-        "name": "Radiance Serum",
-        "description": "Lightweight serum that brightens and nourishes for a luminous complexion.",
+        "name": "Sunblock SPF 50+",
+        "description": "Lightweight SPF 50+ sun protection with hyaluronic acid to help moisturize, shield, and absorb comfortably into the skin.",
         "price": "€27.90",
-        "image": "/p-4.jpg"
+        "image": "/sunblock-main.png"
       }
     ]
   },

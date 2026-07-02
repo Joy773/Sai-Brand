@@ -1,19 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import { LuShoppingCart } from "react-icons/lu";
+import { useState } from "react";
+import { LuCheck, LuShoppingCart } from "react-icons/lu";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 
-const cardHover =
-  "transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none";
+const kitImages = [
+  "/kit-1.png",
+  "/kit-2.png",
+  "/kit-3.png",
+  "/kit-4.png",
+];
 
 export default function Products() {
+  const [activeKitImage, setActiveKitImage] = useState(0);
   const {
     eyebrow,
     title,
     description,
     addToCartShort,
     addToCart,
+    kit,
     items: products,
   } = useMessages().products;
 
@@ -32,19 +39,104 @@ export default function Products() {
           </p>
         </div>
 
+        <article
+          className="mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row"
+        >
+          <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden lg:w-1/2">
+            {kitImages.map((image, index) => (
+              <Image
+                key={image}
+                src={image}
+                alt={kit.imageAlt.replace("{index}", String(index + 1))}
+                fill
+                className={`object-contain object-center transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
+                  activeKitImage === index
+                    ? "opacity-100"
+                    : "pointer-events-none opacity-0"
+                }`}
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                unoptimized
+                aria-hidden={activeKitImage !== index}
+              />
+            ))}
+
+            <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-2 sm:bottom-4">
+              {kitImages.map((image, index) => (
+                <button
+                  key={image}
+                  type="button"
+                  onClick={() => setActiveKitImage(index)}
+                  aria-label={kit.showImageLabel.replace(
+                    "{index}",
+                    String(index + 1),
+                  )}
+                  aria-current={activeKitImage === index ? "true" : undefined}
+                  className={`h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3 ${
+                    activeKitImage === index
+                      ? "bg-dark-green"
+                      : "bg-dark-green/30"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-1 flex-col justify-between gap-6 p-4 sm:p-6 lg:p-8">
+            <div>
+              <h3 className="text-xl font-semibold text-dark-green sm:text-2xl lg:text-3xl">
+                {kit.name}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
+                {kit.description}
+              </p>
+
+              <ul className="mt-4 space-y-2 sm:mt-6">
+                {kit.includes.map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-center gap-2 text-sm text-dark-green sm:text-base"
+                  >
+                    <LuCheck
+                      className="h-4 w-4 shrink-0 text-gold"
+                      aria-hidden
+                    />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+              <p className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl">
+                {kit.price}
+              </p>
+
+              <button
+                type="button"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-dark-green px-5 py-2.5 text-sm font-medium text-warm-white transition-colors hover:bg-dark-green/90 sm:w-auto"
+              >
+                <LuShoppingCart className="h-4 w-4" aria-hidden />
+                <span className="sm:hidden">{addToCartShort}</span>
+                <span className="hidden sm:inline">{addToCart}</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {products.map((product) => (
             <article
               key={product.image}
-              className={`group flex flex-col overflow-hidden rounded-2xl border border-beige bg-warm-white sm:rounded-3xl lg:flex-row ${cardHover} hover:border-dark-green/20`}
+              className="flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row"
             >
-              <div className="relative aspect-square w-full shrink-0 bg-beige/40 lg:w-56">
+              <div className="relative aspect-[4/5] w-full shrink-0 bg-beige/40 p-3 sm:p-4 lg:w-56">
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
-                  className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
+                  className="object-contain object-center"
                   sizes="(max-width: 1024px) 50vw, 224px"
+                  unoptimized
                 />
               </div>
 
