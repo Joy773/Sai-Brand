@@ -106,8 +106,9 @@
     "addToCart": "Jetzt shoppen",
     "kit": {
       "name": "German Care Komplett-Set",
-      "description": "Enthält alle vier Premium-Produkte: Daily Use Shampoo, Deodorant Roller, Sunblock SPF 50+ und Anti-Chafing Body Cream in einem kompletten Set für täglichen Komfort und zuverlässigen Schutz.",
+      "description": "Alles, was Sie fuer Hadsch und Umra brauchen, in einem Set. Anti-Chafing-Creme fuer lange Fussmaersche im Ihram, ein parfuemfreies Deodorant fuer taegliche Frische, Sonnenschutz mit LSF 50+ gegen die starke Sonne und ein mildes Shampoo zur Erfrischung nach heissen, anstrengenden Reisetagen.",
       "price": "€79,90",
+      "size": "4-teiliges Reise-Set",
       "includes": [
         "Shampoo",
         "Deodorant",
@@ -115,34 +116,110 @@
         "Anti-Chafing Creme"
       ],
       "imageAlt": "German Care Komplett-Set Ansicht {index}",
-      "showImageLabel": "Kit-Bild {index} anzeigen"
+      "showImageLabel": "Kit-Bild {index} anzeigen",
+      "details": {
+        "keyBenefits": [
+          "Komplette Hadsch- und Umra-Pflege in einem reisefertigen Set",
+          "Alle Produkte sind parfuemfrei und Ihram-sicher",
+          "Fuer lange Fussmaersche, Hitze und taegliche Frische entwickelt",
+          "In Deutschland hergestellt mit dermatologisch getesteten Formeln"
+        ],
+        "howToUse": "Verwenden Sie jedes Produkt gemaess der Verpackungsanleitung waehrend Ihrer Pilgerreise. Tragen Sie Sonnenschutz vor Ritualen im Freien auf, Anti-Chafing-Creme vor langen Fussmaerschen und erfrischen Sie sich taeglich mit Deodorant und Shampoo.",
+        "ingredients": "Jedes Produkt im Set hat eine eigene Inhaltsstoffliste auf der Verpackung. Alle Formeln sind parfuemfrei, alkoholfrei und fuer empfindliche Haut waehrend der Pilgerreise entwickelt.",
+        "safetyNotes": "Nur zur aeusseren Anwendung. Lesen Sie die einzelnen Produktetiketten vor der Anwendung. Bei Reizungen die Anwendung abbrechen. Fuer die Anwendung im Ihram geeignet. Kuehl und trocken lagern."
+      }
     },
     "items": [
       {
         "name": "Anti-Chafing Body Cream",
-        "description": "Schuetzende Koerpercreme fuer den taeglichen Gebrauch, die hilft, reibungsempfindliche Haut zu beruhigen und angenehm gepflegt zu halten.",
+        "description": "Beugt schmerzhaftem Wundscheuern waehrend langer Fussmaersche im Ihram vor. Die geschmeidige, parfuemfreie Formel verringert das Reiben von Haut an Haut an Oberschenkeln und Achseln und haelt Sie im heissen Klima von Hadsch und Umra angenehm komfortabel.",
         "price": "€24,90",
-        "image": "/anti-chafing-main.png"
+        "size": "50 ml",
+        "image": "/anti-chafing-main.png",
+        "details": {
+          "keyBenefits": [
+            "Reduziert schmerzhaftes Wundscheuern bei langen Tawaf- und Sa'i-Fussmaerschen",
+            "Parfuemfrei und sicher waehrend des Ihram",
+            "Beruhigt gereizte Haut bei heissem, feuchtem Pilgerklima",
+            "Leichte, nicht fettende Formel fuer ganztaegigen Komfort"
+          ],
+          "howToUse": "Duenne Schicht auf saubere, trockene Haut in reibungsanfaelligen Bereichen wie Innenseiten der Oberschenkel, Achseln und Fuesse vor dem Gehen auftragen. Bei Bedarf waehrend langer Bewegung in der Hitze erneut auftragen.",
+          "ingredients": "Aqua, Dimethicone, Glycerin, Zinc Oxide, Aloe Barbadensis Leaf Extract, Cetearyl Alcohol, Tocopherol, Phenoxyethanol.",
+          "safetyNotes": "Nur zur aeusseren Anwendung. Augenkontakt vermeiden. Bei Reizungen abbrechen. Parfuemfrei und alkoholfrei. Fuer die Anwendung im Ihram geeignet."
+        }
       },
       {
         "name": "Deodorant Roller",
-        "description": "Sanfter Deoroller fuer den Alltag, der lang anhaltende Frische, Komfort und ein sauberes, hautfreundliches Gefuehl bietet.",
+        "description": "Haelt Sie an heissen, ueberfuellten Pilgertagen frisch. Der parfuemfreie Roller neutralisiert Geruch und sorgt fuer lang anhaltende taegliche Frische, ohne den Ihram zu brechen, und laesst sich dank kompakter Groesse leicht auf Reisen mitnehmen.",
         "price": "€19,90",
-        "image": "/deodoran-main.png"
+        "size": "50 ml",
+        "image": "/deodoran-main.png",
+        "details": {
+          "keyBenefits": [
+            "Lang anhaltende Geruchskontrolle ohne Duftstoffe",
+            "Ihram-sichere Formel fuer den taeglichen Pilgergebrauch",
+            "Kompakter Roller ideal fuer Reisen und unterwegs",
+            "Sanft zur Haut an heissen, aktiven Tagen"
+          ],
+          "howToUse": "Gleichmaessig auf saubere, trockene Achseln ein- bis zweimal taeglich auftragen. Vor dem Ankleiden trocknen lassen. Nach dem Duschen oder bei starkem Schwitzen erneut auftragen.",
+          "ingredients": "Aqua, Aluminum Chlorohydrate, Glycerin, PEG-40 Hydrogenated Castor Oil, Allantoin, Phenoxyethanol, Ethylhexylglycerin.",
+          "safetyNotes": "Nur zur aeusseren Anwendung. Nicht auf gereizter oder verletzter Haut anwenden. Parfuemfrei und alkoholfrei. Sicher waehrend des Ihram."
+        }
       },
       {
         "name": "Daily Use Shampoo",
-        "description": "Mildes Shampoo fuer die taegliche Anwendung, das Haar und Kopfhaut reinigt und dabei frisch, weich und ausgeglichen hinterlaesst.",
+        "description": "Reinigt Haar und Kopfhaut sanft von Staub und Schweiss nach langen, anstrengenden Pilgertagen. Die milde, reisefreundliche Formel erfrischt das Haar und beruhigt die Kopfhaut bei Hitze und schenkt taeglichen Komfort waehrend Hadsch und Umra.",
         "price": "€22,90",
-        "image": "/shampoo-main.png"
+        "size": "100 ml",
+        "image": "/shampoo-main.png",
+        "details": {
+          "keyBenefits": [
+            "Entfernt sanft Staub, Schweiss und Rueckstaende nach langen Tagen",
+            "Milde Formel beruhigt die Kopfhaut bei Hitze",
+            "Reisefreundliche Groesse fuer die Pilgerausruestung",
+            "Haelt Haar frisch, weich und ausgeglichen"
+          ],
+          "howToUse": "Haar gruendlich nass machen. Eine kleine Menge auftragen, in Kopfhaut und Haar einmassieren und gut ausspuelen. Taeglich oder nach langen, staubigen Pilgertagen verwenden.",
+          "ingredients": "Aqua, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Glycerin, Aloe Barbadensis Leaf Juice, Panthenol, Citric Acid, Sodium Chloride, Phenoxyethanol.",
+          "safetyNotes": "Nur zur aeusseren Anwendung. Augenkontakt vermeiden. Bei Kontakt gruendlich mit Wasser spuelen. Parfuemfrei. Fuer den taeglichen Gebrauch waehrend Hadsch und Umra geeignet."
+        }
       },
       {
         "name": "Sunblock SPF 50+",
-        "description": "Leichter Sonnenschutz mit SPF 50+ und Hyaluronsaeure, der Feuchtigkeit spendet, schuetzt und angenehm in die Haut einzieht.",
+        "description": "Schuetzt Ihre Haut waehrend langer Stunden der Rituale im Freien unter der starken Sonne. Der leichte Sonnenschutz mit LSF 50+ und Hyaluronsaeure beugt Sonnenbrand vor und haelt die Haut mit Feuchtigkeit versorgt, waehrend Sie in der Hitze von Hadsch und Umra unterwegs sind.",
         "price": "€27,90",
-        "image": "/sunblock-main.png"
+        "size": "60 ml",
+        "image": "/sunblock-main.png",
+        "details": {
+          "keyBenefits": [
+            "Breitbandschutz LSF 50+ fuer Rituale im Freien",
+            "Hyaluronsaeure spendet Feuchtigkeit in trockener Hitze",
+            "Leichte Formel ohne schweres Gefuehl auf der Haut",
+            "Wichtiger Schutz bei langen Stunden in direkter Sonne"
+          ],
+          "howToUse": "15 Minuten vor dem Aufenthalt im Freien grosszuegig auf exponierte Haut auftragen. Alle zwei Stunden oder nach starkem Schwitzen erneut auftragen, besonders in Arafat und Mina.",
+          "ingredients": "Aqua, Homosalate, Ethylhexyl Salicylate, Butyl Methoxydibenzoylmethane, Glycerin, Hyaluronic Acid, Tocopherol, Phenoxyethanol.",
+          "safetyNotes": "Nur zur aeusseren Anwendung. Augenkontakt vermeiden. Bei laengerer Sonneneinstrahlung haeufig erneut auftragen. Parfuemfrei und fuer empfindliche Haut waehrend der Pilgerreise geeignet."
+        }
       }
     ]
+  },
+
+  "productPage": {
+    "_comment": "Produktdetailseite — verwendet in app/[slug]/page.tsx",
+    "backToProducts": "Zurueck zu den Produkten",
+    "quantity": "Menge",
+    "size": "Groesse",
+    "price": "Preis",
+    "addToCart": "In den Warenkorb",
+    "decreaseQuantity": "Menge verringern",
+    "increaseQuantity": "Menge erhoehen",
+    "tabs": {
+      "keyBenefits": "Hauptvorteile",
+      "howToUse": "Anwendung",
+      "ingredients": "Inhaltsstoffe",
+      "safetyNotes": "Sicherheitshinweise"
+    }
   },
 
   "ourStory": {

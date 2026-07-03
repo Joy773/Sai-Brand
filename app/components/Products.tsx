@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { LuCheck, LuShoppingCart } from "react-icons/lu";
 import { useMessages } from "@/app/i18n/LocaleProvider";
+import { getSlugFromImage, KIT_SLUG } from "@/app/lib/products";
 
 const kitImages = [
   "/kit-1.png",
@@ -11,6 +13,12 @@ const kitImages = [
   "/kit-3.png",
   "/kit-4.png",
 ];
+
+const cardHover =
+  "transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none";
+
+const imageHover =
+  "transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100";
 
 export default function Products() {
   const [activeKitImage, setActiveKitImage] = useState(0);
@@ -40,7 +48,7 @@ export default function Products() {
         </div>
 
         <article
-          className="mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row"
+          className={`group mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row ${cardHover} hover:shadow-dark-green/10`}
         >
           <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden lg:w-1/2">
             {kitImages.map((image, index) => (
@@ -49,7 +57,7 @@ export default function Products() {
                 src={image}
                 alt={kit.imageAlt.replace("{index}", String(index + 1))}
                 fill
-                className={`object-contain object-center transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
+                className={`object-contain object-center ${imageHover} transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
                   activeKitImage === index
                     ? "opacity-100"
                     : "pointer-events-none opacity-0"
@@ -71,10 +79,10 @@ export default function Products() {
                     String(index + 1),
                   )}
                   aria-current={activeKitImage === index ? "true" : undefined}
-                  className={`h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3 ${
+                  className={`h-2.5 w-2.5 rounded-full transition-colors duration-300 sm:h-3 sm:w-3 ${
                     activeKitImage === index
                       ? "bg-dark-green"
-                      : "bg-dark-green/30"
+                      : "bg-dark-green/30 hover:bg-dark-green/50"
                   }`}
                 />
               ))}
@@ -82,13 +90,14 @@ export default function Products() {
           </div>
 
           <div className="flex flex-1 flex-col justify-between gap-6 p-4 sm:p-6 lg:p-8">
-            <div>
-              <h3 className="text-xl font-semibold text-dark-green sm:text-2xl lg:text-3xl">
+            <Link href={`/${KIT_SLUG}`} className="group/link block">
+              <h3 className="text-xl font-semibold text-dark-green transition-colors group-hover/link:text-dark-green/80 sm:text-2xl lg:text-3xl">
                 {kit.name}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
                 {kit.description}
               </p>
+            </Link>
 
               <ul className="mt-4 space-y-2 sm:mt-6">
                 {kit.includes.map((item) => (
@@ -104,37 +113,41 @@ export default function Products() {
                   </li>
                 ))}
               </ul>
-            </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
               <p className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl">
                 {kit.price}
               </p>
 
-              <button
-                type="button"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-dark-green px-5 py-2.5 text-sm font-medium text-warm-white transition-colors hover:bg-dark-green/90 sm:w-auto"
+              <Link
+                href={`/${KIT_SLUG}`}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-dark-green px-5 py-2.5 text-sm font-medium text-warm-white transition-all duration-300 hover:scale-[1.02] hover:bg-dark-green/90 motion-reduce:hover:scale-100 sm:w-auto"
               >
                 <LuShoppingCart className="h-4 w-4" aria-hidden />
                 <span className="sm:hidden">{addToCartShort}</span>
                 <span className="hidden sm:inline">{addToCart}</span>
-              </button>
+              </Link>
             </div>
           </div>
         </article>
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-          {products.map((product) => (
-            <article
+          {products.map((product) => {
+            const slug = getSlugFromImage(product.image);
+            if (!slug) return null;
+
+            return (
+            <Link
               key={product.image}
-              className="flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row"
+              href={`/${slug}`}
+              className={`group flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row ${cardHover} hover:shadow-dark-green/10`}
             >
-              <div className="relative aspect-[4/5] w-full shrink-0 bg-beige/40 p-3 sm:p-4 lg:w-56">
+              <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-beige/40 p-3 sm:p-4 lg:w-56">
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
-                  className="object-contain object-center"
+                  className={`object-contain object-center ${imageHover}`}
                   sizes="(max-width: 1024px) 50vw, 224px"
                   unoptimized
                 />
@@ -145,7 +158,7 @@ export default function Products() {
                   <h3 className="text-sm font-semibold text-dark-green sm:text-xl lg:text-2xl">
                     {product.name}
                   </h3>
-                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:line-clamp-none sm:text-sm lg:text-base">
+                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm lg:text-base">
                     {product.description}
                   </p>
                 </div>
@@ -155,18 +168,16 @@ export default function Products() {
                     {product.price}
                   </p>
 
-                  <button
-                    type="button"
-                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-dark-green px-3 py-2 text-xs font-medium text-warm-white transition-colors hover:bg-dark-green/90 sm:w-auto sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm"
-                  >
+                  <span className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-dark-green px-3 py-2 text-xs font-medium text-warm-white transition-all duration-300 group-hover:scale-[1.02] motion-reduce:group-hover:scale-100 sm:w-auto sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm">
                     <LuShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
                     <span className="sm:hidden">{addToCartShort}</span>
                     <span className="hidden sm:inline">{addToCart}</span>
-                  </button>
+                  </span>
                 </div>
               </div>
-            </article>
-          ))}
+            </Link>
+            );
+          })}
         </div>
       </div>
     </section>

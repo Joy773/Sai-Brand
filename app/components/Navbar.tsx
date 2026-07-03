@@ -62,7 +62,7 @@ export default function Navbar() {
     <header className="bg-[#F3E8DF]">
       <nav className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
         <a
-          href="#hero"
+          href="/#hero"
           onClick={(event) => handleSectionClick(event, "#hero")}
           className="shrink-0"
         >
@@ -81,7 +81,7 @@ export default function Navbar() {
           {navLinks.map((link) => (
             <li key={link.href}>
               <a
-                href={link.href}
+                href={`/${link.href}`}
                 onClick={(event) => handleSectionClick(event, link.href)}
                 className="font-medium text-dark-green transition-colors hover:text-dark-green/70"
               >
@@ -130,7 +130,7 @@ export default function Navbar() {
             {navLinks.map((link) => (
               <li key={link.href}>
                 <a
-                  href={link.href}
+                  href={`/${link.href}`}
                   onClick={(event) =>
                     handleSectionClick(event, link.href, closeMenu)
                   }

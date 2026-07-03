@@ -8,52 +8,47 @@ export default function Hero() {
   const hero = useMessages().hero;
 
   return (
-    <section id="hero" className="relative min-h-[calc(100svh-4rem)] w-full overflow-hidden bg-warm-white md:h-[calc(100svh-4rem)]">
-      <Image
-        src="/Hero.jpg"
-        alt={hero.imageAlt}
-        fill
-        priority
-        className="object-cover object-[75%_center] md:object-center"
-        sizes="100vw"
-      />
+    <section id="hero" className="grid bg-[#F1E5DC] md:min-h-[calc(100svh-4rem)] md:grid-cols-2">
+      <div className="order-2 flex flex-col items-center justify-start gap-4 bg-[#F1E5DC] px-6 pb-10 pt-4 text-center sm:px-10 sm:pb-12 sm:pt-6 md:order-1 md:min-h-[calc(100svh-4rem)] md:items-start md:justify-center md:px-12 md:py-16 md:text-left lg:px-16 xl:px-20">
+        <h1 className="text-3xl font-bold leading-tight text-dark-green sm:text-4xl lg:text-5xl xl:text-6xl">
+          {hero.headline.map((line) => (
+            <span key={line} className="block">
+              {line}
+            </span>
+          ))}
+        </h1>
 
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-warm-white/90 via-warm-white/50 to-warm-white/20 md:hidden"
-        aria-hidden
-      />
+        <p className="mx-auto max-w-md text-sm leading-relaxed text-dark-green/70 md:mx-0 sm:text-base lg:text-lg">
+          {hero.subheading}
+        </p>
 
-      <div className="absolute inset-0 flex items-center justify-center px-4 pb-20 pt-16 sm:px-6 md:items-center md:justify-start md:pb-0 md:pt-0 lg:px-8">
-        <div className="mx-auto w-full max-w-7xl">
-          <div className="mx-auto flex w-full max-w-lg -translate-y-10 flex-col gap-4 text-center sm:gap-5 md:mx-0 md:translate-y-0 md:gap-6 md:text-left rtl:md:text-right">
-            <h1 className="text-3xl font-bold leading-tight text-dark-green sm:text-4xl md:text-5xl lg:text-6xl">
-              {hero.headline.map((line) => (
-                <span key={line} className="block md:whitespace-nowrap">
-                  {line}
-                </span>
-              ))}
-            </h1>
-
-            <p className="text-sm leading-relaxed text-dark-green/70 sm:text-base md:text-lg">
-              {hero.subheading}
-            </p>
-
-            <div className="flex flex-col gap-3 pt-1 text-start sm:flex-row sm:flex-wrap sm:gap-4 sm:pt-2">
-              <Link
-                href={hero.shopNow.href}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-dark-green px-6 py-3 text-sm font-medium text-warm-white transition-colors hover:bg-dark-green/90 sm:w-auto"
-              >
-                {hero.shopNow.label}
-              </Link>
-              <Link
-                href={hero.exploreProducts.href}
-                className="inline-flex items-center justify-center rounded-full border border-dark-green/30 bg-transparent px-6 py-3 text-sm font-medium text-dark-green transition-colors hover:border-gold hover:text-gold sm:w-auto"
-              >
-                {hero.exploreProducts.label}
-              </Link>
-            </div>
-          </div>
+        <div className="flex flex-col justify-center gap-3 pt-2 sm:flex-row sm:flex-wrap md:justify-start">
+          <Link
+            href={hero.shopNow.href}
+            className="inline-flex items-center justify-center rounded-full bg-dark-green px-7 py-3 text-sm font-medium text-warm-white transition-colors hover:bg-dark-green/90 sm:w-auto"
+          >
+            {hero.shopNow.label}
+          </Link>
+          <Link
+            href={hero.exploreProducts.href}
+            className="inline-flex items-center justify-center rounded-full border border-dark-green/30 bg-transparent px-7 py-3 text-sm font-medium text-dark-green transition-colors hover:border-gold hover:text-gold sm:w-auto"
+          >
+            {hero.exploreProducts.label}
+          </Link>
         </div>
+      </div>
+
+      <div className="order-1 flex w-full items-end justify-center bg-[#F1E5DC] pt-6 md:order-2 md:min-h-[calc(100svh-4rem)] md:items-center md:pt-0">
+        <Image
+          src="/hero-img.png"
+          alt={hero.imageAlt}
+          width={1920}
+          height={1440}
+          priority
+          className="h-auto w-full object-contain"
+          sizes="(max-width: 768px) 100vw, 50vw"
+          unoptimized
+        />
       </div>
     </section>
   );

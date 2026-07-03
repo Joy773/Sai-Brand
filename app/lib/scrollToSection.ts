@@ -1,8 +1,8 @@
 export function scrollToHash(href: string) {
-  if (!href.startsWith("#") || href === "#") return;
+  if (!href.startsWith("#") || href === "#") return false;
 
   const target = document.getElementById(href.slice(1));
-  if (!target) return;
+  if (!target) return false;
 
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
@@ -14,6 +14,7 @@ export function scrollToHash(href: string) {
   });
 
   window.history.pushState(null, "", href);
+  return true;
 }
 
 export function handleSectionClick(
@@ -24,6 +25,10 @@ export function handleSectionClick(
   if (!href.startsWith("#") || href === "#") return;
 
   event.preventDefault();
-  scrollToHash(href);
+  const didScroll = scrollToHash(href);
   onAfterClick?.();
+
+  if (!didScroll) {
+    window.location.href = `/${href}`;
+  }
 }

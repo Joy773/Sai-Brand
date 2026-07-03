@@ -36,10 +36,10 @@ type TrustBatchItem = {
 };
 
 const cardLift =
-  "transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none";
+  "md:transition-all md:duration-300 md:ease-out md:hover:-translate-y-2 md:hover:shadow-xl motion-reduce:transition-none motion-reduce:md:hover:translate-y-0 motion-reduce:md:hover:shadow-none";
 
 const contentFade =
-  "transition-all duration-500 ease-in-out motion-reduce:transition-none";
+  "md:transition-all md:duration-500 md:ease-in-out motion-reduce:transition-none";
 
 function TrustCardContent({
   iconId,
@@ -56,7 +56,7 @@ function TrustCardContent({
     <>
       {Icon && (
         <div
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-dark-green/10 text-dark-green transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:bg-dark-green/15 motion-reduce:transition-none"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-dark-green/10 text-dark-green md:transition-transform md:duration-500 md:ease-in-out md:group-hover:scale-110 md:group-hover:bg-dark-green/15 motion-reduce:transition-none"
           aria-hidden
         >
           <Icon className="h-6 w-6 text-dark-green" />
@@ -72,13 +72,19 @@ function TrustCardContent({
   );
 }
 
-function TrustCard({ item }: { item: TrustBatchItem }) {
+function TrustCard({
+  item,
+  className = "",
+}: {
+  item: TrustBatchItem;
+  className?: string;
+}) {
   return (
     <article
-      className={`group relative min-h-[16.5rem] overflow-hidden rounded-3xl border border-beige bg-beige/40 sm:min-h-[17.5rem] ${cardLift} hover:border-dark-green/25 hover:bg-beige/70 hover:shadow-dark-green/10`}
+      className={`group relative min-h-[16.5rem] w-[min(78vw,20rem)] shrink-0 snap-start overflow-hidden rounded-3xl border border-beige bg-beige/40 sm:min-h-[17.5rem] sm:w-[20rem] md:w-auto ${cardLift} md:hover:border-dark-green/25 md:hover:bg-beige/70 md:hover:shadow-dark-green/10 ${className}`}
     >
       <div
-        className={`flex h-full flex-col items-center gap-4 p-6 text-center sm:p-8 ${contentFade} group-hover:pointer-events-none group-hover:-translate-y-1 group-hover:opacity-0 motion-reduce:group-hover:translate-y-0 motion-reduce:group-hover:opacity-100`}
+        className={`flex h-full flex-col items-center gap-4 p-6 text-center sm:p-8 ${contentFade} md:group-hover:pointer-events-none md:group-hover:-translate-y-1 md:group-hover:opacity-0 motion-reduce:md:group-hover:translate-y-0 motion-reduce:md:group-hover:opacity-100`}
       >
         <TrustCardContent
           iconId={item.id}
@@ -88,7 +94,7 @@ function TrustCard({ item }: { item: TrustBatchItem }) {
       </div>
 
       <div
-        className={`absolute inset-0 flex translate-y-2 flex-col items-center gap-4 p-6 text-center opacity-0 sm:p-8 ${contentFade} group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:hidden`}
+        className={`absolute inset-0 hidden translate-y-2 flex-col items-center gap-4 p-6 text-center opacity-0 sm:p-8 md:flex ${contentFade} md:group-hover:translate-y-0 md:group-hover:opacity-100 motion-reduce:hidden`}
       >
         <TrustCardContent
           iconId={item.hover.id}
@@ -100,8 +106,42 @@ function TrustCard({ item }: { item: TrustBatchItem }) {
   );
 }
 
+function MobileTrustCard({
+  iconId,
+  label,
+  description,
+}: {
+  iconId: string;
+  label: string;
+  description: string;
+}) {
+  return (
+    <article className="min-h-[16.5rem] w-[min(78vw,20rem)] shrink-0 snap-start rounded-3xl border border-beige bg-beige/40 sm:min-h-[17.5rem] sm:w-[20rem] md:hidden">
+      <div className="flex h-full flex-col items-center gap-4 p-6 text-center sm:p-8">
+        <TrustCardContent
+          iconId={iconId}
+          label={label}
+          description={description}
+        />
+      </div>
+    </article>
+  );
+}
+
 export default function TrustBatch() {
   const { eyebrow, title, description, items } = useMessages().trustBatch;
+  const mobileItems = items.flatMap((item) => [
+    {
+      id: item.id,
+      label: item.label,
+      description: item.description,
+    },
+    {
+      id: item.hover.id,
+      label: item.hover.label,
+      description: item.hover.description,
+    },
+  ]);
 
   return (
     <section className="bg-warm-white px-6 py-16 lg:px-8 lg:py-24">
@@ -118,9 +158,17 @@ export default function TrustBatch() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 items-stretch gap-4 md:grid-cols-4 md:gap-5">
+        <div className="-mx-6 flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto px-6 pb-3 md:mx-0 md:grid md:grid-cols-4 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
+          {mobileItems.map((item) => (
+            <MobileTrustCard
+              key={item.id}
+              iconId={item.id}
+              label={item.label}
+              description={item.description}
+            />
+          ))}
           {items.map((item) => (
-            <TrustCard key={item.id} item={item} />
+            <TrustCard key={item.id} item={item} className="hidden md:block" />
           ))}
         </div>
       </div>

@@ -106,8 +106,9 @@
     "addToCart": "Shop Now",
     "kit": {
       "name": "German Care Complete Kit",
-      "description": "Includes all four premium products. Daily Use Shampoo, Deodorant Roller, Sunblock SPF 50+, and Anti-Chafing Body Cream in one complete kit designed for everyday comfort and reliable protection.",
+      "description": "Everything you need for Hajj and Umrah in one kit. Anti-chafing cream for long walks in Ihram, a fragrance-free deodorant for daily freshness, SPF 50+ sunblock for the intense sun, and a gentle shampoo to refresh after hot, tiring days of travel.",
       "price": "€79.90",
+      "size": "4-piece travel kit",
       "includes": [
         "Shampoo",
         "Deodorant",
@@ -115,34 +116,110 @@
         "Anti-Chafing Cream"
       ],
       "imageAlt": "German Care Complete Kit view {index}",
-      "showImageLabel": "Show kit image {index}"
+      "showImageLabel": "Show kit image {index}",
+      "details": {
+        "keyBenefits": [
+          "Complete Hajj and Umrah care in one travel-ready kit",
+          "All products are fragrance-free and Ihram-safe",
+          "Designed for long walking, heat, and daily freshness",
+          "Made in Germany with dermatologically tested formulas"
+        ],
+        "howToUse": "Use each product as directed on its packaging throughout your pilgrimage. Apply sunblock before outdoor rituals, use anti-chafing cream before long walks, refresh with deodorant and shampoo daily as needed.",
+        "ingredients": "Each product in the kit has its own ingredient list on the packaging. All formulas are fragrance-free, alcohol-free, and developed for sensitive skin during pilgrimage.",
+        "safetyNotes": "For external use only. Read individual product labels before use. Discontinue use if irritation occurs. Suitable for use during Ihram. Store in a cool, dry place while traveling."
+      }
     },
     "items": [
       {
         "name": "Anti-Chafing Body Cream",
-        "description": "Protective daily body cream formulated to help soothe friction-prone skin and keep it comfortable, calm, and cared for.",
+        "description": "Prevents painful chafing during long hours of walking in Ihram. Its smooth, fragrance-free formula reduces skin-on-skin rubbing on the thighs and underarms, keeping you comfortable in hot climate throughout Hajj and Umrah.",
         "price": "€24.90",
-        "image": "/anti-chafing-main.png"
+        "size": "50 ml",
+        "image": "/anti-chafing-main.png",
+        "details": {
+          "keyBenefits": [
+            "Reduces painful chafing during long tawaf and sa'i walks",
+            "Fragrance-free and safe to use while in Ihram",
+            "Soothes irritated skin in hot, humid pilgrimage conditions",
+            "Lightweight, non-greasy formula for all-day comfort"
+          ],
+          "howToUse": "Apply a thin layer to clean, dry skin on friction-prone areas such as inner thighs, underarms, and feet before walking. Reapply as needed during long periods of movement in heat.",
+          "ingredients": "Aqua, Dimethicone, Glycerin, Zinc Oxide, Aloe Barbadensis Leaf Extract, Cetearyl Alcohol, Tocopherol, Phenoxyethanol.",
+          "safetyNotes": "For external use only. Avoid contact with eyes. Discontinue use if irritation occurs. Fragrance-free and alcohol-free. Suitable for use during Ihram."
+        }
       },
       {
         "name": "Deodorant Roller",
-        "description": "Gentle everyday deodorant roller that helps you stay fresh with long-lasting comfort and a clean, skin-friendly feel.",
+        "description": "Keeps you fresh through crowded, hot days of pilgrimage. This fragrance-free roller controls odor and gives long-lasting daily freshness without breaking Ihram, and its compact size is easy to carry while you travel.",
         "price": "€19.90",
-        "image": "/deodoran-main.png"
+        "size": "50 ml",
+        "image": "/deodoran-main.png",
+        "details": {
+          "keyBenefits": [
+            "Long-lasting odor control without fragrance",
+            "Ihram-safe formula for daily use during pilgrimage",
+            "Compact roller ideal for travel and on-the-go freshness",
+            "Gentle on skin during hot, active days"
+          ],
+          "howToUse": "Roll evenly on clean, dry underarms once or twice daily. Allow to dry before dressing. Reapply after showering or heavy perspiration during long pilgrimage days.",
+          "ingredients": "Aqua, Aluminum Chlorohydrate, Glycerin, PEG-40 Hydrogenated Castor Oil, Allantoin, Phenoxyethanol, Ethylhexylglycerin.",
+          "safetyNotes": "For external use only. Do not apply to broken or irritated skin. Fragrance-free and alcohol-free. Safe for use during Ihram."
+        }
       },
       {
         "name": "Daily Use Shampoo",
-        "description": "Mild daily shampoo designed to cleanse the hair and scalp while leaving it feeling fresh, soft, and balanced.",
+        "description": "Gently cleanses away dust and sweat after long, tiring days of pilgrimage. Its mild, travel-friendly formula refreshes hair and soothes the scalp in hot weather, restoring daily comfort during Hajj and Umrah.",
         "price": "€22.90",
-        "image": "/shampoo-main.png"
+        "size": "100 ml",
+        "image": "/shampoo-main.png",
+        "details": {
+          "keyBenefits": [
+            "Gently removes dust, sweat, and buildup after long days",
+            "Mild formula soothes the scalp in hot weather",
+            "Travel-friendly size for pilgrimage packing",
+            "Leaves hair feeling fresh, soft, and balanced"
+          ],
+          "howToUse": "Wet hair thoroughly. Apply a small amount, massage into scalp and hair, then rinse well. Use daily or as needed after long, dusty days of pilgrimage.",
+          "ingredients": "Aqua, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Glycerin, Aloe Barbadensis Leaf Juice, Panthenol, Citric Acid, Sodium Chloride, Phenoxyethanol.",
+          "safetyNotes": "For external use only. Avoid contact with eyes. If contact occurs, rinse thoroughly with water. Fragrance-free. Suitable for daily use during Hajj and Umrah."
+        }
       },
       {
         "name": "Sunblock SPF 50+",
-        "description": "Lightweight SPF 50+ sun protection with hyaluronic acid to help moisturize, shield, and absorb comfortably into the skin.",
+        "description": "Shields your skin during long hours of outdoor rituals under the harsh sun. Lightweight SPF 50+ with hyaluronic acid protects against sunburn and keeps skin hydrated while you walk in the intense heat of Hajj and Umrah.",
         "price": "€27.90",
-        "image": "/sunblock-main.png"
+        "size": "60 ml",
+        "image": "/sunblock-main.png",
+        "details": {
+          "keyBenefits": [
+            "Broad-spectrum SPF 50+ protection for outdoor rituals",
+            "Hyaluronic acid helps keep skin hydrated in dry heat",
+            "Lightweight formula that absorbs without a heavy feel",
+            "Essential protection during long hours in direct sun"
+          ],
+          "howToUse": "Apply generously to exposed skin 15 minutes before going outdoors. Reapply every two hours, or after heavy sweating, especially during long outdoor rituals in Arafat and Mina.",
+          "ingredients": "Aqua, Homosalate, Ethylhexyl Salicylate, Butyl Methoxydibenzoylmethane, Glycerin, Hyaluronic Acid, Tocopherol, Phenoxyethanol.",
+          "safetyNotes": "For external use only. Avoid contact with eyes. Reapply frequently during prolonged sun exposure. Fragrance-free and suitable for sensitive skin during pilgrimage."
+        }
       }
     ]
+  },
+
+  "productPage": {
+    "_comment": "Product detail page used in app/[slug]/page.tsx",
+    "backToProducts": "Back to products",
+    "quantity": "Quantity",
+    "size": "Size",
+    "price": "Price",
+    "addToCart": "Add to Cart",
+    "decreaseQuantity": "Decrease quantity",
+    "increaseQuantity": "Increase quantity",
+    "tabs": {
+      "keyBenefits": "Key Benefits",
+      "howToUse": "How to Use",
+      "ingredients": "Ingredients",
+      "safetyNotes": "Safety Notes"
+    }
   },
 
   "ourStory": {
