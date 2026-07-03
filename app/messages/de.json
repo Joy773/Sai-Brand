@@ -25,47 +25,76 @@
 
   "hero": {
     "_comment": "Hero-Bereich — verwendet in app/components/Hero.tsx",
-    "imageAlt": "Sai Luxe Skincare – Radiance Serum",
-    "eyebrow": "Authentische Pflege – inspiriert von deutscher Qualität",
-    "headline": ["Premium-Hautpflege", "der Sie vertrauen können"],
-    "description": "Entdecken Sie hochwertige Produkte, die mit Präzision und Sorgfalt entwickelt wurden, um Komfort zu schenken, Ihr Wohlbefinden zu fördern und Ihnen das Selbstvertrauen zu geben, das Sie im Alltag verdienen.",
+    "imageAlt": "Hajj & Umrah Pflege-Set",
+    "headline": ["Hajj & Umrah", "Pflege-Set"],
+    "subheading": "Entwickelt für Ihram, heißes Klima, Reisen, Hajj & Umrah. Parfümfrei.",
     "shopNow": { "label": "Jetzt shoppen", "href": "#" },
     "exploreProducts": { "label": "Produkte entdecken", "href": "#" }
+  },
+
+  "trustStrip": {
+    "_comment": "Vertrauens-Streifen — verwendet in app/components/TrustStrip.tsx",
+    "ariaLabel": "Produkt-Vertrauensabzeichen",
+    "items": [
+      { "id": "alcohol-free", "label": "Alkoholfrei" },
+      { "id": "fragrance-free", "label": "Parfümfrei" },
+      { "id": "halal", "label": "Halal" },
+      { "id": "vegan", "label": "Vegan" },
+      { "id": "ihram-safe", "label": "Ihram-sicher" },
+      { "id": "made-in-germany", "label": "Hergestellt in Deutschland" },
+      { "id": "premium-quality", "label": "Premium-Qualität" }
+    ],
+    "_items_comment": "id wird in TrustStrip.tsx Icons zugeordnet"
   },
 
   "trustBatch": {
     "_comment": "Vertrauens-Bereich — verwendet in app/components/TrustBatch.tsx",
     "eyebrow": "Warum Sai",
-    "title": "Alles, was Sie brauchen – an einem vertrauenswürdigen Ort",
-    "description": "Von Premium-Inhaltsstoffen bis zur schnellen Lieferung vereint Sai die Standards und die Pflege, die Ihre Haut verdient. Alles in einem nahtlosen Erlebnis.",
+    "title": "Pflege, der Sie auf Ihrer Pilgerreise vertrauen können",
+    "description": "Von Ihram-konformen Formeln bis zu halal-zertifizierten Standards vereint Sai alles, was Sie für eine angenehme und selbstbewusste Körperpflege während Hajj und Umrah benötigen.",
     "items": [
       {
-        "id": "premium-ingredients",
-        "title": "Premium-Inhaltsstoffe",
-        "description": "Jede Formel wird aus sorgfältig ausgewählten, hochwertigen Inhaltsstoffen entwickelt – für Reinheit, Wirksamkeit und Ergebnisse, die Sie jeden Tag sehen und spüren können.",
-        "variant": "light"
+        "id": "alcohol-fragrance-free",
+        "label": "Alkohol- & Parfümfrei",
+        "description": "Ohne Alkohol und zugesetzte Duftstoffe formuliert. Sanft zur Haut und geeignet für Ihram, Gebet und empfindliche Routinen auf der Pilgerreise.",
+        "hover": {
+          "id": "cruelty-free",
+          "label": "Tierversuchsfrei",
+          "description": "Niemals an Tieren getestet. Ethisch hergestellt mit Mitgefühl in jeder Phase von Produktion und Pflege."
+        }
       },
       {
-        "id": "dermatologically-tested",
-        "title": "Sicher & dermatologisch getestet",
-        "description": "Unsere Produkte durchlaufen strenge dermatologische Tests, um sicherzustellen, dass sie sanft, wirksam und für den täglichen Gebrauch auf allen Hauttypen geeignet sind.",
-        "variant": "light"
+        "id": "vegan",
+        "label": "Vegan",
+        "description": "Ohne tierische Inhaltsstoffe für bewusste Pflege. Eine durchdachte Wahl für täglichen Komfort während Hajj und Umrah.",
+        "hover": {
+          "id": "dermatologically-tested",
+          "label": "Dermatologisch getestet",
+          "description": "Streng unter dermatologischer Aufsicht geprüft. Sanfte, wirksame Formeln für den täglichen Gebrauch auf der Pilgerreise."
+        }
       },
       {
-        "id": "german-standards",
-        "title": "Inspiriert von deutschen Standards",
-        "description": "Verwurzelt in deutscher Präzision und Sorgfalt spiegelt jedes Produkt unser Engagement für qualitativ hochwertige Herstellung, Beständigkeit und Exzellenz in jedem Detail wider.",
-        "variant": "light"
+        "id": "halal",
+        "label": "Halal",
+        "description": "Nach halal-konformen Grundsätzen und vertrauenswürdigen Standards entwickelt. Sorgenfreie Körperpflege auf Ihrer heiligen Reise.",
+        "hover": {
+          "id": "travel-friendly",
+          "label": "Reisefreundlich",
+          "description": "Kompakt, zuverlässig und einfach zu packen. Ideal für lange Flüge, Hotels und unterwegs."
+        }
       },
       {
-        "id": "fast-delivery",
-        "title": "Schnelle Lieferung",
-        "description": "Bestellen Sie mit Vertrauen und erhalten Sie Ihre Essentials schnell – mit sicherer Verpackung und zuverlässigem Versand direkt an Ihre Tür.",
-        "highlight": "24–48 Std.",
-        "variant": "dark"
+        "id": "ihram-safe",
+        "label": "Ihram-sicher",
+        "description": "Entwickelt, um Ihram-Anforderungen in jedem Schritt der Pilgerreise zu erfüllen. Komfortabel und selbstbewusst von der Reise bis zum Alltag.",
+        "hover": {
+          "id": "hot-climate",
+          "label": "Für heißes Klima",
+          "description": "Entwickelt für Hitze und Feuchtigkeit. Hält Sie frisch und komfortabel in anspruchsvollen Klimazonen."
+        }
       }
     ],
-    "_items_comment": "id wird in TrustBatch.tsx Icons zugeordnet — variant ist light oder dark"
+    "_items_comment": "id und hover.id werden in TrustBatch.tsx Icons zugeordnet"
   },
 
   "products": {
@@ -148,30 +177,62 @@
     "title": "Häufig gestellte Fragen",
     "description": "Finden Sie schnelle und hilfreiche Antworten zu Sai Brand, unseren Produkten, dem Versand und allem, was Sie für ein reibungsloses und selbstbewusstes Einkaufserlebnis wissen müssen.",
     "contactUs": { "label": "Kontaktieren Sie uns", "href": "#" },
+    "viewMore": "Mehr anzeigen",
+    "viewLess": "Weniger anzeigen",
     "items": [
       {
-        "question": "Was ist Sai Brand?",
-        "answer": "Sai Brand ist eine moderne Lifestyle- und Pflegemarke, die sich auf hochwertige Produkte konzentriert – entwickelt für Komfort, Pflege und Selbstvertrauen im Alltag."
+        "question": "Ist es alkoholfrei?",
+        "answer": "Ja. Jedes Produkt im Hajj- & Umrah-Pflegeset ist alkoholfrei formuliert — für sanfte, tägliche Anwendung auf der Pilgerreise."
       },
       {
-        "question": "Sind Sai-Produkte sicher in der Anwendung?",
-        "answer": "Ja, alle Sai-Produkte werden sorgfältig mit hautfreundlichen und qualitätsorientierten Inhaltsstoffen entwickelt, um eine sichere tägliche Anwendung zu gewährleisten."
+        "question": "Ist es parfümfrei?",
+        "answer": "Ja. Das Set ist vollständig parfümfrei und ohne zugesetzte Duftstoffe — geeignet für Ihram, Gebet und empfindliche Routinen."
       },
       {
-        "question": "Wo werden Sai-Produkte hergestellt?",
-        "answer": "Sai-Produkte werden nach modernen Qualitätsstandards entwickelt – mit Fokus auf Premium-Formulierung und Beständigkeit."
+        "question": "Ist es für Ihram geeignet?",
+        "answer": "Ja. Unsere Formeln sind gemäß Ihram-Anforderungen entwickelt, damit Sie sich während Hajj und Umrah mit gutem Gefühl pflegen können."
+      },
+      {
+        "question": "Was ist enthalten?",
+        "answer": "Das Komplett-Set enthält Daily Use Shampoo, Deodorant Roller, Sunblock SPF 50+ und Anti-Chafing Body Cream — alles in einem Set."
+      },
+      {
+        "question": "Ist es reisefreundlich?",
+        "answer": "Ja. Das Set ist kompakt, einfach zu packen und ideal für lange Reisen, heißes Klima und den Alltag auf der Pilgerreise."
+      },
+      {
+        "question": "Wird es in Deutschland hergestellt?",
+        "answer": "Ja. Sai-Produkte werden in Deutschland hergestellt und stehen für deutsche Qualitäts-, Präzisions- und Sorgfaltstandards."
+      }
+    ],
+    "moreItems": [
+      {
+        "question": "Wie kann ich das SAI Hajj- & Umrah-Pflegeset kaufen?",
+        "answer": "Sie können direkt über unsere Website bestellen, indem Sie den Produktbereich besuchen und das Komplett-Set auswählen. Folgen Sie den Checkout-Schritten für eine sichere Bestellung."
+      },
+      {
+        "question": "Ist das Set in GCC-Ländern verfügbar?",
+        "answer": "Ja, das Set ist in GCC-Ländern verfügbar. Versandoptionen und Lieferzeiten können je nach Standort variieren."
       },
       {
         "question": "Bieten Sie internationalen Versand an?",
-        "answer": "Ja, Sai Brand unterstützt den Versand in mehrere Regionen – abhängig von Verfügbarkeit und logistischer Abdeckung."
+        "answer": "Ja, Sai Brand bietet internationalen Versand in ausgewählte Regionen weltweit — abhängig von Verfügbarkeit und logistischer Abdeckung."
       },
       {
-        "question": "Kann ich ein Produkt zurückgeben, wenn ich nicht zufrieden bin?",
-        "answer": "Kundenzufriedenheit ist unser Ziel. Rückgabe- und Erstattungsrichtlinien hängen vom Produkt und den Bestellbedingungen ab."
+        "question": "Kann ich das Set vor der Reise zu Hajj oder Umrah bestellen?",
+        "answer": "Ja, wir empfehlen eine Bestellung vor Ihrem Reisedatum, damit Ihr Set rechtzeitig für Vorbereitung und Packen ankommt."
       },
       {
-        "question": "Sind Sai-Produkte für alle Hauttypen geeignet?",
-        "answer": "Ja, Sai-Produkte sind sanft formuliert und für eine breite Palette von Hauttypen geeignet."
+        "question": "Ist das Set für Großhandel oder Händler verfügbar?",
+        "answer": "Ja, Großhandels- und Vertriebsmöglichkeiten sind verfügbar. Kontaktieren Sie uns für Mengenpreise und Partnerschaftsdetails."
+      },
+      {
+        "question": "Welche Versandoptionen und Lieferzeiten gibt es?",
+        "answer": "Versandoptionen und Lieferzeiten hängen von Ihrem Standort ab. Die Standardlieferung dauert in der Regel von wenigen Werktagen bis zu mehreren Wochen bei internationalen Bestellungen."
+      },
+      {
+        "question": "An wen kann ich mich für GCC-Vertrieb oder Partnerschaftsanfragen wenden?",
+        "answer": "Für GCC-Vertrieb, Großhandel oder Partnerschaftsanfragen kontaktieren Sie uns unter support@saibrand.com oder nutzen Sie die Schaltfläche Kontaktieren Sie uns auf dieser Seite."
       }
     ]
   },

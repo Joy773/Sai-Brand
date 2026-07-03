@@ -26,10 +26,6 @@ export default function Hero() {
       <div className="absolute inset-0 flex items-center justify-center px-4 pb-20 pt-16 sm:px-6 md:items-center md:justify-start md:pb-0 md:pt-0 lg:px-8">
         <div className="mx-auto w-full max-w-7xl">
           <div className="mx-auto flex w-full max-w-lg -translate-y-10 flex-col gap-4 text-center sm:gap-5 md:mx-0 md:translate-y-0 md:gap-6 md:text-left rtl:md:text-right">
-            <p className="text-[0.65rem] font-medium uppercase tracking-[0.15em] text-dark-green/80 sm:text-xs sm:tracking-[0.2em]">
-              {hero.eyebrow}
-            </p>
-
             <h1 className="text-3xl font-bold leading-tight text-dark-green sm:text-4xl md:text-5xl lg:text-6xl">
               {hero.headline.map((line) => (
                 <span key={line} className="block md:whitespace-nowrap">
@@ -39,7 +35,7 @@ export default function Hero() {
             </h1>
 
             <p className="text-sm leading-relaxed text-dark-green/70 sm:text-base md:text-lg">
-              {hero.description}
+              {hero.subheading}
             </p>
 
             <div className="flex flex-col gap-3 pt-1 text-start sm:flex-row sm:flex-wrap sm:gap-4 sm:pt-2">

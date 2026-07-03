@@ -3,6 +3,7 @@ import FAQ from "@/app/components/FAQ";
 import Footer from "@/app/components/Footer";
 import Hero from "@/app/components/Hero";
 import Navbar from "@/app/components/Navbar";
+import TrustStrip from "@/app/components/TrustStrip";
 import Products from "@/app/components/Products";
 import ScrollOnReveal from "@/app/components/ScrollOnReveal";
 import TrustBatch from "@/app/components/TrustBatch";
@@ -14,6 +15,7 @@ export default function Home() {
     <LocaleProvider>
       <div className="min-h-screen bg-warm-white text-dark-green">
         <Navbar />
+        <TrustStrip />
 
         <Hero />
         <ScrollOnReveal>

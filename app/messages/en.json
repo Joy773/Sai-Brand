@@ -25,47 +25,76 @@
 
   "hero": {
     "_comment": "Hero section strings used in app/components/Hero.tsx",
-    "imageAlt": "Sai Luxe Skincare – Radiance Serum",
-    "eyebrow": "Authentic German Care Inspired Products",
-    "headline": ["Premium Skincare", "You Can Trust"],
-    "description": "Discover a range of high-quality products designed with precision and care to deliver comfort, nurture your well-being, and give you the confidence you deserve in everyday life.",
+    "imageAlt": "Hajj & Umrah Personal Care Kit",
+    "headline": ["Hajj & Umrah", "Personal Care Kit"],
+    "subheading": "Designed for Ihram, hot climate, travel, Hajj & Umrah. Fragrance-Free.",
     "shopNow": { "label": "Shop Now", "href": "#" },
     "exploreProducts": { "label": "Explore Products", "href": "#" }
+  },
+
+  "trustStrip": {
+    "_comment": "Trust strip marquee used in app/components/TrustStrip.tsx",
+    "ariaLabel": "Product trust badges",
+    "items": [
+      { "id": "alcohol-free", "label": "Alcohol-Free" },
+      { "id": "fragrance-free", "label": "Fragrance-Free" },
+      { "id": "halal", "label": "Halal" },
+      { "id": "vegan", "label": "Vegan" },
+      { "id": "ihram-safe", "label": "Ihram-Safe" },
+      { "id": "made-in-germany", "label": "Made in Germany" },
+      { "id": "premium-quality", "label": "Premium Quality" }
+    ],
+    "_items_comment": "id maps to icons in TrustStrip.tsx"
   },
 
   "trustBatch": {
     "_comment": "Trust badges section used in app/components/TrustBatch.tsx",
     "eyebrow": "Why Sai",
-    "title": "Everything you need, in one trusted place",
-    "description": "From premium ingredients to fast delivery, Sai brings together the standards and care your skin deserves. All in one, seamless experience.",
+    "title": "Care you can trust for Hajj & Umrah",
+    "description": "From Ihram-safe formulas to halal-certified standards, Sai brings together everything you need for comfortable, confident personal care throughout your pilgrimage.",
     "items": [
       {
-        "id": "premium-ingredients",
-        "title": "Premium Quality Ingredients",
-        "description": "Every formula is crafted with carefully selected, high-grade ingredients chosen for purity, performance, and results you can see and feel every day.",
-        "variant": "light"
+        "id": "alcohol-fragrance-free",
+        "label": "Alcohol & Fragrance-Free",
+        "description": "Formulated without alcohol or added perfumes. Gentle on skin and suitable for Ihram, prayer, and sensitive routines during pilgrimage.",
+        "hover": {
+          "id": "cruelty-free",
+          "label": "Cruelty-Free",
+          "description": "Never tested on animals. Ethically made with compassion at every stage of production and care."
+        }
       },
       {
-        "id": "dermatologically-tested",
-        "title": "Safe & Dermatologically Tested",
-        "description": "Our products undergo rigorous dermatological testing to ensure they are gentle, effective, and suitable for confident daily use on all skin types.",
-        "variant": "light"
+        "id": "vegan",
+        "label": "Vegan",
+        "description": "Crafted without animal-derived ingredients for conscious care. A thoughtful choice for everyday comfort on your Hajj and Umrah journey.",
+        "hover": {
+          "id": "dermatologically-tested",
+          "label": "Dermatologically Tested",
+          "description": "Rigorously tested under dermatological supervision. Gentle, effective formulas suited for daily pilgrimage use."
+        }
       },
       {
-        "id": "german-standards",
-        "title": "Inspired by German Standards",
-        "description": "Rooted in German precision and care, each product reflects a commitment to quality manufacturing, consistency, and excellence in every detail.",
-        "variant": "light"
+        "id": "halal",
+        "label": "Halal",
+        "description": "Developed in line with halal principles and trusted standards. Gives you reliable, worry-free personal care throughout your sacred journey.",
+        "hover": {
+          "id": "travel-friendly",
+          "label": "Travel-Friendly",
+          "description": "Compact, reliable, and easy to pack. Perfect companions for long flights, hotels, and life on the move."
+        }
       },
       {
-        "id": "fast-delivery",
-        "title": "Fast Delivery",
-        "description": "Order with confidence and receive your essentials quickly, with secure packaging and reliable shipping straight to your door.",
-        "highlight": "24–48h",
-        "variant": "dark"
+        "id": "ihram-safe",
+        "label": "Ihram-Safe",
+        "description": "Designed to meet Ihram requirements at every step of pilgrimage. Stay comfortable and confident from travel to daily sacred rituals.",
+        "hover": {
+          "id": "hot-climate",
+          "label": "Hot Climate Conditions",
+          "description": "Made to perform in heat and humidity. Keeps you feeling fresh and comfortable in demanding climates."
+        }
       }
     ],
-    "_items_comment": "id maps to icons in TrustBatch.tsx — variant is light or dark"
+    "_items_comment": "id and hover.id map to icons in TrustBatch.tsx"
   },
 
   "products": {
@@ -148,30 +177,62 @@
     "title": "Frequently asked questions",
     "description": "Find quick and helpful answers about Sai Brand, our products, shipping, and everything you need to know for a smooth and confident shopping experience.",
     "contactUs": { "label": "Contact Us", "href": "#" },
+    "viewMore": "View More",
+    "viewLess": "View Less",
     "items": [
       {
-        "question": "What is Sai Brand?",
-        "answer": "Sai Brand is a modern lifestyle and care brand focused on delivering high-quality products designed for comfort, care, and confidence in everyday use."
+        "question": "Is it alcohol-free?",
+        "answer": "Yes. Every product in the Hajj & Umrah Personal Care Kit is formulated without alcohol for gentle, everyday use during pilgrimage."
       },
       {
-        "question": "Are Sai products safe to use?",
-        "answer": "Yes, all Sai products are carefully developed with skin-friendly and quality-focused ingredients to ensure safe everyday use."
+        "question": "Is it fragrance-free?",
+        "answer": "Yes. The kit is completely fragrance-free with no added perfumes, making it suitable for Ihram, prayer, and sensitive routines."
       },
       {
-        "question": "Where are Sai products made?",
-        "answer": "Sai products are developed following modern quality standards with a focus on premium formulation and consistency."
+        "question": "Is it suitable for Ihram?",
+        "answer": "Yes. Our formulas are developed to meet Ihram requirements, so you can care for yourself with confidence throughout Hajj and Umrah."
+      },
+      {
+        "question": "What is included?",
+        "answer": "The complete kit includes Daily Use Shampoo, Deodorant Roller, Sunblock SPF 50+, and Anti-Chafing Body Cream — everything you need in one set."
+      },
+      {
+        "question": "Is it travel-friendly?",
+        "answer": "Yes. The kit is compact, easy to pack, and designed for long journeys, hot climates, and life on the move during pilgrimage."
+      },
+      {
+        "question": "Is it made in Germany?",
+        "answer": "Yes. Sai products are made in Germany, reflecting German standards of quality, precision, and care in every formula."
+      }
+    ],
+    "moreItems": [
+      {
+        "question": "How can I buy the SAI Hajj & Umrah Care Kit?",
+        "answer": "You can order directly through our website by visiting the Products section and selecting the complete kit. Follow the checkout steps to place your order securely."
+      },
+      {
+        "question": "Is the kit available in GCC countries?",
+        "answer": "Yes, the kit is available in GCC countries. Shipping options and delivery times may vary depending on your location."
       },
       {
         "question": "Do you offer international shipping?",
-        "answer": "Yes, Sai Brand supports shipping to multiple locations depending on availability and logistics coverage."
+        "answer": "Yes, Sai Brand offers international shipping to selected regions worldwide, depending on availability and logistics coverage."
       },
       {
-        "question": "Can I return a product if I'm not satisfied?",
-        "answer": "We aim for customer satisfaction. Return and refund policies depend on the product and order conditions."
+        "question": "Can I order the kit before traveling for Hajj or Umrah?",
+        "answer": "Yes, we recommend ordering ahead of your travel dates to ensure your kit arrives in time for preparation and packing."
       },
       {
-        "question": "Are Sai products suitable for all skin types?",
-        "answer": "Yes, Sai products are designed to be gentle and suitable for a wide range of skin types."
+        "question": "Is the kit available for wholesale or distributors?",
+        "answer": "Yes, wholesale and distribution opportunities are available. Please contact us for volume pricing and partnership details."
+      },
+      {
+        "question": "What are the shipping options and delivery times?",
+        "answer": "Shipping options and delivery estimates depend on your location. Standard delivery typically ranges from a few business days to several weeks for international orders."
+      },
+      {
+        "question": "Who can I contact for GCC distribution or partnership inquiries?",
+        "answer": "For GCC distribution, wholesale, or partnership inquiries, please contact us at support@saibrand.com or use the Contact Us button on this page."
       }
     ]
   },
