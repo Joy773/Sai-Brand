@@ -24,6 +24,34 @@ const tabIds = [
 
 type TabId = (typeof tabIds)[number];
 
+type IngredientGroup = {
+  name: string;
+  list: string;
+};
+
+function isStringList(content: unknown): content is string[] {
+  return (
+    Array.isArray(content) &&
+    content.every((item) => typeof item === "string")
+  );
+}
+
+function isIngredientGroups(content: unknown): content is IngredientGroup[] {
+  return (
+    Array.isArray(content) &&
+    content.length > 0 &&
+    content.every(
+      (item) =>
+        typeof item === "object" &&
+        item !== null &&
+        "name" in item &&
+        "list" in item &&
+        typeof item.name === "string" &&
+        typeof item.list === "string",
+    )
+  );
+}
+
 type ProductDetailProps = {
   slug: CatalogSlug;
 };
@@ -184,8 +212,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
                 </div>
 
                 <div className="mt-4 rounded-2xl border border-dark-green/10 bg-beige/20 p-4 sm:p-5">
-                  {activeTab === "keyBenefits" &&
-                  Array.isArray(activeContent) ? (
+                  {activeTab === "keyBenefits" && isStringList(activeContent) ? (
                     <ul className="space-y-2">
                       {activeContent.map((benefit) => (
                         <li
@@ -200,6 +227,20 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
                         </li>
                       ))}
                     </ul>
+                  ) : activeTab === "ingredients" &&
+                    isIngredientGroups(activeContent) ? (
+                    <div className="space-y-5">
+                      {activeContent.map((item) => (
+                        <div key={item.name}>
+                          <h4 className="text-sm font-semibold text-dark-green sm:text-base">
+                            {item.name}
+                          </h4>
+                          <p className="mt-1 text-sm leading-relaxed text-dark-green/80 sm:text-base">
+                            {item.list}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   ) : (
                     <p className="text-sm leading-relaxed text-dark-green/80 sm:text-base">
                       {typeof activeContent === "string" ? activeContent : ""}

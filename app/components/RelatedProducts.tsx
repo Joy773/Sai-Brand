@@ -16,13 +16,19 @@ const cardHover =
 const imageHover =
   "transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100";
 
+const moreInfoButton =
+  "inline-flex w-full items-center justify-center rounded-full border border-dark-green px-3 py-2 text-xs font-medium text-dark-green transition-all duration-300 hover:bg-dark-green/5 motion-reduce:transition-none sm:w-auto sm:px-5 sm:py-2.5 sm:text-sm";
+
+const addToCartButton =
+  "inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-dark-green px-3 py-2 text-xs font-medium text-warm-white transition-all duration-300 hover:scale-[1.02] hover:bg-dark-green/90 motion-reduce:hover:scale-100 sm:w-auto sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm";
+
 type RelatedProductsProps = {
   slug: CatalogSlug;
 };
 
 export default function RelatedProducts({ slug }: RelatedProductsProps) {
   const { title, subtitle } = useMessages().relatedProducts;
-  const { addToCartShort, addToCart, kit, items } = useMessages().products;
+  const { addToCartShort, addToCart, moreInfo, kit, items } = useMessages().products;
 
   const relatedProducts = items.filter((product) => {
     const productSlug = getSlugFromImage(product.image);
@@ -49,11 +55,13 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {showKit ? (
-            <Link
-              href={`/${KIT_SLUG}`}
+            <article
               className={`group col-span-2 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row ${cardHover} hover:shadow-dark-green/10`}
             >
-              <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 p-4 sm:p-6 lg:w-1/2">
+              <Link
+                href={`/${KIT_SLUG}`}
+                className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 p-4 sm:p-6 lg:w-1/2"
+              >
                 <Image
                   src="/kit-1.png"
                   alt={kit.name}
@@ -62,13 +70,15 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   unoptimized
                 />
-              </div>
+              </Link>
 
               <div className="flex flex-1 flex-col justify-between gap-6 p-4 sm:p-6 lg:p-8">
                 <div>
-                  <h3 className="text-xl font-semibold text-dark-green sm:text-2xl lg:text-3xl">
-                    {kit.name}
-                  </h3>
+                  <Link href={`/${KIT_SLUG}`}>
+                    <h3 className="text-xl font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-2xl lg:text-3xl">
+                      {kit.name}
+                    </h3>
+                  </Link>
                   <p className="mt-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
                     {kit.description}
                   </p>
@@ -94,17 +104,22 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                     {kit.price}
                   </p>
 
-                  <span className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-dark-green px-3 py-2 text-xs font-medium text-warm-white transition-all duration-300 group-hover:scale-[1.02] motion-reduce:group-hover:scale-100 sm:w-auto sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm">
-                    <LuShoppingCart
-                      className="h-3.5 w-3.5 sm:h-4 sm:w-4"
-                      aria-hidden
-                    />
-                    <span className="sm:hidden">{addToCartShort}</span>
-                    <span className="hidden sm:inline">{addToCart}</span>
-                  </span>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                    <Link href={`/${KIT_SLUG}`} className={moreInfoButton}>
+                      {moreInfo}
+                    </Link>
+                    <button type="button" className={addToCartButton}>
+                      <LuShoppingCart
+                        className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                        aria-hidden
+                      />
+                      <span className="sm:hidden">{addToCartShort}</span>
+                      <span className="hidden sm:inline">{addToCart}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </Link>
+            </article>
           ) : null}
 
           {relatedProducts.map((product) => {
@@ -112,12 +127,14 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
             if (!productSlug) return null;
 
             return (
-              <Link
+              <article
                 key={product.image}
-                href={`/${productSlug}`}
                 className={`group flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row ${cardHover} hover:shadow-dark-green/10`}
               >
-                <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-beige/40 p-3 sm:p-4 lg:w-56">
+                <Link
+                  href={`/${productSlug}`}
+                  className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-beige/40 p-3 sm:p-4 lg:w-56"
+                >
                   <Image
                     src={product.image}
                     alt={product.name}
@@ -126,13 +143,15 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                     sizes="(max-width: 1024px) 50vw, 224px"
                     unoptimized
                   />
-                </div>
+                </Link>
 
                 <div className="flex flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:p-6 lg:p-8">
                   <div>
-                    <h3 className="text-sm font-semibold text-dark-green sm:text-xl lg:text-2xl">
-                      {product.name}
-                    </h3>
+                    <Link href={`/${productSlug}`}>
+                      <h3 className="text-sm font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-xl lg:text-2xl">
+                        {product.name}
+                      </h3>
+                    </Link>
                     <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm lg:text-base">
                       {product.description}
                     </p>
@@ -143,17 +162,22 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                       {product.price}
                     </p>
 
-                    <span className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-dark-green px-3 py-2 text-xs font-medium text-warm-white transition-all duration-300 group-hover:scale-[1.02] motion-reduce:group-hover:scale-100 sm:w-auto sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm">
-                      <LuShoppingCart
-                        className="h-3.5 w-3.5 sm:h-4 sm:w-4"
-                        aria-hidden
-                      />
-                      <span className="sm:hidden">{addToCartShort}</span>
-                      <span className="hidden sm:inline">{addToCart}</span>
-                    </span>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                      <Link href={`/${productSlug}`} className={moreInfoButton}>
+                        {moreInfo}
+                      </Link>
+                      <button type="button" className={addToCartButton}>
+                        <LuShoppingCart
+                          className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                          aria-hidden
+                        />
+                        <span className="sm:hidden">{addToCartShort}</span>
+                        <span className="hidden sm:inline">{addToCart}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </Link>
+              </article>
             );
           })}
         </div>

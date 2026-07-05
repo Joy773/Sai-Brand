@@ -103,8 +103,9 @@
     "eyebrow": "Our Products",
     "title": "Skincare crafted with care",
     "description": "Explore our collection of premium formulas, each designed to deliver comfort, confidence, and visible results.",
-    "addToCartShort": "Shop Now",
-    "addToCart": "Shop Now",
+    "addToCartShort": "Add to Cart",
+    "addToCart": "Add to Cart",
+    "moreInfo": "More Info",
     "kit": {
       "name": "German Care Complete Kit",
       "description": "Everything you need for Hajj and Umrah in one kit. Anti-chafing cream for long walks in Ihram, a fragrance-free deodorant for daily freshness, SPF 50+ sunblock for the intense sun, and a gentle shampoo to refresh after hot, tiring days of travel.",
@@ -126,7 +127,24 @@
           "Made in Germany with dermatologically tested formulas"
         ],
         "howToUse": "Use each product as directed on its packaging throughout your pilgrimage. Apply sunblock before outdoor rituals, use anti-chafing cream before long walks, refresh with deodorant and shampoo daily as needed.",
-        "ingredients": "Each product in the kit has its own ingredient list on the packaging. All formulas are fragrance-free, alcohol-free, and developed for sensitive skin during pilgrimage.",
+        "ingredients": [
+          {
+            "name": "Daily Use Shampoo – Fragrance-Free",
+            "list": "Aqua, Sodium Laureth Sulfate, Maris Sal, Glycerin, Cocamidopropyl Betaine, Niacinamide, Panthenol, Xylitylglucoside, Anhydroxylitol, Sodium Benzoate, Coco-Glucoside, Citric Acid, Glyceryl Oleate, Xylitol, Tetrasodium Glutamate Diacetate, Glucose, Hydrogenated Vegetable Glycerides Citrate, Tocopherol, Lecithin, Ascorbyl Palmitate."
+          },
+          {
+            "name": "Deodorant Roller – Fragrance-Free",
+            "list": "Aqua, Pentylene Glycol, Distarch Phosphate, Glyceryl Stearate Citrate, Cyclodextrin, 1,2-Heptanediol, Sodium Caproyl/Lauroyl Lactylate, Cocos Nucifera (Coconut) Oil, Polyglyceryl-3 Caprylate, Xanthan Gum, Triethyl Citrate, Citric Acid, Sodium Citrate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Ascorbyl Isostearate, Isostearic Acid, Ascorbic Acid."
+          },
+          {
+            "name": "Sunblock SPF 50+ with Hyaluronic Acid",
+            "list": "Aqua, C12-15 Alkyl Benzoate, Dibutyl Adipate, Diethylamino Hydroxybenzoyl Hexyl Benzoate, Diisopropyl Sebacate, Glycerin, Olus Oil, Polyglyceryl-6 Stearate, Pentylene Glycol, Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine, Ethylhexyl Triazone, Phenylbenzimidazole Sulfonic Acid, Tapioca Starch, Diethylhexyl Butamido Triazone, Disodium Phenyl Dibenzimidazole Tetrasulfonate, Arginine, Cetearyl Alcohol, Glyceryl Stearate, 1,2-Heptanediol, Hectorite, Simmondsia Chinensis (Jojoba) Seed Oil, Carrageenan, Polyglyceryl-6 Behenate, Sodium Hydroxide, Sodium Phytate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Glucose, Sodium Hyaluronate, Acetyl Glucosamine, Hyaluronic Acid, Hydrolyzed Hyaluronic Acid, Tremella Fuciformis (Snow Fungus) Sporocarp Extract, Sodium Acetylated Hyaluronate."
+          },
+          {
+            "name": "Anti-Chafing Body Cream",
+            "list": "Aqua, Decyl Cocoate, Dimethicone, Glycerin, Pentylene Glycol, Argania Spinosa (Argan) Kernel Oil, Prunus Amygdalus (Sweet Almond) Dulcis Oil, Glyceryl Stearate Citrate, Cetearyl Alcohol, Niacinamide, 1,2-Heptanediol, Sodium Lactate, Sodium PCA, Panthenol, Xanthan Gum, Butyrospermum Parkii (Shea) Butter, Helianthus Annuus (Sunflower) Seed Oil, Tocopherol, Glycine, Inositol, Lactic Acid, Urea, Tocopheryl Linoleate/Oleate, Citric Acid."
+          }
+        ],
         "safetyNotes": "For external use only. Read individual product labels before use. Discontinue use if irritation occurs. Suitable for use during Ihram. Store in a cool, dry place while traveling."
       }
     },

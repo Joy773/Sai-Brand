@@ -103,8 +103,9 @@
     "eyebrow": "منتجاتنا",
     "title": "عناية بالبشرة مصنوعة بعناية",
     "description": "استكشف مجموعتنا من التركيبات الفاخرة، كل منها مصمم ليمنحك الراحة والثقة ونتائج واضحة.",
-    "addToCartShort": "تسوق الآن",
-    "addToCart": "تسوق الآن",
+    "addToCartShort": "أضف إلى السلة",
+    "addToCart": "أضف إلى السلة",
+    "moreInfo": "مزيد من المعلومات",
     "kit": {
       "name": "مجموعة German Care الكاملة",
       "description": "كل ما تحتاجه للحج والعمرة في مجموعة واحدة. كريم مضاد للاحتكاك للمشي الطويل في الإحرام، ومزيل عرق خالٍ من العطر للانتعاش اليومي، وواقي شمس +SPF 50 لأشعة الشمس القوية، وشامبو لطيف للانتعاش بعد أيام السفر الحارة والمرهقة.",
@@ -126,7 +127,24 @@
           "صُنعت في ألمانيا بتركيبات مختبرة جلديا"
         ],
         "howToUse": "استخدم كل منتج وفق التعليمات على العبوة طوال رحلة الحج. ضع واقي الشمس قبل المناسك في الهواء الطلق، وكريم مضاد الاحتكاك قبل المشي الطويل، وجدد الانتعاش يوميا بمزيل العرق والشامبو.",
-        "ingredients": "لكل منتج في المجموعة قائمة مكونات خاصة على العبوة. جميع التركيبات خالية من العطر والكحول ومصممة للبشرة الحساسة أثناء الحج.",
+        "ingredients": [
+          {
+            "name": "شامبو للاستخدام اليومي – خالٍ من العطر",
+            "list": "Aqua, Sodium Laureth Sulfate, Maris Sal, Glycerin, Cocamidopropyl Betaine, Niacinamide, Panthenol, Xylitylglucoside, Anhydroxylitol, Sodium Benzoate, Coco-Glucoside, Citric Acid, Glyceryl Oleate, Xylitol, Tetrasodium Glutamate Diacetate, Glucose, Hydrogenated Vegetable Glycerides Citrate, Tocopherol, Lecithin, Ascorbyl Palmitate."
+          },
+          {
+            "name": "رول مزيل العرق – خالٍ من العطر",
+            "list": "Aqua, Pentylene Glycol, Distarch Phosphate, Glyceryl Stearate Citrate, Cyclodextrin, 1,2-Heptanediol, Sodium Caproyl/Lauroyl Lactylate, Cocos Nucifera (Coconut) Oil, Polyglyceryl-3 Caprylate, Xanthan Gum, Triethyl Citrate, Citric Acid, Sodium Citrate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Ascorbyl Isostearate, Isostearic Acid, Ascorbic Acid."
+          },
+          {
+            "name": "واقي شمس +SPF 50 مع حمض الهيالورونيك",
+            "list": "Aqua, C12-15 Alkyl Benzoate, Dibutyl Adipate, Diethylamino Hydroxybenzoyl Hexyl Benzoate, Diisopropyl Sebacate, Glycerin, Olus Oil, Polyglyceryl-6 Stearate, Pentylene Glycol, Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine, Ethylhexyl Triazone, Phenylbenzimidazole Sulfonic Acid, Tapioca Starch, Diethylhexyl Butamido Triazone, Disodium Phenyl Dibenzimidazole Tetrasulfonate, Arginine, Cetearyl Alcohol, Glyceryl Stearate, 1,2-Heptanediol, Hectorite, Simmondsia Chinensis (Jojoba) Seed Oil, Carrageenan, Polyglyceryl-6 Behenate, Sodium Hydroxide, Sodium Phytate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Glucose, Sodium Hyaluronate, Acetyl Glucosamine, Hyaluronic Acid, Hydrolyzed Hyaluronic Acid, Tremella Fuciformis (Snow Fungus) Sporocarp Extract, Sodium Acetylated Hyaluronate."
+          },
+          {
+            "name": "كريم الجسم المضاد للاحتكاك",
+            "list": "Aqua, Decyl Cocoate, Dimethicone, Glycerin, Pentylene Glycol, Argania Spinosa (Argan) Kernel Oil, Prunus Amygdalus (Sweet Almond) Dulcis Oil, Glyceryl Stearate Citrate, Cetearyl Alcohol, Niacinamide, 1,2-Heptanediol, Sodium Lactate, Sodium PCA, Panthenol, Xanthan Gum, Butyrospermum Parkii (Shea) Butter, Helianthus Annuus (Sunflower) Seed Oil, Tocopherol, Glycine, Inositol, Lactic Acid, Urea, Tocopheryl Linoleate/Oleate, Citric Acid."
+          }
+        ],
         "safetyNotes": "للاستخدام الخارجي فقط. اقرأ ملصقات المنتجات قبل الاستخدام. توقف عن الاستخدام عند حدوث تهيج. مناسب للاستخدام أثناء الإحرام. يُحفظ في مكان بارد وجاف أثناء السفر."
       }
     },
