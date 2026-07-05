@@ -29,7 +29,17 @@
     "headline": ["Hajj & Umrah", "Pflege-Set"],
     "subheading": "Entwickelt für Ihram, heißes Klima, Reisen, Hajj & Umrah. Parfümfrei.",
     "shopNow": { "label": "Jetzt shoppen", "href": "#" },
-    "exploreProducts": { "label": "Produkte entdecken", "href": "#" }
+    "exploreProducts": { "label": "Produkte entdecken", "href": "#" },
+    "badges": [
+      { "id": "made-in-germany", "label": "Hergestellt in Deutschland" },
+      { "id": "premium-quality", "label": "Premium-Qualität" },
+      { "id": "alcohol-free", "label": "Alkoholfrei" },
+      { "id": "fragrance-free", "label": "Parfümfrei" },
+      { "id": "halal", "label": "Halal" },
+      { "id": "vegan", "label": "Vegan" },
+      { "id": "ihram-safe", "label": "Ihram-sicher" }
+    ],
+    "_badges_comment": "id wird in Hero.tsx Icons zugeordnet"
   },
 
   "trustStrip": {
@@ -155,6 +165,7 @@
         "price": "€15,90",
         "size": "50 ml",
         "image": "/anti-chafing-main.png",
+        "tags": ["Parfümfrei", "Ihram-sicher", "Empfindliche Haut"],
         "details": {
           "keyBenefits": [
             "100% Halal (Hadsch- und Umra-sicher)",
@@ -176,6 +187,7 @@
         "price": "€13,99",
         "size": "50 ml",
         "image": "/deodoran-main.png",
+        "tags": ["Alkoholfrei", "Halal", "Vegan"],
         "details": {
           "keyBenefits": [
             "100% Halal (Hadsch- und Umra-sicher)",
@@ -198,6 +210,7 @@
         "price": "€12,99",
         "size": "100 ml",
         "image": "/shampoo-main.png",
+        "tags": ["Parfümfrei", "Ihram-sicher", "Hergestellt in Deutschland"],
         "details": {
           "keyBenefits": [
             "100% Halal (Hadsch- und Umra-sicher)",
@@ -220,6 +233,7 @@
         "price": "€18,99",
         "size": "60 ml",
         "image": "/sunblock-main.png",
+        "tags": ["SPF 50+", "Hyaluronsaeure", "Ihram-sicher"],
         "details": {
           "keyBenefits": [
             "100% Halal (Hadsch- und Umra-sicher)",

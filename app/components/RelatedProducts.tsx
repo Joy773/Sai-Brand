@@ -5,10 +5,12 @@ import Link from "next/link";
 import { LuCheck, LuShoppingCart } from "react-icons/lu";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 import {
+  getKitProductTags,
   getSlugFromImage,
   KIT_SLUG,
   type CatalogSlug,
 } from "@/app/lib/products";
+import ProductTags from "@/app/components/ProductTags";
 
 const cardHover =
   "transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none";
@@ -29,6 +31,7 @@ type RelatedProductsProps = {
 export default function RelatedProducts({ slug }: RelatedProductsProps) {
   const { title, subtitle } = useMessages().relatedProducts;
   const { addToCartShort, addToCart, moreInfo, kit, items } = useMessages().products;
+  const kitTags = getKitProductTags(items);
 
   const relatedProducts = items.filter((product) => {
     const productSlug = getSlugFromImage(product.image);
@@ -82,6 +85,7 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                   <p className="mt-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
                     {kit.description}
                   </p>
+                  <ProductTags tags={kitTags} />
                 </div>
 
                 <ul className="space-y-2">
@@ -155,6 +159,9 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                     <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm lg:text-base">
                       {product.description}
                     </p>
+                    {"tags" in product ? (
+                      <ProductTags tags={product.tags} />
+                    ) : null}
                   </div>
 
                   <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">

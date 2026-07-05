@@ -4,6 +4,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 
+const badgeHover =
+  "transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-warm-white hover:shadow-md hover:shadow-dark-green/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-sm";
+
+const badgeIconHover =
+  "transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100";
+
+const badgeIconMap: Record<string, string> = {
+  "made-in-germany": "/Germany.png",
+  "premium-quality": "/Premium.png",
+  "alcohol-free": "/Alcohol-Free.png",
+  "fragrance-free": "/Fregnance-Free.png",
+  halal: "/Halal.png",
+  vegan: "/Vegan.png",
+  "ihram-safe": "/Ihmram-Safe.png",
+};
+
 export default function Hero() {
   const hero = useMessages().hero;
 
@@ -36,6 +52,28 @@ export default function Hero() {
             {hero.exploreProducts.label}
           </Link>
         </div>
+
+        <ul className="flex max-w-xl flex-wrap justify-center gap-2 pt-2 md:justify-start">
+          {hero.badges
+            .filter((badge) => badgeIconMap[badge.id])
+            .map((badge) => (
+              <li
+                key={badge.id}
+                className={`group inline-flex cursor-default items-center gap-2 rounded-full border border-transparent bg-warm-white/90 px-3 py-2 text-xs font-bold text-dark-green shadow-sm sm:px-3.5 sm:py-2.5 sm:text-sm ${badgeHover} hover:border-dark-green/15`}
+              >
+                <Image
+                  src={badgeIconMap[badge.id]}
+                  alt=""
+                  width={28}
+                  height={28}
+                  className={`h-6 w-6 shrink-0 rounded-full object-contain sm:h-7 sm:w-7 ${badgeIconHover}`}
+                  unoptimized
+                  aria-hidden
+                />
+                <span className="whitespace-nowrap">{badge.label}</span>
+              </li>
+            ))}
+        </ul>
       </div>
 
       <div className="order-1 flex w-full items-end justify-center bg-[#F1E5DC] pt-6 md:order-2 md:min-h-[calc(100svh-4rem)] md:items-center md:pt-0">

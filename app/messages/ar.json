@@ -29,7 +29,17 @@
     "headline": ["مجموعة العناية الشخصية", "للحج والعمرة"],
     "subheading": "مصممة للإحرام والمناخ الحار والسفر والحج والعمرة. خالية من العطور.",
     "shopNow": { "label": "تسوق الآن", "href": "#" },
-    "exploreProducts": { "label": "استكشف المنتجات", "href": "#" }
+    "exploreProducts": { "label": "استكشف المنتجات", "href": "#" },
+    "badges": [
+      { "id": "made-in-germany", "label": "صُنع في ألمانيا" },
+      { "id": "premium-quality", "label": "جودة فاخرة" },
+      { "id": "alcohol-free", "label": "خالٍ من الكحول" },
+      { "id": "fragrance-free", "label": "خالٍ من العطور" },
+      { "id": "halal", "label": "حلال" },
+      { "id": "vegan", "label": "نباتي" },
+      { "id": "ihram-safe", "label": "آمن للإحرام" }
+    ],
+    "_badges_comment": "يُربط id بالأيقونات في Hero.tsx"
   },
 
   "trustStrip": {
@@ -155,6 +165,7 @@
         "price": "€15.90",
         "size": "50 مل",
         "image": "/anti-chafing-main.png",
+        "tags": ["خالٍ من العطور", "آمن للإحرام", "للبشرة الحساسة"],
         "details": {
           "keyBenefits": [
             "100% حلال (آمن للحج والعمرة)",
@@ -176,6 +187,7 @@
         "price": "€13.99",
         "size": "50 مل",
         "image": "/deodoran-main.png",
+        "tags": ["خالٍ من الكحول", "حلال", "نباتي"],
         "details": {
           "keyBenefits": [
             "100% حلال (آمن للحج والعمرة)",
@@ -198,6 +210,7 @@
         "price": "€12.99",
         "size": "100 مل",
         "image": "/shampoo-main.png",
+        "tags": ["خالٍ من العطور", "آمن للإحرام", "صُنع في ألمانيا"],
         "details": {
           "keyBenefits": [
             "100% حلال (آمن للحج والعمرة)",
@@ -220,6 +233,7 @@
         "price": "€18.99",
         "size": "60 مل",
         "image": "/sunblock-main.png",
+        "tags": ["SPF 50+", "حمض الهيالورونيك", "آمن للإحرام"],
         "details": {
           "keyBenefits": [
             "100% حلال (آمن للحج والعمرة)",

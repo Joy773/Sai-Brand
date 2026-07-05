@@ -11,7 +11,8 @@ import {
   LuShoppingCart,
 } from "react-icons/lu";
 import { useMessages } from "@/app/i18n/LocaleProvider";
-import { KIT_SLUG, productSlugs, type CatalogSlug } from "@/app/lib/products";
+import { getKitProductTags, KIT_SLUG, productSlugs, type CatalogSlug } from "@/app/lib/products";
+import ProductTags from "@/app/components/ProductTags";
 
 const kitImages = ["/kit-1.png", "/kit-2.png", "/kit-3.png", "/kit-4.png"];
 
@@ -70,6 +71,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
         size: products.kit.size,
         image: kitImages[0],
         includes: products.kit.includes,
+        tags: getKitProductTags(products.items),
         details: products.kit.details,
       }
     : products.items.find((item) => productSlugs[slug] === item.image);
@@ -113,6 +115,8 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
             <p className="mt-4 text-base leading-relaxed text-dark-green/70 sm:text-lg">
               {product.description}
             </p>
+
+            {"tags" in product ? <ProductTags tags={product.tags} /> : null}
 
             {"includes" in product && product.includes ? (
               <ul className="mt-6 space-y-2">

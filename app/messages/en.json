@@ -29,7 +29,17 @@
     "headline": ["Hajj & Umrah", "Personal Care Kit"],
     "subheading": "Designed for Ihram, hot climate, travel, Hajj & Umrah. Fragrance-Free.",
     "shopNow": { "label": "Shop Now", "href": "#" },
-    "exploreProducts": { "label": "Explore Products", "href": "#" }
+    "exploreProducts": { "label": "Explore Products", "href": "#" },
+    "badges": [
+      { "id": "made-in-germany", "label": "Made in Germany" },
+      { "id": "premium-quality", "label": "Premium Quality" },
+      { "id": "alcohol-free", "label": "Alcohol-Free" },
+      { "id": "fragrance-free", "label": "Fragrance-Free" },
+      { "id": "halal", "label": "Halal" },
+      { "id": "vegan", "label": "Vegan" },
+      { "id": "ihram-safe", "label": "Ihram-Safe" }
+    ],
+    "_badges_comment": "id maps to icons in Hero.tsx"
   },
 
   "trustStrip": {
@@ -155,6 +165,7 @@
         "price": "€15.90",
         "size": "50 ml",
         "image": "/anti-chafing-main.png",
+        "tags": ["Fragrance-Free", "Ihram-Safe", "Sensitive Skin"],
         "details": {
           "keyBenefits": [
             "100% Halal (Hajj & Umrah-Safe)",
@@ -176,6 +187,7 @@
         "price": "€13.99",
         "size": "50 ml",
         "image": "/deodoran-main.png",
+        "tags": ["Alcohol-Free", "Halal", "Vegan"],
         "details": {
           "keyBenefits": [
             "100% Halal (Hajj & Umrah-Safe)",
@@ -198,6 +210,7 @@
         "price": "€12.99",
         "size": "100 ml",
         "image": "/shampoo-main.png",
+        "tags": ["Fragrance-Free", "Ihram-Safe", "Made in Germany"],
         "details": {
           "keyBenefits": [
             "100% Halal (Hajj & Umrah-Safe)",
@@ -220,6 +233,7 @@
         "price": "€18.99",
         "size": "60 ml",
         "image": "/sunblock-main.png",
+        "tags": ["SPF 50+", "Hyaluronic Acid", "Ihram-Safe"],
         "details": {
           "keyBenefits": [
             "100% Halal (Hajj & Umrah-Safe)",

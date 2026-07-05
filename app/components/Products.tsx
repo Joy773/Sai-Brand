@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { LuCheck, LuShoppingCart } from "react-icons/lu";
 import { useMessages } from "@/app/i18n/LocaleProvider";
-import { getSlugFromImage, KIT_SLUG } from "@/app/lib/products";
+import { getKitProductTags, getSlugFromImage, KIT_SLUG } from "@/app/lib/products";
+import ProductTags from "@/app/components/ProductTags";
 
 const kitImages = [
   "/kit-1.png",
@@ -38,6 +39,7 @@ export default function Products() {
     kit,
     items: products,
   } = useMessages().products;
+  const kitTags = getKitProductTags(products);
 
   return (
     <section id="products" className="bg-beige/30 px-6 py-16 lg:px-8 lg:py-24">
@@ -105,6 +107,8 @@ export default function Products() {
                 {kit.description}
               </p>
             </Link>
+
+            <ProductTags tags={kitTags} />
 
               <ul className="mt-4 space-y-2 sm:mt-6">
                 {kit.includes.map((item) => (
@@ -174,6 +178,7 @@ export default function Products() {
                   <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm lg:text-base">
                     {product.description}
                   </p>
+                  {"tags" in product ? <ProductTags tags={product.tags} /> : null}
                 </div>
 
                 <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">

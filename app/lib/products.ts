@@ -26,3 +26,21 @@ export function isCatalogSlug(slug: string): slug is CatalogSlug {
 export function getSlugFromImage(image: string): ProductSlug | undefined {
   return imageToSlug[image];
 }
+
+export function getKitProductTags(items: { tags?: string[] }[]): string[] {
+  const seen = new Set<string>();
+  const tags: string[] = [];
+
+  for (const item of items) {
+    if (!item.tags) continue;
+
+    for (const tag of item.tags) {
+      if (!seen.has(tag)) {
+        seen.add(tag);
+        tags.push(tag);
+      }
+    }
+  }
+
+  return tags;
+}
