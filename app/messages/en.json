@@ -28,7 +28,7 @@
     "imageAlt": "Hajj & Umrah Personal Care Kit",
     "headline": ["Hajj & Umrah", "Personal Care Kit"],
     "subheading": "Designed for Ihram, hot climate, travel, Hajj & Umrah. Fragrance-Free.",
-    "shopNow": { "label": "Shop Now", "href": "#" },
+    "shopNow": { "label": "Shop Now", "href": "#products" },
     "exploreProducts": { "label": "Explore Products", "href": "#" },
     "badges": [
       { "id": "made-in-germany", "label": "Made in Germany" },
@@ -117,7 +117,7 @@
     "addToCart": "Add to Cart",
     "moreInfo": "More Info",
     "kit": {
-      "name": "German Care Complete Kit",
+      "name": "Hajj & Umrah Personal Care Kit",
       "description": "Everything you need for Hajj and Umrah in one kit. Anti-chafing cream for long walks in Ihram, a fragrance-free deodorant for daily freshness, SPF 50+ sunblock for the intense sun, and a gentle shampoo to refresh after hot, tiring days of travel.",
       "price": "€53.99",
       "size": "4-piece travel kit",
@@ -127,7 +127,7 @@
         "Sunblock",
         "Anti-Chafing Cream"
       ],
-      "imageAlt": "German Care Complete Kit view {index}",
+      "imageAlt": "Hajj & Umrah Personal Care Kit view {index}",
       "showImageLabel": "Show kit image {index}",
       "details": {
         "keyBenefits": [

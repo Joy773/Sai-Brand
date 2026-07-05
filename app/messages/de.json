@@ -28,7 +28,7 @@
     "imageAlt": "Hajj & Umrah Pflege-Set",
     "headline": ["Hajj & Umrah", "Pflege-Set"],
     "subheading": "Entwickelt für Ihram, heißes Klima, Reisen, Hajj & Umrah. Parfümfrei.",
-    "shopNow": { "label": "Jetzt shoppen", "href": "#" },
+    "shopNow": { "label": "Jetzt shoppen", "href": "#products" },
     "exploreProducts": { "label": "Produkte entdecken", "href": "#" },
     "badges": [
       { "id": "made-in-germany", "label": "Hergestellt in Deutschland" },
@@ -117,7 +117,7 @@
     "addToCart": "In den Warenkorb",
     "moreInfo": "Mehr Infos",
     "kit": {
-      "name": "German Care Komplett-Set",
+      "name": "Hajj & Umrah Pflege-Set",
       "description": "Alles, was Sie fuer Hadsch und Umra brauchen, in einem Set. Anti-Chafing-Creme fuer lange Fussmaersche im Ihram, ein parfuemfreies Deodorant fuer taegliche Frische, Sonnenschutz mit LSF 50+ gegen die starke Sonne und ein mildes Shampoo zur Erfrischung nach heissen, anstrengenden Reisetagen.",
       "price": "€53,99",
       "size": "4-teiliges Reise-Set",
@@ -127,7 +127,7 @@
         "Sonnenschutz",
         "Anti-Chafing Creme"
       ],
-      "imageAlt": "German Care Komplett-Set Ansicht {index}",
+      "imageAlt": "Hajj & Umrah Pflege-Set Ansicht {index}",
       "showImageLabel": "Kit-Bild {index} anzeigen",
       "details": {
         "keyBenefits": [

@@ -3,6 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMessages } from "@/app/i18n/LocaleProvider";
+import { KIT_SLUG } from "@/app/lib/products";
+import { handleSectionClick } from "@/app/lib/scrollToSection";
+
+const productsHref = "#products";
 
 const badgeHover =
   "transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-warm-white hover:shadow-md hover:shadow-dark-green/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-sm";
@@ -40,13 +44,14 @@ export default function Hero() {
 
         <div className="flex flex-col justify-center gap-3 pt-2 sm:flex-row sm:flex-wrap md:justify-start">
           <Link
-            href={hero.shopNow.href}
+            href={productsHref}
+            onClick={(event) => handleSectionClick(event, productsHref)}
             className="inline-flex items-center justify-center rounded-full bg-dark-green px-7 py-3 text-sm font-medium text-warm-white transition-colors hover:bg-dark-green/90 sm:w-auto"
           >
             {hero.shopNow.label}
           </Link>
           <Link
-            href={hero.exploreProducts.href}
+            href={`/${KIT_SLUG}`}
             className="inline-flex items-center justify-center rounded-full border border-dark-green/30 bg-transparent px-7 py-3 text-sm font-medium text-dark-green transition-colors hover:border-gold hover:text-gold sm:w-auto"
           >
             {hero.exploreProducts.label}
