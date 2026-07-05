@@ -103,7 +103,7 @@ export default function Products() {
               <h3 className="text-xl font-semibold text-dark-green transition-colors group-hover/link:text-dark-green/80 sm:text-2xl lg:text-3xl">
                 {kit.name}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
+              <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
                 {kit.description}
               </p>
             </Link>
