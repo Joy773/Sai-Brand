@@ -42,6 +42,7 @@
       { "id": "vegan", "label": "نباتي" },
       { "id": "ihram-safe", "label": "آمن للإحرام" },
       { "id": "made-in-germany", "label": "صُنع في ألمانيا" },
+      { "id": "dermatology-tested", "label": "مختبر جلديا" },
       { "id": "premium-quality", "label": "جودة فاخرة" }
     ],
     "_items_comment": "يُربط id بالأيقونات في TrustStrip.tsx"
@@ -107,7 +108,7 @@
     "kit": {
       "name": "مجموعة German Care الكاملة",
       "description": "كل ما تحتاجه للحج والعمرة في مجموعة واحدة. كريم مضاد للاحتكاك للمشي الطويل في الإحرام، ومزيل عرق خالٍ من العطر للانتعاش اليومي، وواقي شمس +SPF 50 لأشعة الشمس القوية، وشامبو لطيف للانتعاش بعد أيام السفر الحارة والمرهقة.",
-      "price": "€79.90",
+      "price": "€53.99",
       "size": "مجموعة سفر من 4 قطع",
       "includes": [
         "شامبو",
@@ -132,74 +133,89 @@
     "items": [
       {
         "name": "كريم الجسم المضاد للاحتكاك",
-        "description": "يمنع التسلخات المؤلمة أثناء ساعات المشي الطويلة في الإحرام. تركيبته الناعمة الخالية من العطر تقلل احتكاك الجلد في الفخذين وتحت الإبطين، لتبقيك مرتاحا في الأجواء الحارة طوال الحج والعمرة.",
-        "price": "€24.90",
+        "description": "كريم وقاية من التسلخات للجسم مصمم لتقليل الاحتكاك عبر تكوين طبقة واقية ناعمة، وترطيب البشرة والحفاظ على الراحة في المناطق المعرضة للاحتكاك، مثل بين الفخذين وتحت الإبطين. يُنصح باستخدامه أثناء المشي أو الجري خاصة في الأجواء الحارة، وللاستخدام أثناء الإحرام حيث قد تسبب المشي الطويل وملامسة الجلد المطولة التسلخات والالتهابات.",
+        "price": "€15.90",
         "size": "50 مل",
         "image": "/anti-chafing-main.png",
         "details": {
           "keyBenefits": [
-            "يقلل التسلخات المؤلمة أثناء الطواف والسعي الطويل",
-            "خالٍ من العطر وآمن للاستخدام أثناء الإحرام",
-            "يهدئ البشرة المتهيجة في أجواء الحج الحارة والرطبة",
-            "تركيبة خفيفة غير دهنية لراحة طوال اليوم"
+            "100% حلال (آمن للحج والعمرة)",
+            "100% نباتي",
+            "100% صُنع في ألمانيا",
+            "خالٍ من الكحول",
+            "خالٍ من المكونات الحيوانية",
+            "خالٍ من العطر",
+            "مختبر جلديا"
           ],
-          "howToUse": "ضع طبقة رقيقة على بشرة نظيفة وجافة في المناطق المعرضة للاحتكاك مثل الفخذين الداخليين والإبطين والقدمين قبل المشي. أعد التطبيق عند الحاجة أثناء الحركة الطويلة في الحر.",
-          "ingredients": "Aqua, Dimethicone, Glycerin, Zinc Oxide, Aloe Barbadensis Leaf Extract, Cetearyl Alcohol, Tocopherol, Phenoxyethanol.",
-          "safetyNotes": "للاستخدام الخارجي فقط. تجنب ملامسة العينين. توقف عن الاستخدام عند حدوث تهيج. خالٍ من العطر والكحول. مناسب للاستخدام أثناء الإحرام."
+          "howToUse": "ضع الكريم على بشرة نظيفة وجافة في المناطق المعرضة للاحتكاك مثل بين الفخذين وتحت الإبطين قبل المشي أو الجري. يُنصح به بشكل خاص في الأجواء الحارة وأثناء الإحرام، عندما قد يسبب المشي الطويل وملامسة الجلد المطولة التسلخات والالتهابات. أعد التطبيق عند الحاجة أثناء النشاط المطول.",
+          "ingredients": "Aqua, Decyl Cocoate, Dimethicone, Glycerin, Pentylene Glycol, Argania Spinosa (Argan) Kernel Oil, Prunus Amygdalus (Sweet Almond) Dulcis Oil, Glyceryl Stearate Citrate, Cetearyl Alcohol, Niacinamide, 1,2-Heptanediol, Sodium Lactate, Sodium PCA, Panthenol, Xanthan Gum, Butyrospermum Parkii (Shea) Butter, Helianthus Annuus (Sunflower) Seed Oil, Tocopherol, Glycine, Inositol, Lactic Acid, Urea, Tocopheryl Linoleate/Oleate, Citric Acid.",
+          "safetyNotes": "للاستخدام الخارجي فقط. يُحفظ في درجة حرارة الغرفة. تجنب ملامسة العينين. توقف عن الاستخدام عند حدوث تهيج."
         }
       },
       {
-        "name": "رول مزيل العرق",
-        "description": "يبقيك منتعشا خلال أيام الحج الحارة والمزدحمة. هذا الرول الخالي من العطر يتحكم في الروائح ويمنح انتعاشا يوميا يدوم طويلا دون الإخلال بالإحرام، وحجمه الصغير يجعله سهل الحمل أثناء السفر.",
-        "price": "€19.90",
+        "name": "رول مزيل العرق – خالٍ من العطر",
+        "description": "مزيل عرق لطيف للاستخدام اليومي يمنح راحة تدوم طويلا.",
+        "price": "€13.99",
         "size": "50 مل",
         "image": "/deodoran-main.png",
         "details": {
           "keyBenefits": [
-            "تحكم طويل الأمد في الروائح دون عطور",
-            "تركيبة آمنة للإحرام للاستخدام اليومي أثناء الحج",
-            "رول مدمج مثالي للسفر والانتعاش أثناء التنقل",
-            "لطيف على البشرة في الأيام الحارة والنشطة"
+            "100% حلال (آمن للحج والعمرة)",
+            "خالٍ من الكحول",
+            "خالٍ من العطر",
+            "100% نباتي",
+            "خالٍ من التجارب على الحيوانات",
+            "خالٍ من المكونات الحيوانية",
+            "مختبر جلديا",
+            "100% صُنع في ألمانيا"
           ],
-          "howToUse": "مرر الرول بالتساوي على إبطين نظيفين وجافين مرة أو مرتين يوميا. اتركه ليجف قبل ارتداء الملابس. أعد التطبيق بعد الاستحمام أو التعرق الشديد في أيام الحج الطويلة.",
-          "ingredients": "Aqua, Aluminum Chlorohydrate, Glycerin, PEG-40 Hydrogenated Castor Oil, Allantoin, Phenoxyethanol, Ethylhexylglycerin.",
-          "safetyNotes": "للاستخدام الخارجي فقط. لا يُستخدم على بشرة مجروحة أو متهيجة. خالٍ من العطر والكحول. آمن للاستخدام أثناء الإحرام."
+          "howToUse": "ضع على إبطين نظيفين وجافين. أعد التطبيق عند الحاجة.",
+          "ingredients": "Aqua, Pentylene Glycol, Distarch Phosphate, Glyceryl Stearate Citrate, Cyclodextrin, 1,2-Heptanediol, Sodium Caproyl/Lauroyl Lactylate, Cocos Nucifera (Coconut) Oil, Polyglyceryl-3 Caprylate, Xanthan Gum, Triethyl Citrate, Citric Acid, Sodium Citrate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Ascorbyl Isostearate, Isostearic Acid, Ascorbic Acid.",
+          "safetyNotes": "للاستخدام الخارجي فقط. تجنب ملامسة العينين. لا يُستخدم على بشرة مجروحة. عند حدوث تهيج، توقف عن الاستخدام. يُحفظ بعيدا عن متناول الأطفال."
         }
       },
       {
-        "name": "شامبو للاستخدام اليومي",
-        "description": "ينظف الشعر وفروة الرأس بلطف من الغبار والعرق بعد أيام المناسك الطويلة والمرهقة. تركيبته اللطيفة المناسبة للسفر تنعش الشعر وتهدئ فروة الرأس في الأجواء الحارة، لتعيد إليك الراحة اليومية خلال الحج والعمرة.",
-        "price": "€22.90",
+        "name": "شامبو للاستخدام اليومي – خالٍ من العطر",
+        "description": "تنظيف لطيف للشعر وفروة الرأس. شامبو لطيف خالٍ من العطر مصمم للتنظيف اليومي للشعر وفروة الرأس. مثالي للحج والعمرة، لأنه لا يحتوي على عطور أو زيوت عطرية. مناسب للمستخدمين ذوي البشرة الحساسة والاستخدام المتكرر. يترك الشعر نظيفا وناعما.",
+        "price": "€12.99",
         "size": "100 مل",
         "image": "/shampoo-main.png",
         "details": {
           "keyBenefits": [
-            "يزيل بلطف الغبار والعرق والتراكمات بعد الأيام الطويلة",
-            "تركيبة لطيفة تهدئ فروة الرأس في الحر",
-            "حجم مناسب للسفر وحقيبة الحج",
-            "يترك الشعر منتعشا وناعما ومتوازنا"
+            "100% حلال (آمن للحج والعمرة)",
+            "خالٍ من الكحول",
+            "خالٍ من العطر",
+            "100% نباتي",
+            "خالٍ من التجارب على الحيوانات",
+            "خالٍ من المكونات الحيوانية",
+            "مختبر جلديا",
+            "100% صُنع في ألمانيا"
           ],
-          "howToUse": "بلل الشعر جيدا. ضع كمية صغيرة ودلك فروة الرأس والشعر ثم اشطف جيدا. استخدمه يوميا أو عند الحاجة بعد الأيام الطويلة والغبارية من الحج.",
-          "ingredients": "Aqua, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Glycerin, Aloe Barbadensis Leaf Juice, Panthenol, Citric Acid, Sodium Chloride, Phenoxyethanol.",
-          "safetyNotes": "للاستخدام الخارجي فقط. تجنب ملامسة العينين. عند الملامسة اشطف بالماء جيدا. خالٍ من العطر. مناسب للاستخدام اليومي أثناء الحج والعمرة."
+          "howToUse": "ضع على الشعر المبلل، دلك بلطف، ثم اشطف جيدا. كرر عند الحاجة.",
+          "ingredients": "Aqua, Sodium Laureth Sulfate, Maris Sal, Glycerin, Cocamidopropyl Betaine, Niacinamide, Panthenol, Xylitylglucoside, Anhydroxylitol, Sodium Benzoate, Coco-Glucoside, Citric Acid, Glyceryl Oleate, Xylitol, Tetrasodium Glutamate Diacetate, Glucose, Hydrogenated Vegetable Glycerides Citrate, Tocopherol, Lecithin, Ascorbyl Palmitate.",
+          "safetyNotes": "للاستخدام الخارجي فقط. تجنب ملامسة العينين. عند حدوث تهيج، توقف عن الاستخدام. يُحفظ بعيدا عن متناول الأطفال. يُحفظ في درجة حرارة الغرفة."
         }
       },
       {
-        "name": "واقي شمس +SPF 50",
-        "description": "يحمي بشرتك خلال ساعات المناسك الطويلة في الهواء الطلق تحت أشعة الشمس القوية. واقي خفيف بعامل حماية +SPF 50 مع حمض الهيالورونيك يقيك من حروق الشمس ويحافظ على ترطيب البشرة أثناء المشي في حر الحج والعمرة.",
-        "price": "€27.90",
+        "name": "واقي شمس +SPF 50 مع حمض الهيالورونيك",
+        "description": "حماية من الأشعة فوق البنفسجية. مرطب، خفيف وسريع الامتصاص. تحتوي هذه التركيبة على مواد خام نباتية 100% ولا تتضمن أي مكونات مشتقة من الحيوانات.",
+        "price": "€18.99",
         "size": "60 مل",
         "image": "/sunblock-main.png",
         "details": {
           "keyBenefits": [
-            "حماية واسعة الطيف SPF 50+ للمناسك في الهواء الطلق",
-            "حمض الهيالورونيك يساعد على ترطيب البشرة في الحر الجاف",
-            "تركيبة خفيفة تمتص دون إحساس ثقيل على البشرة",
-            "حماية أساسية خلال ساعات طويلة تحت الشمس المباشرة"
+            "100% حلال (آمن للحج والعمرة)",
+            "خالٍ من الكحول",
+            "خالٍ من العطر",
+            "100% نباتي",
+            "خالٍ من التجارب على الحيوانات",
+            "خالٍ من المكونات الحيوانية",
+            "مختبر جلديا",
+            "100% صُنع في ألمانيا"
           ],
-          "howToUse": "ضع كمية وفيرة على البشرة المكشوفة قبل 15 دقيقة من الخروج. أعد التطبيق كل ساعتين أو بعد التعرق الشديد، خاصة أثناء المناسك الطويلة في عرفات ومزدلفة.",
-          "ingredients": "Aqua, Homosalate, Ethylhexyl Salicylate, Butyl Methoxydibenzoylmethane, Glycerin, Hyaluronic Acid, Tocopherol, Phenoxyethanol.",
-          "safetyNotes": "للاستخدام الخارجي فقط. تجنب ملامسة العينين. أعد التطبيق بانتظام عند التعرض الطويل للشمس. خالٍ من العطر ومناسب للبشرة الحساسة أثناء الحج."
+          "howToUse": "ضع كمية وفيرة قبل التعرض للشمس وأعد التطبيق بانتظام عند الحاجة. استخدام كمية قليلة يقلل من الحماية.",
+          "ingredients": "Aqua, C12-15 Alkyl Benzoate, Dibutyl Adipate, Diethylamino Hydroxybenzoyl Hexyl Benzoate, Diisopropyl Sebacate, Glycerin, Olus Oil, Polyglyceryl-6 Stearate, Pentylene Glycol, Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine, Ethylhexyl Triazone, Phenylbenzimidazole Sulfonic Acid, Tapioca Starch, Diethylhexyl Butamido Triazone, Disodium Phenyl Dibenzimidazole Tetrasulfonate, Arginine, Cetearyl Alcohol, Glyceryl Stearate, 1,2-Heptanediol, Hectorite, Simmondsia Chinensis (Jojoba) Seed Oil, Carrageenan, Polyglyceryl-6 Behenate, Sodium Hydroxide, Sodium Phytate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Glucose, Sodium Hyaluronate, Acetyl Glucosamine, Hyaluronic Acid, Hydrolyzed Hyaluronic Acid, Tremella Fuciformis (Snow Fungus) Sporocarp Extract, Sodium Acetylated Hyaluronate.",
+          "safetyNotes": "للاستخدام الخارجي فقط. تجنب ملامسة العينين. لا يُستخدم على بشرة متهيجة أو تالفة. التعرض المفرط للشمس يشكل خطرا صحيا خطيرا. احمِ الرضع والأطفال من أشعة الشمس المباشرة. يُحفظ في درجة حرارة الغرفة. يُحفظ بعيدا عن متناول الأطفال."
         }
       }
     ]
@@ -220,6 +236,12 @@
       "ingredients": "المكونات",
       "safetyNotes": "ملاحظات السلامة"
     }
+  },
+
+  "relatedProducts": {
+    "_comment": "قسم المنتجات ذات الصلة — يُستخدم في app/components/RelatedProducts.tsx",
+    "title": "منتجات ذات صلة",
+    "subtitle": "مفيد أيضاً للحج والعمرة"
   },
 
   "ourStory": {

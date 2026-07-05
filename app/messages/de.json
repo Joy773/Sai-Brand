@@ -42,6 +42,7 @@
       { "id": "vegan", "label": "Vegan" },
       { "id": "ihram-safe", "label": "Ihram-sicher" },
       { "id": "made-in-germany", "label": "Hergestellt in Deutschland" },
+      { "id": "dermatology-tested", "label": "Dermatologisch getestet" },
       { "id": "premium-quality", "label": "Premium-Qualität" }
     ],
     "_items_comment": "id wird in TrustStrip.tsx Icons zugeordnet"
@@ -107,7 +108,7 @@
     "kit": {
       "name": "German Care Komplett-Set",
       "description": "Alles, was Sie fuer Hadsch und Umra brauchen, in einem Set. Anti-Chafing-Creme fuer lange Fussmaersche im Ihram, ein parfuemfreies Deodorant fuer taegliche Frische, Sonnenschutz mit LSF 50+ gegen die starke Sonne und ein mildes Shampoo zur Erfrischung nach heissen, anstrengenden Reisetagen.",
-      "price": "€79,90",
+      "price": "€53,99",
       "size": "4-teiliges Reise-Set",
       "includes": [
         "Shampoo",
@@ -132,74 +133,89 @@
     "items": [
       {
         "name": "Anti-Chafing Body Cream",
-        "description": "Beugt schmerzhaftem Wundscheuern waehrend langer Fussmaersche im Ihram vor. Die geschmeidige, parfuemfreie Formel verringert das Reiben von Haut an Haut an Oberschenkeln und Achseln und haelt Sie im heissen Klima von Hadsch und Umra angenehm komfortabel.",
-        "price": "€24,90",
+        "description": "Koerperschutzcreme gegen Scheuern, die Reibung reduziert, indem sie eine weiche Schutzschicht bildet, die Haut mit Feuchtigkeit versorgt und den Komfort in reibungsanfaelligen Bereichen wie zwischen den Oberschenkeln und unter den Armen erhaelt. Empfohlen beim Gehen oder Laufen, besonders in heissen Klimazonen, und fuer die Anwendung im Ihram, wo lange Fussmaersche und anhaltender Hautkontakt zu Hautreizungen und Entzuendungen fuehren koennen.",
+        "price": "€15,90",
         "size": "50 ml",
         "image": "/anti-chafing-main.png",
         "details": {
           "keyBenefits": [
-            "Reduziert schmerzhaftes Wundscheuern bei langen Tawaf- und Sa'i-Fussmaerschen",
-            "Parfuemfrei und sicher waehrend des Ihram",
-            "Beruhigt gereizte Haut bei heissem, feuchtem Pilgerklima",
-            "Leichte, nicht fettende Formel fuer ganztaegigen Komfort"
+            "100% Halal (Hadsch- und Umra-sicher)",
+            "100% Vegan",
+            "100% Hergestellt in Deutschland",
+            "Ohne Alkohol",
+            "Ohne tierische Inhaltsstoffe",
+            "Ohne Duftstoffe",
+            "Dermatologisch getestet"
           ],
-          "howToUse": "Duenne Schicht auf saubere, trockene Haut in reibungsanfaelligen Bereichen wie Innenseiten der Oberschenkel, Achseln und Fuesse vor dem Gehen auftragen. Bei Bedarf waehrend langer Bewegung in der Hitze erneut auftragen.",
-          "ingredients": "Aqua, Dimethicone, Glycerin, Zinc Oxide, Aloe Barbadensis Leaf Extract, Cetearyl Alcohol, Tocopherol, Phenoxyethanol.",
-          "safetyNotes": "Nur zur aeusseren Anwendung. Augenkontakt vermeiden. Bei Reizungen abbrechen. Parfuemfrei und alkoholfrei. Fuer die Anwendung im Ihram geeignet."
+          "howToUse": "Auf saubere, trockene Haut in reibungsanfaelligen Bereichen wie zwischen den Oberschenkeln und unter den Armen auftragen, bevor Sie gehen oder laufen. Besonders empfohlen in heissen Klimazonen und waehrend des Ihram, wenn lange Fussmaersche und anhaltender Hautkontakt zu Scheuern und Entzuendungen fuehren koennen. Bei laengerer Aktivitaet bei Bedarf erneut auftragen.",
+          "ingredients": "Aqua, Decyl Cocoate, Dimethicone, Glycerin, Pentylene Glycol, Argania Spinosa (Argan) Kernel Oil, Prunus Amygdalus (Sweet Almond) Dulcis Oil, Glyceryl Stearate Citrate, Cetearyl Alcohol, Niacinamide, 1,2-Heptanediol, Sodium Lactate, Sodium PCA, Panthenol, Xanthan Gum, Butyrospermum Parkii (Shea) Butter, Helianthus Annuus (Sunflower) Seed Oil, Tocopherol, Glycine, Inositol, Lactic Acid, Urea, Tocopheryl Linoleate/Oleate, Citric Acid.",
+          "safetyNotes": "Nur zur aeusseren Anwendung. Bei Raumtemperatur lagern. Augenkontakt vermeiden. Bei Reizungen die Anwendung abbrechen."
         }
       },
       {
-        "name": "Deodorant Roller",
-        "description": "Haelt Sie an heissen, ueberfuellten Pilgertagen frisch. Der parfuemfreie Roller neutralisiert Geruch und sorgt fuer lang anhaltende taegliche Frische, ohne den Ihram zu brechen, und laesst sich dank kompakter Groesse leicht auf Reisen mitnehmen.",
-        "price": "€19,90",
+        "name": "Deodorant Roller – Parfuemfrei",
+        "description": "Sanfter Deodorant fuer den taeglichen Gebrauch fuer lang anhaltenden Komfort.",
+        "price": "€13,99",
         "size": "50 ml",
         "image": "/deodoran-main.png",
         "details": {
           "keyBenefits": [
-            "Lang anhaltende Geruchskontrolle ohne Duftstoffe",
-            "Ihram-sichere Formel fuer den taeglichen Pilgergebrauch",
-            "Kompakter Roller ideal fuer Reisen und unterwegs",
-            "Sanft zur Haut an heissen, aktiven Tagen"
+            "100% Halal (Hadsch- und Umra-sicher)",
+            "Ohne Alkohol",
+            "Ohne Duftstoffe",
+            "100% Vegan",
+            "Tierversuchsfrei",
+            "Ohne tierische Inhaltsstoffe",
+            "Dermatologisch getestet",
+            "100% Hergestellt in Deutschland"
           ],
-          "howToUse": "Gleichmaessig auf saubere, trockene Achseln ein- bis zweimal taeglich auftragen. Vor dem Ankleiden trocknen lassen. Nach dem Duschen oder bei starkem Schwitzen erneut auftragen.",
-          "ingredients": "Aqua, Aluminum Chlorohydrate, Glycerin, PEG-40 Hydrogenated Castor Oil, Allantoin, Phenoxyethanol, Ethylhexylglycerin.",
-          "safetyNotes": "Nur zur aeusseren Anwendung. Nicht auf gereizter oder verletzter Haut anwenden. Parfuemfrei und alkoholfrei. Sicher waehrend des Ihram."
+          "howToUse": "Auf saubere, trockene Achseln auftragen. Bei Bedarf erneut auftragen.",
+          "ingredients": "Aqua, Pentylene Glycol, Distarch Phosphate, Glyceryl Stearate Citrate, Cyclodextrin, 1,2-Heptanediol, Sodium Caproyl/Lauroyl Lactylate, Cocos Nucifera (Coconut) Oil, Polyglyceryl-3 Caprylate, Xanthan Gum, Triethyl Citrate, Citric Acid, Sodium Citrate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Ascorbyl Isostearate, Isostearic Acid, Ascorbic Acid.",
+          "safetyNotes": "Nur zur aeusseren Anwendung. Augenkontakt vermeiden. Nicht auf verletzte Haut auftragen. Bei Reizungen die Anwendung abbrechen. Ausserhalb der Reichweite von Kindern aufbewahren."
         }
       },
       {
-        "name": "Daily Use Shampoo",
-        "description": "Reinigt Haar und Kopfhaut sanft von Staub und Schweiss nach langen, anstrengenden Pilgertagen. Die milde, reisefreundliche Formel erfrischt das Haar und beruhigt die Kopfhaut bei Hitze und schenkt taeglichen Komfort waehrend Hadsch und Umra.",
-        "price": "€22,90",
+        "name": "Daily Use Shampoo – Parfuemfrei",
+        "description": "Sanfte Reinigung von Haar und Kopfhaut. Ein mildes, parfuemfreies Shampoo fuer die taegliche Reinigung von Haar und Kopfhaut. Ideal fuer Hadsch und Umra, da es keine Duftstoffe oder aetherischen Oele enthaelt. Fuer empfindliche Nutzer und haeufige Anwendung geeignet. Hinterlaesst das Haar sauber und weich.",
+        "price": "€12,99",
         "size": "100 ml",
         "image": "/shampoo-main.png",
         "details": {
           "keyBenefits": [
-            "Entfernt sanft Staub, Schweiss und Rueckstaende nach langen Tagen",
-            "Milde Formel beruhigt die Kopfhaut bei Hitze",
-            "Reisefreundliche Groesse fuer die Pilgerausruestung",
-            "Haelt Haar frisch, weich und ausgeglichen"
+            "100% Halal (Hadsch- und Umra-sicher)",
+            "Ohne Alkohol",
+            "Ohne Duftstoffe",
+            "100% Vegan",
+            "Tierversuchsfrei",
+            "Ohne tierische Inhaltsstoffe",
+            "Dermatologisch getestet",
+            "100% Hergestellt in Deutschland"
           ],
-          "howToUse": "Haar gruendlich nass machen. Eine kleine Menge auftragen, in Kopfhaut und Haar einmassieren und gut ausspuelen. Taeglich oder nach langen, staubigen Pilgertagen verwenden.",
-          "ingredients": "Aqua, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Glycerin, Aloe Barbadensis Leaf Juice, Panthenol, Citric Acid, Sodium Chloride, Phenoxyethanol.",
-          "safetyNotes": "Nur zur aeusseren Anwendung. Augenkontakt vermeiden. Bei Kontakt gruendlich mit Wasser spuelen. Parfuemfrei. Fuer den taeglichen Gebrauch waehrend Hadsch und Umra geeignet."
+          "howToUse": "Auf nasses Haar auftragen, sanft einmassieren und gruendlich ausspuelen. Bei Bedarf wiederholen.",
+          "ingredients": "Aqua, Sodium Laureth Sulfate, Maris Sal, Glycerin, Cocamidopropyl Betaine, Niacinamide, Panthenol, Xylitylglucoside, Anhydroxylitol, Sodium Benzoate, Coco-Glucoside, Citric Acid, Glyceryl Oleate, Xylitol, Tetrasodium Glutamate Diacetate, Glucose, Hydrogenated Vegetable Glycerides Citrate, Tocopherol, Lecithin, Ascorbyl Palmitate.",
+          "safetyNotes": "Nur zur aeusseren Anwendung. Augenkontakt vermeiden. Bei Reizungen die Anwendung abbrechen. Ausserhalb der Reichweite von Kindern aufbewahren. Bei Raumtemperatur lagern."
         }
       },
       {
-        "name": "Sunblock SPF 50+",
-        "description": "Schuetzt Ihre Haut waehrend langer Stunden der Rituale im Freien unter der starken Sonne. Der leichte Sonnenschutz mit LSF 50+ und Hyaluronsaeure beugt Sonnenbrand vor und haelt die Haut mit Feuchtigkeit versorgt, waehrend Sie in der Hitze von Hadsch und Umra unterwegs sind.",
-        "price": "€27,90",
+        "name": "Sunblock SPF 50+ mit Hyaluronsaeure",
+        "description": "UV-Schutz. Feuchtigkeitsspendend, leicht und schnell einziehend. Diese Formel enthaelt 100% vegane Rohstoffe und keine tierischen Inhaltsstoffe.",
+        "price": "€18,99",
         "size": "60 ml",
         "image": "/sunblock-main.png",
         "details": {
           "keyBenefits": [
-            "Breitbandschutz LSF 50+ fuer Rituale im Freien",
-            "Hyaluronsaeure spendet Feuchtigkeit in trockener Hitze",
-            "Leichte Formel ohne schweres Gefuehl auf der Haut",
-            "Wichtiger Schutz bei langen Stunden in direkter Sonne"
+            "100% Halal (Hadsch- und Umra-sicher)",
+            "Ohne Alkohol",
+            "Ohne Duftstoffe",
+            "100% Vegan",
+            "Tierversuchsfrei",
+            "Ohne tierische Inhaltsstoffe",
+            "Dermatologisch getestet",
+            "100% Hergestellt in Deutschland"
           ],
-          "howToUse": "15 Minuten vor dem Aufenthalt im Freien grosszuegig auf exponierte Haut auftragen. Alle zwei Stunden oder nach starkem Schwitzen erneut auftragen, besonders in Arafat und Mina.",
-          "ingredients": "Aqua, Homosalate, Ethylhexyl Salicylate, Butyl Methoxydibenzoylmethane, Glycerin, Hyaluronic Acid, Tocopherol, Phenoxyethanol.",
-          "safetyNotes": "Nur zur aeusseren Anwendung. Augenkontakt vermeiden. Bei laengerer Sonneneinstrahlung haeufig erneut auftragen. Parfuemfrei und fuer empfindliche Haut waehrend der Pilgerreise geeignet."
+          "howToUse": "Vor Sonnenexposition grosszuegig auftragen und bei Bedarf regelmaessig erneut auftragen. Zu wenig Produkt verringert den Schutz.",
+          "ingredients": "Aqua, C12-15 Alkyl Benzoate, Dibutyl Adipate, Diethylamino Hydroxybenzoyl Hexyl Benzoate, Diisopropyl Sebacate, Glycerin, Olus Oil, Polyglyceryl-6 Stearate, Pentylene Glycol, Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine, Ethylhexyl Triazone, Phenylbenzimidazole Sulfonic Acid, Tapioca Starch, Diethylhexyl Butamido Triazone, Disodium Phenyl Dibenzimidazole Tetrasulfonate, Arginine, Cetearyl Alcohol, Glyceryl Stearate, 1,2-Heptanediol, Hectorite, Simmondsia Chinensis (Jojoba) Seed Oil, Carrageenan, Polyglyceryl-6 Behenate, Sodium Hydroxide, Sodium Phytate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Glucose, Sodium Hyaluronate, Acetyl Glucosamine, Hyaluronic Acid, Hydrolyzed Hyaluronic Acid, Tremella Fuciformis (Snow Fungus) Sporocarp Extract, Sodium Acetylated Hyaluronate.",
+          "safetyNotes": "Nur zur aeusseren Anwendung. Augenkontakt vermeiden. Nicht auf gereizter oder beschaedigter Haut auftragen. Uebermaessige Sonnenexposition stellt ein ernstes Gesundheitsrisiko dar. Babys und Kinder vor direkter Sonneneinstrahlung schuetzen. Bei Raumtemperatur lagern. Ausserhalb der Reichweite von Kindern aufbewahren."
         }
       }
     ]
@@ -220,6 +236,12 @@
       "ingredients": "Inhaltsstoffe",
       "safetyNotes": "Sicherheitshinweise"
     }
+  },
+
+  "relatedProducts": {
+    "_comment": "Aehnliche Produkte — verwendet in app/components/RelatedProducts.tsx",
+    "title": "Aehnliche Produkte",
+    "subtitle": "Auch nuetzlich fuer Hadsch & Umra"
   },
 
   "ourStory": {

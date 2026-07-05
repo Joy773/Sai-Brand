@@ -42,6 +42,7 @@
       { "id": "vegan", "label": "Vegan" },
       { "id": "ihram-safe", "label": "Ihram-Safe" },
       { "id": "made-in-germany", "label": "Made in Germany" },
+      { "id": "dermatology-tested", "label": "Dermatologically Tested" },
       { "id": "premium-quality", "label": "Premium Quality" }
     ],
     "_items_comment": "id maps to icons in TrustStrip.tsx"
@@ -107,7 +108,7 @@
     "kit": {
       "name": "German Care Complete Kit",
       "description": "Everything you need for Hajj and Umrah in one kit. Anti-chafing cream for long walks in Ihram, a fragrance-free deodorant for daily freshness, SPF 50+ sunblock for the intense sun, and a gentle shampoo to refresh after hot, tiring days of travel.",
-      "price": "€79.90",
+      "price": "€53.99",
       "size": "4-piece travel kit",
       "includes": [
         "Shampoo",
@@ -132,74 +133,89 @@
     "items": [
       {
         "name": "Anti-Chafing Body Cream",
-        "description": "Prevents painful chafing during long hours of walking in Ihram. Its smooth, fragrance-free formula reduces skin-on-skin rubbing on the thighs and underarms, keeping you comfortable in hot climate throughout Hajj and Umrah.",
-        "price": "€24.90",
+        "description": "Chafing protection cream for the body designed to reduce friction by forming a soft protective layer, moisturize the skin and help maintain comfort in areas that are prone to rubbing, such as between the thighs and under the arms. Recommended to use while walking or running especially in hot climates and for use during Ihram where long walks and prolonged skin contact may cause skin chafing and inflammation.",
+        "price": "€15.90",
         "size": "50 ml",
         "image": "/anti-chafing-main.png",
         "details": {
           "keyBenefits": [
-            "Reduces painful chafing during long tawaf and sa'i walks",
-            "Fragrance-free and safe to use while in Ihram",
-            "Soothes irritated skin in hot, humid pilgrimage conditions",
-            "Lightweight, non-greasy formula for all-day comfort"
+            "100% Halal (Hajj & Umrah-Safe)",
+            "100% Vegan",
+            "100% Made in Germany",
+            "No Alcohol",
+            "No Animal Ingredients",
+            "No Fragrance",
+            "Dermatologically Tested"
           ],
-          "howToUse": "Apply a thin layer to clean, dry skin on friction-prone areas such as inner thighs, underarms, and feet before walking. Reapply as needed during long periods of movement in heat.",
-          "ingredients": "Aqua, Dimethicone, Glycerin, Zinc Oxide, Aloe Barbadensis Leaf Extract, Cetearyl Alcohol, Tocopherol, Phenoxyethanol.",
-          "safetyNotes": "For external use only. Avoid contact with eyes. Discontinue use if irritation occurs. Fragrance-free and alcohol-free. Suitable for use during Ihram."
+          "howToUse": "Apply to clean, dry skin on friction-prone areas such as between the thighs and under the arms before walking or running. Especially recommended in hot climates and during Ihram, when long walks and prolonged skin contact may cause chafing and inflammation. Reapply as needed during extended activity.",
+          "ingredients": "Aqua, Decyl Cocoate, Dimethicone, Glycerin, Pentylene Glycol, Argania Spinosa (Argan) Kernel Oil, Prunus Amygdalus (Sweet Almond) Dulcis Oil, Glyceryl Stearate Citrate, Cetearyl Alcohol, Niacinamide, 1,2-Heptanediol, Sodium Lactate, Sodium PCA, Panthenol, Xanthan Gum, Butyrospermum Parkii (Shea) Butter, Helianthus Annuus (Sunflower) Seed Oil, Tocopherol, Glycine, Inositol, Lactic Acid, Urea, Tocopheryl Linoleate/Oleate, Citric Acid.",
+          "safetyNotes": "For external use only. Store at room temperature. Avoid contact with eyes. Discontinue use if irritation occurs."
         }
       },
       {
-        "name": "Deodorant Roller",
-        "description": "Keeps you fresh through crowded, hot days of pilgrimage. This fragrance-free roller controls odor and gives long-lasting daily freshness without breaking Ihram, and its compact size is easy to carry while you travel.",
-        "price": "€19.90",
+        "name": "Deodorant Roller – Fragrance-Free",
+        "description": "Gentle daily deodorant for long-lasting comfort.",
+        "price": "€13.99",
         "size": "50 ml",
         "image": "/deodoran-main.png",
         "details": {
           "keyBenefits": [
-            "Long-lasting odor control without fragrance",
-            "Ihram-safe formula for daily use during pilgrimage",
-            "Compact roller ideal for travel and on-the-go freshness",
-            "Gentle on skin during hot, active days"
+            "100% Halal (Hajj & Umrah-Safe)",
+            "No Alcohol",
+            "No Fragrance",
+            "100% Vegan",
+            "Cruelty Free",
+            "No Animal Ingredients",
+            "Dermatologically Tested",
+            "100% Made in Germany"
           ],
-          "howToUse": "Roll evenly on clean, dry underarms once or twice daily. Allow to dry before dressing. Reapply after showering or heavy perspiration during long pilgrimage days.",
-          "ingredients": "Aqua, Aluminum Chlorohydrate, Glycerin, PEG-40 Hydrogenated Castor Oil, Allantoin, Phenoxyethanol, Ethylhexylglycerin.",
-          "safetyNotes": "For external use only. Do not apply to broken or irritated skin. Fragrance-free and alcohol-free. Safe for use during Ihram."
+          "howToUse": "Apply to clean, dry underarms. Reapply as needed.",
+          "ingredients": "Aqua, Pentylene Glycol, Distarch Phosphate, Glyceryl Stearate Citrate, Cyclodextrin, 1,2-Heptanediol, Sodium Caproyl/Lauroyl Lactylate, Cocos Nucifera (Coconut) Oil, Polyglyceryl-3 Caprylate, Xanthan Gum, Triethyl Citrate, Citric Acid, Sodium Citrate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Ascorbyl Isostearate, Isostearic Acid, Ascorbic Acid.",
+          "safetyNotes": "For external use only. Avoid contact with eyes. Do not apply to broken skin. If irritation occurs, discontinue use. Keep out of reach of children."
         }
       },
       {
-        "name": "Daily Use Shampoo",
-        "description": "Gently cleanses away dust and sweat after long, tiring days of pilgrimage. Its mild, travel-friendly formula refreshes hair and soothes the scalp in hot weather, restoring daily comfort during Hajj and Umrah.",
-        "price": "€22.90",
+        "name": "Daily Use Shampoo – Fragrance-Free",
+        "description": "Gentle hair and scalp cleansing. A gentle, fragrance-free shampoo designed for daily cleansing of hair and scalp. Ideal for Hajj and Umrah, as it contains no fragrance or essential oils. Suitable for sensitive users and frequent use. Leaves the hair feeling clean and soft.",
+        "price": "€12.99",
         "size": "100 ml",
         "image": "/shampoo-main.png",
         "details": {
           "keyBenefits": [
-            "Gently removes dust, sweat, and buildup after long days",
-            "Mild formula soothes the scalp in hot weather",
-            "Travel-friendly size for pilgrimage packing",
-            "Leaves hair feeling fresh, soft, and balanced"
+            "100% Halal (Hajj & Umrah-Safe)",
+            "No Alcohol",
+            "No Fragrance",
+            "100% Vegan",
+            "Cruelty Free",
+            "No Animal Ingredients",
+            "Dermatologically Tested",
+            "100% Made in Germany"
           ],
-          "howToUse": "Wet hair thoroughly. Apply a small amount, massage into scalp and hair, then rinse well. Use daily or as needed after long, dusty days of pilgrimage.",
-          "ingredients": "Aqua, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Glycerin, Aloe Barbadensis Leaf Juice, Panthenol, Citric Acid, Sodium Chloride, Phenoxyethanol.",
-          "safetyNotes": "For external use only. Avoid contact with eyes. If contact occurs, rinse thoroughly with water. Fragrance-free. Suitable for daily use during Hajj and Umrah."
+          "howToUse": "Apply to wet hair, massage gently, then rinse thoroughly. Repeat if needed.",
+          "ingredients": "Aqua, Sodium Laureth Sulfate, Maris Sal, Glycerin, Cocamidopropyl Betaine, Niacinamide, Panthenol, Xylitylglucoside, Anhydroxylitol, Sodium Benzoate, Coco-Glucoside, Citric Acid, Glyceryl Oleate, Xylitol, Tetrasodium Glutamate Diacetate, Glucose, Hydrogenated Vegetable Glycerides Citrate, Tocopherol, Lecithin, Ascorbyl Palmitate.",
+          "safetyNotes": "For external use only. Avoid contact with eyes. If irritation occurs, discontinue use. Keep out of reach of children. Store at room temperature."
         }
       },
       {
-        "name": "Sunblock SPF 50+",
-        "description": "Shields your skin during long hours of outdoor rituals under the harsh sun. Lightweight SPF 50+ with hyaluronic acid protects against sunburn and keeps skin hydrated while you walk in the intense heat of Hajj and Umrah.",
-        "price": "€27.90",
+        "name": "Sunblock SPF 50+ with Hyaluronic Acid",
+        "description": "UV Protection. Moisturizing, lightweight, and fast absorbing. This formula contains 100% vegan raw materials and does not include any animal-derived ingredients.",
+        "price": "€18.99",
         "size": "60 ml",
         "image": "/sunblock-main.png",
         "details": {
           "keyBenefits": [
-            "Broad-spectrum SPF 50+ protection for outdoor rituals",
-            "Hyaluronic acid helps keep skin hydrated in dry heat",
-            "Lightweight formula that absorbs without a heavy feel",
-            "Essential protection during long hours in direct sun"
+            "100% Halal (Hajj & Umrah-Safe)",
+            "No Alcohol",
+            "No Fragrance",
+            "100% Vegan",
+            "Cruelty Free",
+            "No Animal Ingredients",
+            "Dermatologically Tested",
+            "100% Made in Germany"
           ],
-          "howToUse": "Apply generously to exposed skin 15 minutes before going outdoors. Reapply every two hours, or after heavy sweating, especially during long outdoor rituals in Arafat and Mina.",
-          "ingredients": "Aqua, Homosalate, Ethylhexyl Salicylate, Butyl Methoxydibenzoylmethane, Glycerin, Hyaluronic Acid, Tocopherol, Phenoxyethanol.",
-          "safetyNotes": "For external use only. Avoid contact with eyes. Reapply frequently during prolonged sun exposure. Fragrance-free and suitable for sensitive skin during pilgrimage."
+          "howToUse": "Apply generously before sun exposure and reapply regularly as needed. Using too little product reduces protection.",
+          "ingredients": "Aqua, C12-15 Alkyl Benzoate, Dibutyl Adipate, Diethylamino Hydroxybenzoyl Hexyl Benzoate, Diisopropyl Sebacate, Glycerin, Olus Oil, Polyglyceryl-6 Stearate, Pentylene Glycol, Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine, Ethylhexyl Triazone, Phenylbenzimidazole Sulfonic Acid, Tapioca Starch, Diethylhexyl Butamido Triazone, Disodium Phenyl Dibenzimidazole Tetrasulfonate, Arginine, Cetearyl Alcohol, Glyceryl Stearate, 1,2-Heptanediol, Hectorite, Simmondsia Chinensis (Jojoba) Seed Oil, Carrageenan, Polyglyceryl-6 Behenate, Sodium Hydroxide, Sodium Phytate, Tocopherol, Helianthus Annuus (Sunflower) Seed Oil, Glucose, Sodium Hyaluronate, Acetyl Glucosamine, Hyaluronic Acid, Hydrolyzed Hyaluronic Acid, Tremella Fuciformis (Snow Fungus) Sporocarp Extract, Sodium Acetylated Hyaluronate.",
+          "safetyNotes": "For external use only. Avoid contact with eyes. Do not apply to irritated or damaged skin. Excessive sun exposure is a serious health risk. Protect babies and children from direct sunlight. Store at room temperature. Keep out of reach of children."
         }
       }
     ]
@@ -220,6 +236,12 @@
       "ingredients": "Ingredients",
       "safetyNotes": "Safety Notes"
     }
+  },
+
+  "relatedProducts": {
+    "_comment": "Related products section used in app/components/RelatedProducts.tsx",
+    "title": "Related Products",
+    "subtitle": "Also Useful for Hajj & Umrah"
   },
 
   "ourStory": {

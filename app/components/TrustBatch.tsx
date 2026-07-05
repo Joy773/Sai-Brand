@@ -1,27 +1,22 @@
 "use client";
 
-import {
-  LuBadgeCheck,
-  LuFlaskConical,
-  LuHeart,
-  LuLeaf,
-  LuPlane,
-  LuShieldCheck,
-  LuSun,
-  LuWineOff,
-} from "react-icons/lu";
-import type { IconType } from "react-icons";
+import Image from "next/image";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 
-const iconMap: Record<string, IconType> = {
-  "alcohol-fragrance-free": LuWineOff,
-  vegan: LuLeaf,
-  halal: LuBadgeCheck,
-  "ihram-safe": LuShieldCheck,
-  "cruelty-free": LuHeart,
-  "dermatologically-tested": LuFlaskConical,
-  "travel-friendly": LuPlane,
-  "hot-climate": LuSun,
+const iconMap: Record<string, string> = {
+  "alcohol-fragrance-free": "/Alcohol-Free.png",
+  "fragrance-free": "/Fregnance-Free.png",
+  "cruelty-free": "/Premium.png",
+  vegan: "/Vegan.png",
+  "dermatologically-tested": "/Dermatology-Tested.png",
+  halal: "/Halal.png",
+  "travel-friendly": "/Germany.png",
+  "ihram-safe": "/Ihmram-Safe.png",
+  "hot-climate": "/Safe.png",
+  "made-in-germany": "/Germany.png",
+  "premium-quality": "/Premium.png",
+  "alcohol-free": "/Alcohol-Free.png",
+  "dermatology-tested": "/Dermatology-Tested.png",
 };
 
 type TrustBatchItem = {
@@ -50,18 +45,21 @@ function TrustCardContent({
   label: string;
   description: string;
 }) {
-  const Icon = iconMap[iconId];
+  const iconSrc = iconMap[iconId];
 
   return (
     <>
-      {Icon && (
-        <div
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-dark-green/10 text-dark-green md:transition-transform md:duration-500 md:ease-in-out md:group-hover:scale-110 md:group-hover:bg-dark-green/15 motion-reduce:transition-none"
+      {iconSrc ? (
+        <Image
+          src={iconSrc}
+          alt=""
+          width={56}
+          height={56}
+          className="h-12 w-12 shrink-0 rounded-full object-contain sm:h-14 sm:w-14 md:transition-transform md:duration-500 md:ease-in-out md:group-hover:scale-110 motion-reduce:transition-none"
+          unoptimized
           aria-hidden
-        >
-          <Icon className="h-6 w-6 text-dark-green" />
-        </div>
-      )}
+        />
+      ) : null}
       <h3 className="flex min-h-[3.25rem] items-center justify-center text-lg font-semibold leading-snug text-dark-green sm:min-h-[3.5rem] sm:text-xl">
         {label}
       </h3>
