@@ -30,17 +30,21 @@ function FaqAccordion({
         return (
           <article
             key={faq.question}
-            className="overflow-hidden rounded-2xl border border-beige bg-warm-white transition-colors hover:border-dark-green/20"
+            className="rounded-2xl border border-beige bg-warm-white transition-colors hover:border-dark-green/20"
           >
             <button
               type="button"
               onClick={() => onToggle(faqIndex)}
               className="flex w-full items-center justify-between gap-4 px-5 py-4 text-start sm:px-6 sm:py-5"
               aria-expanded={isOpen}
+              aria-controls={`faq-panel-${faqIndex}`}
             >
-              <span className="text-base font-semibold text-dark-green sm:text-lg">
+              <h3
+                id={`faq-question-${faqIndex}`}
+                className="m-0 min-w-0 flex-1 text-base font-semibold text-dark-green sm:text-lg"
+              >
                 {faq.question}
-              </span>
+              </h3>
               <LuChevronDown
                 className={`h-5 w-5 shrink-0 text-dark-green transition-transform duration-300 ${
                   isOpen ? "rotate-180" : ""
@@ -50,7 +54,10 @@ function FaqAccordion({
             </button>
 
             <div
-              className={`grid transition-all duration-300 ease-out ${
+              id={`faq-panel-${faqIndex}`}
+              role="region"
+              aria-labelledby={`faq-question-${faqIndex}`}
+              className={`grid overflow-hidden transition-all duration-300 ease-out ${
                 isOpen
                   ? "grid-rows-[1fr] opacity-100"
                   : "grid-rows-[0fr] opacity-0"
