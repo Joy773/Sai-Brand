@@ -282,9 +282,15 @@
   "ourStory": {
     "_comment": "Our Story section used in app/components/OurStory.tsx",
     "eyebrow": "Our Story",
-    "title": "Rooted in German Care, built for your absolute confidence.",
-    "description": "Sai was founded on a simple belief: everyone deserves access to premium skincare. By partnering with German Care, we ensure every ingredient selection and production step reflects the highest standards of safety, precision, and quality.",
-    "learnMore": { "label": "Learn More", "href": "#" },
+    "title": "Rooted in German care, built for your absolute confidence — even in hot weather.",
+    "description": "Sai was founded on a simple belief: everyone deserves access to premium personal care and skincare products that are safe, reliable, and thoughtfully developed for everyday needs, especially in hot weather and climates that demand extra care for the skin and body.",
+    "learnMore": { "label": "Learn More", "showLess": "Show Less" },
+    "learnMoreContent": [
+      "Through cooperation with German Care and selected German manufacturers, Sai brings together high-quality skincare and personal care solutions inspired by German standards of safety, precision, and quality. From ingredient selection to production and final delivery, every step reflects our commitment to your comfort, confidence, and well-being.",
+      "Our products are designed to support daily freshness and comfort in conditions that may cause sweating, friction, dryness, or discomfort — whether during hot weather, travel, long working days, outdoor activities, Hajj, or Umrah.",
+      "Our range includes carefully developed everyday personal care products, as well as halal-friendly and halal-certified solutions for customers who value clean, trustworthy, and responsible care.",
+      "At Sai, we do not only offer products — we offer peace of mind. Every product is selected and developed with attention to quality, safety, and the trust our customers place in us, helping you feel fresh, comfortable, and confident every day, no matter the weather."
+    ],
     "stats": [
       {
         "value": "10+",

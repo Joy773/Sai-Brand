@@ -282,9 +282,15 @@
   "ourStory": {
     "_comment": "Unsere Geschichte — verwendet in app/components/OurStory.tsx",
     "eyebrow": "Unsere Geschichte",
-    "title": "Verwurzelt in German Care – fuer Ihr absolutes Selbstvertrauen.",
-    "description": "Sai wurde aus einer einfachen Ueberzeugung gegruendet: Jeder verdient Zugang zu Premium-Hautpflege. Durch die Partnerschaft mit German Care stellen wir sicher, dass jede Inhaltsstoffauswahl und jeder Produktionsschritt die hoechsten Standards fuer Sicherheit, Praezision und Qualitaet widerspiegelt.",
-    "learnMore": { "label": "Mehr erfahren", "href": "#" },
+    "title": "Verwurzelt in German Care – fuer Ihr absolutes Selbstvertrauen, selbst bei heissem Wetter.",
+    "description": "Sai wurde aus einer einfachen Ueberzeugung gegruendet: Jeder verdient Zugang zu Premium-Koerper- und Hautpflegeprodukten, die sicher, zuverlaessig und durchdacht fuer den Alltag entwickelt wurden – besonders bei heissem Wetter und in Klimazonen, die besondere Pflege fuer Haut und Koerper erfordern.",
+    "learnMore": { "label": "Mehr erfahren", "showLess": "Weniger anzeigen" },
+    "learnMoreContent": [
+      "Durch die Zusammenarbeit mit German Care und ausgewaehlten deutschen Herstellern vereint Sai hochwertige Haut- und Koerperpflegeloesungen, die von deutschen Standards fuer Sicherheit, Praezision und Qualitaet inspiriert sind. Von der Inhaltsstoffauswahl ueber die Produktion bis zur finalen Lieferung spiegelt jeder Schritt unser Engagement fuer Ihren Komfort, Ihr Selbstvertrauen und Ihr Wohlbefinden wider.",
+      "Unsere Produkte sind darauf ausgelegt, taegliche Frische und Komfort zu unterstuetzen unter Bedingungen, die Schwitzen, Reibung, Trockenheit oder Unbehagen verursachen koennen — sei es bei heissem Wetter, auf Reisen, an langen Arbeitstagen, bei Outdoor-Aktivitaeten, Hajj oder Umrah.",
+      "Unser Sortiment umfasst sorgfaeltig entwickelte alltaegliche Koerperpflegeprodukte sowie halal-freundliche und halal-zertifizierte Loesungen fuer Kunden, die Wert auf saubere, vertrauenswuerdige und verantwortungsvolle Pflege legen.",
+      "Bei Sai bieten wir nicht nur Produkte — wir bieten Seelenfrieden. Jedes Produkt wird mit Blick auf Qualitaet, Sicherheit und das Vertrauen unserer Kunden ausgewaehlt und entwickelt, damit Sie sich jeden Tag frisch, wohl und selbstbewusst fuehlen — unabhaengig vom Wetter."
+    ],
     "stats": [
       {
         "value": "10+",

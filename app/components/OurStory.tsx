@@ -1,14 +1,15 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 
 const cardHover =
   "transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none";
 
 export default function WhySai() {
-  const { eyebrow, title, description, learnMore, stats } =
+  const { eyebrow, title, description, learnMore, learnMoreContent, stats } =
     useMessages().ourStory;
+  const [showLearnMore, setShowLearnMore] = useState(false);
 
   return (
     <section id="about" className="bg-warm-white px-6 py-16 lg:px-8 lg:py-24">
@@ -26,13 +27,32 @@ export default function WhySai() {
             {description}
           </p>
 
+          <div
+            className={`grid transition-all duration-500 ease-in-out motion-reduce:transition-none ${
+              showLearnMore
+                ? "grid-rows-[1fr] opacity-100"
+                : "grid-rows-[0fr] opacity-0"
+            }`}
+            aria-hidden={!showLearnMore}
+          >
+            <div className="overflow-hidden">
+              <div className="space-y-4 text-base leading-relaxed text-dark-green/70 sm:text-lg">
+                {learnMoreContent.map((paragraph) => (
+                  <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-center pt-2 lg:justify-start">
-            <Link
-              href={learnMore.href}
+            <button
+              type="button"
+              onClick={() => setShowLearnMore((current) => !current)}
               className="inline-flex items-center rounded-full bg-dark-green px-6 py-3 text-sm font-medium text-warm-white transition-colors hover:bg-dark-green/90"
+              aria-expanded={showLearnMore}
             >
-              {learnMore.label}
-            </Link>
+              {showLearnMore ? learnMore.showLess : learnMore.label}
+            </button>
           </div>
         </div>
 
