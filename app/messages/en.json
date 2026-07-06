@@ -399,10 +399,14 @@
     ],
     "supportTitle": "Customer Support",
     "supportLinks": [
-      { "label": "Shipping & Delivery", "href": "#" },
-      { "label": "Returns & Refunds", "href": "#" },
-      { "label": "Privacy Policy", "href": "#" },
-      { "label": "Terms & Conditions", "href": "#" }
+      { "label": "Cookie Settings", "href": "#cookie-settings" },
+      { "label": "Legal Notice", "href": "/legal-notice" },
+      { "label": "Privacy Policy", "href": "/privacy-policy" },
+      { "label": "Terms & Conditions", "href": "/terms-and-conditions" },
+      { "label": "Withdrawal Policy", "href": "/withdrawal-policy" },
+      { "label": "Withdrawal Form", "href": "/withdrawal-form" },
+      { "label": "Shipping & Delivery", "href": "/shipping-delivery" },
+      { "label": "Returns & Refunds", "href": "/returns-refunds" }
     ],
     "contactTitle": "Contact Info",
     "contactPrompt": "Have questions?",
@@ -410,6 +414,37 @@
     "contactAvailability": "Available Worldwide (depending on shipping zones)",
     "trustLine": "Secure payments • Fast shipping • Trusted quality",
     "copyright": "© 2026 Sai Brand. Developed and Distributed by GII. All rights reserved.",
-    "tagline": "Crafted with care for your everyday confidence."
+    "tagline": "Crafted with care for your everyday confidence.",
+    "cookieSettings": "Cookie Settings"
+  },
+
+  "cookieModal": {
+    "_comment": "Cookie consent modal used in app/components/CookieModal.tsx",
+    "title": "Cookie Settings",
+    "description": "Manage your cookie preferences.",
+    "categories": {
+      "essential": {
+        "label": "Essential Cookies",
+        "description": "Required for website functionality."
+      },
+      "functional": {
+        "label": "Functional Cookies",
+        "description": "Remember your preferences."
+      },
+      "analytics": {
+        "label": "Analytics Cookies",
+        "description": "Help us improve our website."
+      },
+      "marketing": {
+        "label": "Marketing Cookies",
+        "description": "Used for advertising."
+      }
+    },
+    "on": "ON",
+    "off": "OFF",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "savePreferences": "Save Preferences",
+    "close": "Close cookie settings"
   }
 }

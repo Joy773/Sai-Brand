@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMessages } from "@/app/i18n/LocaleProvider";
+import { useCookieConsent } from "@/app/i18n/CookieConsentProvider";
 import { handleSectionClick } from "@/app/lib/scrollToSection";
 
 export default function Footer() {
@@ -20,6 +21,7 @@ export default function Footer() {
     copyright,
     tagline,
   } = useMessages().footer;
+  const { openCookieSettings } = useCookieConsent();
 
   return (
     <footer className="bg-dark-green text-beige">
@@ -59,12 +61,22 @@ export default function Footer() {
               <ul className="mt-4 flex flex-col gap-3">
                 {supportLinks.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-beige/80 transition-colors hover:text-beige sm:text-base"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.href === "#cookie-settings" ? (
+                      <button
+                        type="button"
+                        onClick={openCookieSettings}
+                        className="text-start text-sm text-beige/80 transition-colors hover:text-beige sm:text-base"
+                      >
+                        {link.label}
+                      </button>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-sm text-beige/80 transition-colors hover:text-beige sm:text-base"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

@@ -399,10 +399,14 @@
     ],
     "supportTitle": "Kundenservice",
     "supportLinks": [
-      { "label": "Versand & Lieferung", "href": "#" },
-      { "label": "Rückgabe & Erstattung", "href": "#" },
-      { "label": "Datenschutz", "href": "#" },
-      { "label": "AGB", "href": "#" }
+      { "label": "Cookie-Einstellungen", "href": "#cookie-settings" },
+      { "label": "Rechtlicher Hinweis", "href": "/legal-notice" },
+      { "label": "Datenschutz", "href": "/privacy-policy" },
+      { "label": "AGB", "href": "/terms-and-conditions" },
+      { "label": "Widerrufsbelehrung", "href": "/withdrawal-policy" },
+      { "label": "Widerrufsformular", "href": "/withdrawal-form" },
+      { "label": "Versand & Lieferung", "href": "/shipping-delivery" },
+      { "label": "Rückgabe & Erstattung", "href": "/returns-refunds" }
     ],
     "contactTitle": "Kontakt",
     "contactPrompt": "Haben Sie Fragen?",
@@ -410,6 +414,37 @@
     "contactAvailability": "Weltweit verfügbar (je nach Versandzonen)",
     "trustLine": "Sichere Zahlung • Schneller Versand • Vertrauenswürdige Qualität",
     "copyright": "© 2026 Sai Brand. Entwickelt und vertrieben von GII. Alle Rechte vorbehalten.",
-    "tagline": "Mit Sorgfalt entwickelt – für Ihr tägliches Selbstvertrauen."
+    "tagline": "Mit Sorgfalt entwickelt – für Ihr tägliches Selbstvertrauen.",
+    "cookieSettings": "Cookie-Einstellungen"
+  },
+
+  "cookieModal": {
+    "_comment": "Cookie-Einwilligungsmodal — verwendet in app/components/CookieModal.tsx",
+    "title": "Cookie-Einstellungen",
+    "description": "Verwalten Sie Ihre Cookie-Einstellungen.",
+    "categories": {
+      "essential": {
+        "label": "Notwendige Cookies",
+        "description": "Erforderlich für die Funktionalität der Website."
+      },
+      "functional": {
+        "label": "Funktionale Cookies",
+        "description": "Speichern Ihre Einstellungen."
+      },
+      "analytics": {
+        "label": "Analyse-Cookies",
+        "description": "Helfen uns, unsere Website zu verbessern."
+      },
+      "marketing": {
+        "label": "Marketing-Cookies",
+        "description": "Werden für Werbung verwendet."
+      }
+    },
+    "on": "EIN",
+    "off": "AUS",
+    "rejectAll": "Alle ablehnen",
+    "acceptAll": "Alle akzeptieren",
+    "savePreferences": "Einstellungen speichern",
+    "close": "Cookie-Einstellungen schließen"
   }
 }

@@ -8,12 +8,14 @@ import Products from "@/app/components/Products";
 import ScrollOnReveal from "@/app/components/ScrollOnReveal";
 import TrustBatch from "@/app/components/TrustBatch";
 import WhySai from "@/app/components/OurStory";
+import { CookieConsentProvider } from "@/app/i18n/CookieConsentProvider";
 import { LocaleProvider } from "@/app/i18n/LocaleProvider";
 
 export default function Home() {
   return (
     <LocaleProvider>
-      <div className="min-h-screen bg-warm-white text-dark-green">
+      <CookieConsentProvider>
+        <div className="min-h-screen bg-warm-white text-dark-green">
         <Navbar />
         <TrustStrip />
 
@@ -37,6 +39,7 @@ export default function Home() {
           <Footer />
         </ScrollOnReveal>
       </div>
+      </CookieConsentProvider>
     </LocaleProvider>
   );
 }

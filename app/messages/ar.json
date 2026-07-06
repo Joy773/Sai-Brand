@@ -399,10 +399,14 @@
     ],
     "supportTitle": "دعم العملاء",
     "supportLinks": [
-      { "label": "الشحن والتوصيل", "href": "#" },
-      { "label": "الإرجاع والاسترداد", "href": "#" },
-      { "label": "سياسة الخصوصية", "href": "#" },
-      { "label": "الشروط والأحكام", "href": "#" }
+      { "label": "إعدادات ملفات تعريف الارتباط", "href": "#cookie-settings" },
+      { "label": "إشعار قانوني", "href": "/legal-notice" },
+      { "label": "سياسة الخصوصية", "href": "/privacy-policy" },
+      { "label": "الشروط والأحكام", "href": "/terms-and-conditions" },
+      { "label": "سياسة الانسحاب", "href": "/withdrawal-policy" },
+      { "label": "نموذج الانسحاب", "href": "/withdrawal-form" },
+      { "label": "الشحن والتوصيل", "href": "/shipping-delivery" },
+      { "label": "الإرجاع والاسترداد", "href": "/returns-refunds" }
     ],
     "contactTitle": "معلومات التواصل",
     "contactPrompt": "لديك أسئلة؟",
@@ -410,6 +414,37 @@
     "contactAvailability": "متاح عالميًا (حسب مناطق الشحن)",
     "trustLine": "دفع آمن • شحن سريع • جودة موثوقة",
     "copyright": "© 2026 Sai Brand. طُوّر ووُزّع بواسطة GII. جميع الحقوق محفوظة.",
-    "tagline": "صُنعت بعناية لثقتك اليومية."
+    "tagline": "صُنعت بعناية لثقتك اليومية.",
+    "cookieSettings": "إعدادات ملفات تعريف الارتباط"
+  },
+
+  "cookieModal": {
+    "_comment": "نافذة موافقة ملفات تعريف الارتباط — تُستخدم في app/components/CookieModal.tsx",
+    "title": "إعدادات ملفات تعريف الارتباط",
+    "description": "إدارة تفضيلات ملفات تعريف الارتباط الخاصة بك.",
+    "categories": {
+      "essential": {
+        "label": "ملفات تعريف الارتباط الأساسية",
+        "description": "مطلوبة لعمل الموقع."
+      },
+      "functional": {
+        "label": "ملفات تعريف الارتباط الوظيفية",
+        "description": "تتذكر تفضيلاتك."
+      },
+      "analytics": {
+        "label": "ملفات تعريف الارتباط التحليلية",
+        "description": "تساعدنا على تحسين موقعنا."
+      },
+      "marketing": {
+        "label": "ملفات تعريف الارتباط التسويقية",
+        "description": "تُستخدم للإعلانات."
+      }
+    },
+    "on": "تشغيل",
+    "off": "إيقاف",
+    "rejectAll": "رفض الكل",
+    "acceptAll": "قبول الكل",
+    "savePreferences": "حفظ التفضيلات",
+    "close": "إغلاق إعدادات ملفات تعريف الارتباط"
   }
 }
