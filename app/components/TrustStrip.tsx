@@ -14,63 +14,10 @@ const iconMap: Record<string, string> = {
   "premium-quality": "/Premium.png",
 };
 
-type TrustStripItem = {
-  id: string;
-  label: string;
-  iconSrc: string;
-  rep?: number;
-};
-
-const TRACK_REPEAT_COUNT = 3;
-const MARQUEE_BASE_DURATION_S = 35;
-
-function repeatItems(items: TrustStripItem[], times: number) {
-  return Array.from({ length: times }, (_, rep) =>
-    items.map((item) => ({ ...item, rep })),
-  ).flat();
-}
-
-function TrustStripTrack({
-  trackId,
-  items,
-  hidden = false,
-}: {
-  trackId: string;
-  items: TrustStripItem[];
-  hidden?: boolean;
-}) {
-  const repeatedItems = repeatItems(items, TRACK_REPEAT_COUNT);
-
-  return (
-    <div
-      className="flex shrink-0 items-center gap-8 pr-8"
-      aria-hidden={hidden || undefined}
-    >
-      {repeatedItems.map((item) => (
-        <div
-          key={`${trackId}-${item.rep}-${item.id}`}
-          className="flex shrink-0 items-center gap-2.5 text-sm font-medium text-warm-white sm:gap-3 sm:text-base"
-        >
-          <Image
-            src={item.iconSrc}
-            alt=""
-            width={36}
-            height={36}
-            className="h-8 w-8 shrink-0 rounded-full object-contain sm:h-9 sm:w-9"
-            unoptimized
-            aria-hidden
-          />
-          <span className="whitespace-nowrap">{item.label}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function TrustStrip() {
   const { ariaLabel, items } = useMessages().trustStrip;
 
-  const trustItems: TrustStripItem[] = items
+  const trustItems = items
     .filter((item) => iconMap[item.id])
     .map((item) => ({
       ...item,
@@ -79,19 +26,27 @@ export default function TrustStrip() {
 
   return (
     <div
-      className="overflow-hidden bg-dark-green py-3 sm:py-3.5"
+      className="overflow-x-auto bg-dark-green py-3 sm:py-3.5"
       aria-label={ariaLabel}
     >
-      <div
-        className="trust-strip-marquee flex w-max"
-        style={
-          {
-            "--trust-strip-duration": `${MARQUEE_BASE_DURATION_S * TRACK_REPEAT_COUNT}s`,
-          } as React.CSSProperties
-        }
-      >
-        <TrustStripTrack trackId="a" items={trustItems} />
-        <TrustStripTrack trackId="b" items={trustItems} hidden />
+      <div className="mx-auto flex w-max min-w-full max-w-7xl flex-nowrap items-center justify-center gap-x-5 px-4 sm:gap-x-6 lg:justify-between lg:gap-x-4">
+        {trustItems.map((item) => (
+          <div
+            key={item.id}
+            className="flex shrink-0 items-center gap-2 text-xs font-medium text-warm-white sm:gap-2.5 sm:text-sm lg:text-base"
+          >
+            <Image
+              src={item.iconSrc}
+              alt=""
+              width={36}
+              height={36}
+              className="h-7 w-7 shrink-0 rounded-full object-contain sm:h-8 sm:w-8 lg:h-9 lg:w-9"
+              unoptimized
+              aria-hidden
+            />
+            <span className="whitespace-nowrap">{item.label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

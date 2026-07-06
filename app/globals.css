@@ -30,31 +30,3 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
-@keyframes trust-strip-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.trust-strip-marquee {
-  animation: trust-strip-scroll var(--trust-strip-duration, 35s) linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .trust-strip-marquee {
-    animation: none;
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem 2rem;
-    padding-inline: 1rem;
-  }
-
-  .trust-strip-marquee > :last-child {
-    display: none;
-  }
-}
