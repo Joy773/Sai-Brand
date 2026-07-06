@@ -1,18 +1,36 @@
 {
   "_comment": "English (EN) locale — UI copy for the Sai Brand site",
-
   "navbar": {
     "_comment": "Navigation bar strings used in app/components/Navbar.tsx",
     "tagline": "Made In Germany",
     "navLinks": [
-      { "label": "Home", "href": "#hero" },
-      { "label": "Products", "href": "#products" },
-      { "label": "About", "href": "#about" },
-      { "label": "FAQs", "href": "#faqs" },
-      { "label": "Contact", "href": "#contact" }
+      {
+        "label": "Home",
+        "href": "#hero"
+      },
+      {
+        "label": "Products",
+        "href": "#products"
+      },
+      {
+        "label": "About",
+        "href": "#about"
+      },
+      {
+        "label": "FAQs",
+        "href": "#faqs"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      }
     ],
     "_navLinks_comment": "Main menu items — label is visible text, href is the link target",
-    "languages": ["EN", "DE", "AR"],
+    "languages": [
+      "EN",
+      "DE",
+      "AR"
+    ],
     "_languages_comment": "Language switcher options (not functional yet)",
     "defaultLanguage": "EN",
     "_defaultLanguage_comment": "Highlighted language in the switcher on load",
@@ -22,7 +40,6 @@
       "close": "Close menu"
     }
   },
-
   "hero": {
     "_comment": "Hero section strings used in app/components/Hero.tsx",
     "imageAlt": "Sai Hajj & Umrah Personal Care Kit",
@@ -31,36 +48,85 @@
       "Engineered by German Care"
     ],
     "subheading": "Designed for Ihram, hot climate, travel, Hajj & Umrah. Fragrance-Free.",
-    "shopNow": { "label": "Shop Now", "href": "#products" },
-    "exploreProducts": { "label": "Explore Products", "href": "#" },
+    "shopNow": {
+      "label": "Shop Now",
+      "href": "#products"
+    },
+    "exploreProducts": {
+      "label": "Explore Products",
+      "href": "#"
+    },
     "badges": [
-      { "id": "made-in-germany", "label": "Made in Germany" },
-      { "id": "premium-quality", "label": "Premium Quality" },
-      { "id": "alcohol-free", "label": "Alcohol-Free" },
-      { "id": "fragrance-free", "label": "Fragrance-Free" },
-      { "id": "halal", "label": "Halal" },
-      { "id": "vegan", "label": "Vegan" },
-      { "id": "ihram-safe", "label": "Ihram-Safe" }
+      {
+        "id": "made-in-germany",
+        "label": "Made in Germany"
+      },
+      {
+        "id": "premium-quality",
+        "label": "Premium Quality"
+      },
+      {
+        "id": "alcohol-free",
+        "label": "Alcohol-Free"
+      },
+      {
+        "id": "fragrance-free",
+        "label": "Fragrance-Free"
+      },
+      {
+        "id": "halal",
+        "label": "Halal"
+      },
+      {
+        "id": "vegan",
+        "label": "Vegan"
+      },
+      {
+        "id": "ihram-safe",
+        "label": "Ihram-Safe"
+      }
     ],
     "_badges_comment": "id maps to icons in Hero.tsx"
   },
-
   "trustStrip": {
     "_comment": "Trust strip marquee used in app/components/TrustStrip.tsx",
     "ariaLabel": "Product trust badges",
     "items": [
-      { "id": "alcohol-free", "label": "Alcohol-Free" },
-      { "id": "fragrance-free", "label": "Fragrance-Free" },
-      { "id": "halal", "label": "Halal" },
-      { "id": "vegan", "label": "Vegan" },
-      { "id": "ihram-safe", "label": "Ihram-Safe" },
-      { "id": "made-in-germany", "label": "Made in Germany" },
-      { "id": "dermatology-tested", "label": "Dermatologically Tested" },
-      { "id": "premium-quality", "label": "Premium Quality" }
+      {
+        "id": "alcohol-free",
+        "label": "Alcohol-Free"
+      },
+      {
+        "id": "fragrance-free",
+        "label": "Fragrance-Free"
+      },
+      {
+        "id": "halal",
+        "label": "Halal"
+      },
+      {
+        "id": "vegan",
+        "label": "Vegan"
+      },
+      {
+        "id": "ihram-safe",
+        "label": "Ihram-Safe"
+      },
+      {
+        "id": "made-in-germany",
+        "label": "Made in Germany"
+      },
+      {
+        "id": "dermatology-tested",
+        "label": "Dermatologically Tested"
+      },
+      {
+        "id": "premium-quality",
+        "label": "Premium Quality"
+      }
     ],
     "_items_comment": "id maps to icons in TrustStrip.tsx"
   },
-
   "trustBatch": {
     "_comment": "Trust badges section used in app/components/TrustBatch.tsx",
     "eyebrow": "Why Sai",
@@ -110,7 +176,6 @@
     ],
     "_items_comment": "id and hover.id map to icons in TrustBatch.tsx"
   },
-
   "products": {
     "_comment": "Products section used in app/components/Products.tsx",
     "eyebrow": "Our Products",
@@ -168,7 +233,11 @@
         "price": "€15.90",
         "size": "50 ml",
         "image": "/anti-chafing-main.png",
-        "tags": ["Fragrance-Free", "Ihram-Safe", "Sensitive Skin"],
+        "tags": [
+          "Fragrance-Free",
+          "Ihram-Safe",
+          "Sensitive Skin"
+        ],
         "details": {
           "keyBenefits": [
             "100% Halal (Hajj & Umrah-Safe)",
@@ -190,7 +259,11 @@
         "price": "€13.99",
         "size": "50 ml",
         "image": "/deodoran-main.png",
-        "tags": ["Alcohol-Free", "Halal", "Vegan"],
+        "tags": [
+          "Alcohol-Free",
+          "Halal",
+          "Vegan"
+        ],
         "details": {
           "keyBenefits": [
             "100% Halal (Hajj & Umrah-Safe)",
@@ -213,7 +286,11 @@
         "price": "€12.99",
         "size": "100 ml",
         "image": "/shampoo-main.png",
-        "tags": ["Fragrance-Free", "Ihram-Safe", "Made in Germany"],
+        "tags": [
+          "Fragrance-Free",
+          "Ihram-Safe",
+          "Made in Germany"
+        ],
         "details": {
           "keyBenefits": [
             "100% Halal (Hajj & Umrah-Safe)",
@@ -236,7 +313,11 @@
         "price": "€18.99",
         "size": "60 ml",
         "image": "/sunblock-main.png",
-        "tags": ["SPF 50+", "Hyaluronic Acid", "Ihram-Safe"],
+        "tags": [
+          "SPF 50+",
+          "Hyaluronic Acid",
+          "Ihram-Safe"
+        ],
         "details": {
           "keyBenefits": [
             "100% Halal (Hajj & Umrah-Safe)",
@@ -255,7 +336,6 @@
       }
     ]
   },
-
   "productPage": {
     "_comment": "Product detail page used in app/[slug]/page.tsx",
     "backToProducts": "Back to products",
@@ -272,19 +352,20 @@
       "safetyNotes": "Safety Notes"
     }
   },
-
   "relatedProducts": {
     "_comment": "Related products section used in app/components/RelatedProducts.tsx",
     "title": "Related Products",
     "subtitle": "Also Useful for Hajj & Umrah"
   },
-
   "ourStory": {
     "_comment": "Our Story section used in app/components/OurStory.tsx",
     "eyebrow": "Our Story",
     "title": "Rooted in German care, built for your absolute confidence — even in hot weather.",
     "description": "Sai was founded on a simple belief: everyone deserves access to premium personal care and skincare products that are safe, reliable, and thoughtfully developed for everyday needs, especially in hot weather and climates that demand extra care for the skin and body.",
-    "learnMore": { "label": "Learn More", "showLess": "Show Less" },
+    "learnMore": {
+      "label": "Learn More",
+      "showLess": "Show Less"
+    },
     "learnMoreContent": [
       "Through cooperation with German Care and selected German manufacturers, Sai brings together high-quality skincare and personal care solutions inspired by German standards of safety, precision, and quality. From ingredient selection to production and final delivery, every step reflects our commitment to your comfort, confidence, and well-being.",
       "Our products are designed to support daily freshness and comfort in conditions that may cause sweating, friction, dryness, or discomfort — whether during hot weather, travel, long working days, outdoor activities, Hajj, or Umrah.",
@@ -310,13 +391,15 @@
       }
     ]
   },
-
   "faq": {
     "_comment": "FAQ section used in app/components/FAQ.tsx",
     "eyebrow": "FAQ",
     "title": "Frequently asked questions",
     "description": "Find quick and helpful answers about Sai Brand, our products, shipping, and everything you need to know for a smooth and confident shopping experience.",
-    "contactUs": { "label": "Contact Us", "href": "#" },
+    "contactUs": {
+      "label": "Contact Us",
+      "href": "#"
+    },
     "viewMore": "View More",
     "viewLess": "View Less",
     "items": [
@@ -376,37 +459,80 @@
       }
     ]
   },
-
   "cta": {
     "_comment": "Call-to-action section used in app/components/CTA.tsx",
     "title": "Experience the difference Sai makes in your everyday care.",
     "description": "Discover premium-quality products designed to bring comfort, care, and confidence into your daily routine. Start your journey with Sai today.",
-    "shopNow": { "label": "Shop Now", "href": "#" },
-    "exploreProducts": { "label": "Explore Products", "href": "#" }
+    "shopNow": {
+      "label": "Shop Now",
+      "href": "#"
+    },
+    "exploreProducts": {
+      "label": "Explore Products",
+      "href": "#"
+    }
   },
-
   "footer": {
     "_comment": "Footer section used in app/components/Footer.tsx",
     "brandName": "Sai Brand",
     "description": "Premium-quality products designed for comfort, care, and confidence in your everyday life.",
     "quickLinksTitle": "Quick Links",
     "quickLinks": [
-      { "label": "Home", "href": "#hero" },
-      { "label": "Shop / Products", "href": "#products" },
-      { "label": "About Us", "href": "#about" },
-      { "label": "Contact", "href": "#contact" },
-      { "label": "FAQs", "href": "#faqs" }
+      {
+        "label": "Home",
+        "href": "#hero"
+      },
+      {
+        "label": "Shop / Products",
+        "href": "#products"
+      },
+      {
+        "label": "About Us",
+        "href": "#about"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      },
+      {
+        "label": "FAQs",
+        "href": "#faqs"
+      }
     ],
     "supportTitle": "Customer Support",
     "supportLinks": [
-      { "label": "Cookie Settings", "href": "#cookie-settings" },
-      { "label": "Legal Notice", "href": "/legal-notice" },
-      { "label": "Privacy Policy", "href": "/privacy-policy" },
-      { "label": "Terms & Conditions", "href": "/terms-and-conditions" },
-      { "label": "Withdrawal Policy", "href": "/withdrawal-policy" },
-      { "label": "Withdrawal Form", "href": "/withdrawal-form" },
-      { "label": "Shipping & Delivery", "href": "/shipping-delivery" },
-      { "label": "Returns & Refunds", "href": "/returns-refunds" }
+      {
+        "label": "Cookie Settings",
+        "href": "#cookie-settings"
+      },
+      {
+        "label": "Legal Notice",
+        "href": "/legal-notice"
+      },
+      {
+        "label": "Privacy Policy",
+        "href": "/privacy-policy"
+      },
+      {
+        "label": "Terms & Conditions",
+        "href": "/terms-and-conditions"
+      },
+      {
+        "label": "Withdrawal Policy",
+        "href": "/withdrawal-policy"
+      },
+      {
+        "label": "Withdrawal Form",
+        "href": "/withdrawal-form"
+      },
+      {
+        "label": "Shipping & Delivery",
+        "href": "/shipping-delivery"
+      },
+      {
+        "label": "Returns & Refunds",
+        "href": "/returns-refunds"
+      }
     ],
     "contactTitle": "Contact Info",
     "contactPrompt": "Have questions?",
@@ -417,7 +543,6 @@
     "tagline": "Crafted with care for your everyday confidence.",
     "cookieSettings": "Cookie Settings"
   },
-
   "cookieModal": {
     "_comment": "Cookie consent modal used in app/components/CookieModal.tsx",
     "title": "Cookie Settings",
@@ -446,5 +571,658 @@
     "acceptAll": "Accept All",
     "savePreferences": "Save Preferences",
     "close": "Close cookie settings"
+  },
+  "privacyPolicy": {
+    "_comment": "Privacy Policy page used in app/privacy-policy/page.tsx",
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: 01.06.2026",
+    "paragraphs": [
+      "This Privacy Policy explains how german-care.com collects, uses, stores, and protects personal data when you visit our website, place an order, contact us, subscribe to communications, or use our services.",
+      "We process personal data in accordance with the General Data Protection Regulation, GDPR, and applicable German data protection laws."
+    ],
+    "quickNavigation": "Quick Navigation",
+    "sections": [
+      {
+        "id": "controller",
+        "label": "Controller",
+        "paragraphs": [
+          "The controller responsible for data processing is: www.german-care.com"
+        ]
+      },
+      {
+        "id": "personal-data-we-process",
+        "label": "Personal Data We Process",
+        "paragraphs": [
+          "We may process the following categories of personal data:"
+        ],
+        "items": [
+          "Identification data: name, billing address, shipping address",
+          "Contact data: email address, phone number",
+          "Order data: products ordered, order number, purchase date, return data",
+          "Payment data: payment status, payment provider reference, transaction confirmation",
+          "Communication data: messages, support requests, complaints",
+          "Technical data: IP address, browser type, device data, operating system, log files",
+          "Cookie and consent data: cookie preferences, consent date, consent status",
+          "Marketing data: newsletter subscription, unsubscribe status, campaign interaction"
+        ]
+      },
+      {
+        "id": "purposes-of-processing",
+        "label": "Purposes of Processing",
+        "paragraphs": [
+          "We process personal data for the following purposes:"
+        ],
+        "items": [
+          "To operate and secure our website",
+          "To process orders and deliver products",
+          "To process payments and invoices",
+          "To provide customer support",
+          "To handle shipping, returns, refunds, complaints, and warranty claims",
+          "To comply with tax, accounting, and legal obligations",
+          "To prevent fraud, misuse, and security incidents",
+          "To improve our website and services",
+          "To send marketing communications where permitted by law or consented to by the user"
+        ]
+      },
+      {
+        "id": "legal-bases",
+        "label": "Legal Bases",
+        "paragraphs": [
+          "We process personal data on the following legal bases:"
+        ],
+        "items": [
+          "Contract performance, where processing is necessary to process and deliver an order.",
+          "Legal obligation, where we must retain invoices, tax, accounting, or compliance records.",
+          "Legitimate interests, where processing is necessary for website security, fraud prevention, customer support, business administration, and legal defense.",
+          "Consent, where we use optional cookies, analytics, advertising tools, or newsletters requiring consent."
+        ]
+      },
+      {
+        "id": "website-hosting-and-server-logs",
+        "label": "Website Hosting and Server Logs",
+        "paragraphs": [
+          "When you visit our website, our hosting provider may automatically process server log data such as IP address, date and time of access, requested page, browser type, operating system, and referrer URL.",
+          "This processing is necessary for website operation, security, error analysis, and abuse prevention.",
+          "Hosting provider: DigitalOcean"
+        ]
+      },
+      {
+        "id": "cookies-and-consent",
+        "label": "Cookies and Consent",
+        "paragraphs": [
+          "We use cookies and similar technologies.",
+          "Strictly necessary cookies are used for website functions such as shopping cart, checkout, security, language selection, and session management.",
+          "Optional cookies, including analytics, marketing, tracking, or third-party cookies, are used only where legally permitted and, where required, only after your consent.",
+          "EU guidance states that strictly necessary service cookies may not require consent, while tracking, advertising, analytics, and similar cookies may require prior consent and clear information."
+        ],
+        "consentNote": "You may change or withdraw your consent at any time through:",
+        "showCookieSettings": true
+      },
+      {
+        "id": "payment-providers",
+        "label": "Payment Providers",
+        "paragraphs": [
+          "If you place an order, payment data may be processed by payment service providers.",
+          "Depending on the selected payment method, this may include:",
+          "Payment providers may act as independent controllers for certain processing activities. Their own privacy policies may apply."
+        ],
+        "items": [
+          "PayPal",
+          "Stripe",
+          "Klarna",
+          "Shopify Payments",
+          "Credit Card Provider",
+          "Bank Transfer Provider"
+        ]
+      },
+      {
+        "id": "shipping-providers",
+        "label": "Shipping Providers",
+        "paragraphs": [
+          "To deliver your order, we share necessary delivery data with shipping service providers, such as:"
+        ],
+        "items": [
+          "Name",
+          "Shipping address",
+          "Email address, where needed for tracking",
+          "Phone number, where needed for delivery",
+          "Parcel and tracking information"
+        ],
+        "lists": [
+          {
+            "intro": "Shipping providers may include:",
+            "items": [
+              "DHL",
+              "DPD",
+              "UPS",
+              "Hermes",
+              "FedEx",
+              "Other"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "customer-support",
+        "label": "Customer Support",
+        "paragraphs": [
+          "If you contact us, we process the information you provide to respond to your inquiry, resolve issues, document communication, and protect our legal interests."
+        ]
+      },
+      {
+        "id": "newsletter-and-marketing",
+        "label": "Newsletter and Marketing",
+        "paragraphs": [
+          "If you subscribe to our newsletter, we process your email address and consent data to send marketing communications.",
+          "You may unsubscribe at any time by using the unsubscribe link in the email or by contacting us."
+        ]
+      },
+      {
+        "id": "analytics-and-advertising",
+        "label": "Analytics and Advertising",
+        "paragraphs": [
+          "We may use analytics or advertising tools only where legally permitted and, where required, only with your prior consent.",
+          "Tools may include: Google Analytics, Meta Pixel, TikTok Pixel, Google Ads, and Other.",
+          "Do not publish this section unless these tools are actually used."
+        ]
+      },
+      {
+        "id": "data-retention",
+        "label": "Data Retention",
+        "paragraphs": [
+          "We store personal data only as long as necessary for the purposes described in this Privacy Policy.",
+          "Order and invoice data may be retained for statutory tax and accounting periods. Support and communication data may be retained as long as necessary to handle the request and defend legal claims."
+        ]
+      },
+      {
+        "id": "international-data-transfers",
+        "label": "International Data Transfers",
+        "paragraphs": [
+          "If personal data is transferred outside the European Economic Area, we use appropriate safeguards, such as adequacy decisions, EU Standard Contractual Clauses, or other legally recognized mechanisms."
+        ]
+      },
+      {
+        "id": "your-rights",
+        "label": "Your Rights",
+        "paragraphs": [
+          "You have the right to:",
+          "To exercise your rights, contact us at: info@german-care.com"
+        ],
+        "items": [
+          "Access your personal data",
+          "Correct inaccurate personal data",
+          "Request deletion of your personal data",
+          "Restrict processing",
+          "Object to processing",
+          "Request data portability",
+          "Withdraw consent at any time",
+          "Lodge a complaint with a data protection authority"
+        ]
+      },
+      {
+        "id": "security",
+        "label": "Security",
+        "paragraphs": [
+          "We use appropriate technical and organizational measures to protect personal data against unauthorized access, loss, misuse, alteration, or disclosure."
+        ]
+      },
+      {
+        "id": "children",
+        "label": "Children",
+        "paragraphs": [
+          "Our website is not directed at children. We do not knowingly collect personal data from children without appropriate legal basis or parental consent."
+        ]
+      },
+      {
+        "id": "changes-to-this-privacy-policy",
+        "label": "Changes to This Privacy Policy",
+        "paragraphs": [
+          "We may update this Privacy Policy from time to time. The current version is always available on this page."
+        ]
+      }
+    ],
+    "cookieSettingsLabel": "Cookie Settings"
+  },
+  "returnsRefunds": {
+    "title": "Returns & Refunds",
+    "lastUpdated": "Last updated: 01.06.2026",
+    "paragraphs": [
+      "This Returns & Refunds Policy applies to purchases made through www.german-care.com",
+      "This policy does not limit any mandatory statutory consumer rights under German or EU law."
+    ],
+    "quickNavigation": "Quick Navigation",
+    "sections": [
+      {
+        "id": "right-of-withdrawal",
+        "label": "Right of Withdrawal for Consumers",
+        "paragraphs": [
+          "If you are a consumer within the meaning of applicable law, you generally have the right to withdraw from an online purchase within fourteen (14) days without giving any reason.",
+          "For goods, the withdrawal period generally begins on the day on which you or a third party designated by you receives the goods. EU consumer guidance confirms the 14-day cooling-off period for distance purchases and that, for goods, it usually runs from delivery."
+        ]
+      },
+      {
+        "id": "how-to-withdraw",
+        "label": "How to Withdraw",
+        "paragraphs": [
+          "To exercise your right of withdrawal, you must inform us by a clear statement, for example by email info@german-care.com",
+          "You may use our Withdrawal Form, but this is not mandatory."
+        ]
+      },
+      {
+        "id": "electronic-withdrawal",
+        "label": "Electronic Withdrawal Function",
+        "paragraphs": [
+          "Where legally required, we provide an electronic withdrawal function on our website.",
+          "From 19 June 2026, Germany's new § 356a BGB requires businesses that allow consumers to conclude distance contracts through an online user interface to provide an electronic withdrawal function during the withdrawal period."
+        ],
+        "items": [
+          "Recommended website button name: Withdraw from Contract",
+          "Recommended confirmation button: Confirm Withdrawal"
+        ]
+      },
+      {
+        "id": "withdrawal-period",
+        "label": "Withdrawal Period",
+        "paragraphs": [
+          "To meet the withdrawal deadline, it is sufficient that you send your withdrawal declaration before the withdrawal period expires."
+        ]
+      },
+      {
+        "id": "effects-of-withdrawal",
+        "label": "Effects of Withdrawal",
+        "paragraphs": [
+          "If you withdraw from the contract, we will refund all payments received from you, including standard delivery costs, except for additional costs resulting from your choice of a delivery method other than the cheapest standard delivery offered by us.",
+          "We may withhold the refund until we have received the goods back or until you have provided proof that you have returned the goods, whichever occurs earlier."
+        ]
+      },
+      {
+        "id": "return-shipping-costs",
+        "label": "Return Shipping Costs",
+        "paragraphs": [
+          "Unless we agree otherwise, the customer bears the direct costs of returning the goods when exercising the right of withdrawal, provided that we informed the customer of this before purchase.",
+          "EU guidance states that customers may be responsible for return postage during the cooling-off period if the seller informed them of this before purchase."
+        ]
+      },
+      {
+        "id": "return-condition",
+        "label": "Return Condition",
+        "paragraphs": [
+          "Returned goods should be sent back complete, unused, undamaged, and, where applicable, in the original packaging.",
+          "The customer may inspect the goods as they would normally be allowed to do in a physical shop. If the goods are used beyond what is necessary to inspect their nature, characteristics, and functioning, the customer may be responsible for any loss in value."
+        ]
+      },
+      {
+        "id": "hygiene-sealed-products",
+        "label": "Hygiene and Sealed Cosmetic Products",
+        "paragraphs": [
+          "For health protection and hygiene reasons, the right of withdrawal may be excluded for sealed goods that are not suitable for return if the seal has been removed after delivery.",
+          "This may apply to cosmetic and personal care products, including creams, deodorants, shampoos, sun protection products, and personal care kits, where the product seal, hygiene seal, protective wrapping, or safety closure has been opened or removed.",
+          "We therefore cannot accept returns of opened, unsealed, used, contaminated, or damaged hygiene-sensitive products, unless the product is defective or mandatory law provides otherwise."
+        ]
+      },
+      {
+        "id": "defective-damaged-incorrect",
+        "label": "Defective, Damaged or Incorrect Products",
+        "paragraphs": [
+          "If you receive a defective, damaged, or incorrect product, please contact us as soon as possible at: info@german-care.com",
+          "This does not limit your statutory warranty rights."
+        ],
+        "itemsIntro": "Please include:",
+        "items": [
+          "Order number",
+          "Description of the issue",
+          "Photographs of the product and packaging",
+          "Your preferred resolution"
+        ]
+      },
+      {
+        "id": "refund-method",
+        "label": "Refund Method",
+        "paragraphs": [
+          "Refunds will be made using the same payment method used for the original transaction unless expressly agreed otherwise.",
+          "We do not charge refund fees."
+        ]
+      },
+      {
+        "id": "return-address",
+        "label": "Return Address",
+        "paragraphs": [
+          "Please send returns only after contacting us or following the return instructions provided on our website.",
+          "Return address: you will receive an email with the address based in your location."
+        ]
+      },
+      {
+        "id": "business-customers",
+        "label": "Business Customers",
+        "paragraphs": [
+          "The statutory consumer right of withdrawal does not apply to business customers unless expressly agreed in writing."
+        ]
+      },
+      {
+        "id": "abuse-fraud-prevention",
+        "label": "Abuse and Fraud Prevention",
+        "paragraphs": [
+          "We reserve the right to investigate suspicious return activity, repeated misuse, false claims, or fraudulent conduct. This does not limit mandatory consumer rights."
+        ]
+      }
+    ]
+  },
+  "shippingDelivery": {
+    "title": "Shipping & Delivery",
+    "lastUpdated": "Last updated: 01.06.2026",
+    "paragraphs": [
+      "This Shipping & Delivery Policy applies to all orders placed through www.german-care.com"
+    ],
+    "quickNavigation": "Quick Navigation",
+    "sections": [
+      {
+        "id": "shipping-countries",
+        "label": "Shipping Countries",
+        "paragraphs": [
+          "We currently ship to the following countries:",
+          "We reserve the right to restrict delivery to certain countries, regions, islands, military addresses, PO boxes, or locations where delivery is not commercially or legally possible."
+        ],
+        "items": [
+          "Germany: Yes",
+          "European Union: Yes",
+          "Outside the European Union: Yes"
+        ]
+      },
+      {
+        "id": "processing-time",
+        "label": "Processing Time",
+        "paragraphs": [
+          "Orders are usually processed within [1–3] business days after receipt of full payment.",
+          "Processing times may be longer during public holidays, high-demand periods, product launches, or circumstances outside our control."
+        ]
+      },
+      {
+        "id": "delivery-times",
+        "label": "Delivery Times",
+        "paragraphs": [
+          "Estimated delivery times are:",
+          "Delivery times are estimates only and are not guaranteed unless expressly confirmed in writing."
+        ],
+        "items": [
+          "Germany: [1–3] business days",
+          "European Union: [3–7] business days",
+          "Outside the EU: [7–21] business days"
+        ]
+      },
+      {
+        "id": "shipping-costs",
+        "label": "Shipping Costs",
+        "paragraphs": [
+          "Shipping costs are shown clearly before checkout and depend on the delivery destination, order value, parcel size, weight, and selected shipping method.",
+          "The customer must review and accept the total order amount, including shipping costs, before placing the order."
+        ]
+      },
+      {
+        "id": "delivery-address",
+        "label": "Delivery Address",
+        "paragraphs": [
+          "The customer is responsible for providing a complete and correct delivery address.",
+          "If a parcel cannot be delivered because the address was incorrect, incomplete, unavailable, or because the customer refused or failed to accept delivery, we may charge the customer for any additional shipping, return, storage, or re-delivery costs."
+        ]
+      },
+      {
+        "id": "delivery-attempts",
+        "label": "Delivery Attempts and Unclaimed Parcels",
+        "paragraphs": [
+          "If a parcel is returned to us because it was not collected, refused, or could not be delivered, we may deduct the actual shipping and return costs from any refund, unless mandatory consumer law provides otherwise.",
+          "If the customer requests re-delivery, additional shipping costs may apply."
+        ]
+      },
+      {
+        "id": "risk-of-loss",
+        "label": "Risk of Loss or Damage",
+        "paragraphs": [
+          "For consumers, the risk of accidental loss or damage passes to the customer only when the goods are delivered to the customer or to a person designated by the customer.",
+          "For business customers, the risk may pass to the customer when the goods are handed over to the carrier, unless otherwise agreed in writing."
+        ]
+      },
+      {
+        "id": "damaged-parcels",
+        "label": "Damaged Parcels",
+        "paragraphs": [
+          "If a parcel arrives visibly damaged, the customer should, where possible, document the damage with photographs and inform us immediately at: info@german-care.com",
+          "This does not limit the customer's statutory warranty rights."
+        ]
+      },
+      {
+        "id": "customs-import",
+        "label": "Customs, Import Duties and Taxes",
+        "paragraphs": [
+          "For deliveries outside the European Union, customs duties, import taxes, local VAT, clearance fees, or other charges may apply. These charges are the responsibility of the customer unless expressly stated otherwise.",
+          "We are not responsible for delays caused by customs authorities, import checks, or local delivery restrictions."
+        ]
+      },
+      {
+        "id": "cosmetic-restrictions",
+        "label": "Delivery Restrictions for Cosmetic Products",
+        "paragraphs": [
+          "Some countries may restrict or regulate the import of cosmetic or personal care products. The customer is responsible for ensuring that the ordered products may be imported into the destination country, unless mandatory law provides otherwise."
+        ]
+      },
+      {
+        "id": "split-deliveries",
+        "label": "Split Deliveries",
+        "paragraphs": [
+          "We may deliver an order in multiple shipments if this is reasonable for the customer. Additional shipping charges will not apply unless clearly agreed before dispatch."
+        ]
+      },
+      {
+        "id": "contact",
+        "label": "Contact",
+        "paragraphs": [
+          "For shipping questions, please contact: info@german-care.com"
+        ]
+      }
+    ]
+  },
+  "termsConditions": {
+    "title": "Terms & Conditions",
+    "lastUpdated": "Last updated: 01.06.2026",
+    "paragraphs": [
+      "These Terms & Conditions apply to all orders placed through www.german-care.com and to the use of our online shop."
+    ],
+    "quickNavigation": "Quick Navigation",
+    "sections": [
+      {
+        "id": "seller",
+        "label": "Seller",
+        "paragraphs": [
+          "The seller is: www.german-care.com"
+        ]
+      },
+      {
+        "id": "scope",
+        "label": "Scope",
+        "paragraphs": [
+          "These Terms apply to all purchases made through our online shop.",
+          "They apply to consumers and business customers unless otherwise stated.",
+          "A consumer is a natural person who enters into a transaction for purposes that are predominantly outside their trade, business, or profession.",
+          "A business customer is a natural or legal person acting in the course of commercial or professional activity."
+        ]
+      },
+      {
+        "id": "products",
+        "label": "Products",
+        "paragraphs": [
+          "We sell cosmetic and personal care products, including SAI / German Care products, kits, creams, deodorants, shampoos, sun protection products, and related care items.",
+          "Product images are for illustration purposes. Minor differences in packaging, color, label design, or appearance may occur due to production, screen settings, or product updates."
+        ]
+      },
+      {
+        "id": "cosmetic-notice",
+        "label": "Cosmetic Product Notice",
+        "paragraphs": [
+          "Our products are cosmetic and personal care products. They are not medicinal products and are not intended to diagnose, treat, cure, or prevent any disease.",
+          "Customers must read the product information, ingredients, usage instructions, and warnings before use.",
+          "Do not use a product if you are allergic or sensitive to any ingredient. If irritation occurs, discontinue use and seek medical advice if necessary."
+        ]
+      },
+      {
+        "id": "order-process",
+        "label": "Order Process and Contract Formation",
+        "paragraphs": [
+          "By placing an order, the customer submits a binding offer to purchase the selected goods.",
+          "A purchase contract is formed when we accept the order by sending an order confirmation, dispatch confirmation, or by shipping the goods."
+        ],
+        "itemsIntro": "We reserve the right to reject orders where:",
+        "items": [
+          "The product is unavailable",
+          "Payment is not completed",
+          "Incorrect pricing or product information was displayed",
+          "Delivery is not possible",
+          "There is suspicion of fraud, misuse, or unauthorized resale",
+          "Legal or regulatory restrictions apply"
+        ]
+      },
+      {
+        "id": "prices-vat",
+        "label": "Prices and VAT",
+        "paragraphs": [
+          "All prices are shown in euros.",
+          "For consumer orders within Germany and the EU, prices are shown including applicable VAT unless stated otherwise.",
+          "Shipping costs, customs duties, import taxes, and additional charges are shown or explained before checkout where applicable."
+        ]
+      },
+      {
+        "id": "payment",
+        "label": "Payment",
+        "paragraphs": [
+          "Available payment methods are displayed at checkout.",
+          "Payment must be completed before dispatch unless otherwise agreed.",
+          "We may restrict certain payment methods depending on order value, delivery country, fraud risk, or technical availability."
+        ]
+      },
+      {
+        "id": "delivery",
+        "label": "Delivery",
+        "paragraphs": [
+          "Delivery is governed by our Shipping & Delivery Policy, which forms part of these Terms.",
+          "Delivery dates are estimates unless expressly confirmed as binding."
+        ]
+      },
+      {
+        "id": "retention-of-title",
+        "label": "Retention of Title",
+        "paragraphs": [
+          "The goods remain our property until full payment has been received."
+        ]
+      },
+      {
+        "id": "right-of-withdrawal",
+        "label": "Right of Withdrawal",
+        "paragraphs": [
+          "Consumers generally have a statutory right of withdrawal for online purchases.",
+          "Details are provided in our Returns & Refunds Policy and Withdrawal Policy / Withdrawal Form, where available.",
+          "The right of withdrawal may be excluded for sealed goods that are not suitable for return for health protection or hygiene reasons if the seal has been removed after delivery."
+        ]
+      },
+      {
+        "id": "returns-refunds",
+        "label": "Returns and Refunds",
+        "paragraphs": [
+          "Returns and refunds are governed by our Returns & Refunds Policy.",
+          "This does not limit mandatory statutory consumer rights."
+        ]
+      },
+      {
+        "id": "warranty-rights",
+        "label": "Warranty Rights",
+        "paragraphs": [
+          "Statutory warranty rights apply.",
+          "If goods are defective, damaged, or incorrect, customers should contact us promptly at: info@german-care.com"
+        ]
+      },
+      {
+        "id": "promotions",
+        "label": "Promotions and Discount Codes",
+        "paragraphs": [
+          "Promotional codes, discounts, bundles, and special offers may be subject to additional conditions, such as expiry dates, minimum order values, product exclusions, usage limits, or country restrictions.",
+          "Promotional codes cannot be exchanged for cash unless required by mandatory law."
+        ]
+      },
+      {
+        "id": "customer-account",
+        "label": "Customer Account",
+        "paragraphs": [
+          "If customer accounts are available, customers are responsible for keeping login details secure.",
+          "We may suspend or close accounts in cases of misuse, fraud, security risk, or breach of these Terms."
+        ]
+      },
+      {
+        "id": "prohibited-resale",
+        "label": "Prohibited Resale and Commercial Use",
+        "paragraphs": [
+          "Unless expressly agreed in writing, products are sold for personal use only.",
+          "We reserve the right to reject or cancel orders that appear to be intended for unauthorized resale, parallel export, marketplace arbitrage, or commercial distribution."
+        ]
+      },
+      {
+        "id": "intellectual-property",
+        "label": "Intellectual Property",
+        "paragraphs": [
+          "All content on the website, including product names, brand names, texts, images, logos, designs, graphics, product concepts, and layout, is protected by intellectual property laws.",
+          "Use, reproduction, modification, or distribution without prior written permission is prohibited."
+        ]
+      },
+      {
+        "id": "limitation-of-liability",
+        "label": "Limitation of Liability",
+        "paragraphs": [
+          "We are liable without limitation for intent, gross negligence, injury to life, body, or health, and liability under mandatory product liability law.",
+          "In cases of slight negligence, we are liable only for breach of essential contractual obligations. In such cases, liability is limited to typical and foreseeable damage.",
+          "Any further liability is excluded to the extent permitted by law."
+        ]
+      },
+      {
+        "id": "force-majeure",
+        "label": "Force Majeure",
+        "paragraphs": [
+          "We are not liable for delays or failure to perform caused by circumstances outside our reasonable control, including natural disasters, war, terrorism, strikes, pandemics, transport disruptions, customs delays, supply-chain interruptions, energy failures, cyberattacks, governmental measures, or carrier delays."
+        ]
+      },
+      {
+        "id": "reviews-user-content",
+        "label": "Reviews and User Content",
+        "paragraphs": [
+          "If customers submit reviews, photos, feedback, or other content, they must ensure that the content is lawful, truthful, and does not infringe third-party rights.",
+          "We may remove content that is unlawful, misleading, offensive, abusive, or promotional."
+        ]
+      },
+      {
+        "id": "dispute-resolution",
+        "label": "Online Dispute Resolution and Consumer Arbitration",
+        "paragraphs": [
+          "The European Commission previously provided an online dispute resolution platform for consumer disputes. Please verify the current status and required wording before publishing.",
+          "Suggested German-style wording: We are not obliged and not willing to participate in dispute resolution proceedings before a consumer arbitration board."
+        ]
+      },
+      {
+        "id": "governing-law",
+        "label": "Governing Law",
+        "paragraphs": [
+          "These Terms are governed by the laws of the Federal Republic of Germany, excluding the UN Convention on Contracts for the International Sale of Goods, where legally permissible.",
+          "For consumers, mandatory consumer protection laws of the country in which the consumer has their habitual residence remain unaffected."
+        ]
+      },
+      {
+        "id": "severability",
+        "label": "Severability",
+        "paragraphs": [
+          "If any provision of these Terms is invalid or unenforceable, the remaining provisions remain valid."
+        ]
+      },
+      {
+        "id": "changes-to-terms",
+        "label": "Changes to These Terms",
+        "paragraphs": [
+          "We may update these Terms from time to time. The version applicable at the time of the order applies."
+        ]
+      }
+    ]
   }
 }
