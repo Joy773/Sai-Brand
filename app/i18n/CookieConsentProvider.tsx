@@ -12,6 +12,7 @@ import {
 import CookieModal from "@/app/components/CookieModal";
 import {
   defaultCookiePreferences,
+  COOKIE_MODAL_DELAY_MS,
   loadCookieConsent,
   saveCookieConsent,
   type CookiePreferences,
@@ -34,13 +35,18 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
     const saved = loadCookieConsent();
     if (saved) {
       setPreferences(saved.preferences);
-      if (!saved.consented) {
-        setIsOpen(true);
-      }
-    } else {
-      setIsOpen(true);
     }
     setReady(true);
+
+    if (saved?.consented) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setIsOpen(true);
+    }, COOKIE_MODAL_DELAY_MS);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   const persistPreferences = useCallback((next: CookiePreferences) => {

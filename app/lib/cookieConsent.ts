@@ -1,4 +1,5 @@
 export const COOKIE_CONSENT_STORAGE_KEY = "sai-cookie-consent";
+export const COOKIE_MODAL_DELAY_MS = 5000;
 
 export type CookiePreferences = {
   essential: true;
