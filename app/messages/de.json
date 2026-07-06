@@ -25,8 +25,11 @@
 
   "hero": {
     "_comment": "Hero-Bereich — verwendet in app/components/Hero.tsx",
-    "imageAlt": "Hajj & Umrah Pflege-Set",
-    "headline": ["Hajj & Umrah", "Pflege-Set"],
+    "imageAlt": "Sai Hajj & Umrah Personal Care Kit",
+    "headline": [
+      "Sai Hajj & Umrah Personal Care Kit —",
+      "Entwickelt von German Care"
+    ],
     "subheading": "Entwickelt für Ihram, heißes Klima, Reisen, Hajj & Umrah. Parfümfrei.",
     "shopNow": { "label": "Jetzt shoppen", "href": "#products" },
     "exploreProducts": { "label": "Produkte entdecken", "href": "#" },
@@ -62,7 +65,7 @@
     "_comment": "Vertrauens-Bereich — verwendet in app/components/TrustBatch.tsx",
     "eyebrow": "Warum Sai",
     "title": "Pflege, der Sie auf Ihrer Pilgerreise vertrauen können",
-    "description": "Von Ihram-konformen Formeln bis zu halal-zertifizierten Standards vereint Sai alles, was Sie für eine angenehme und selbstbewusste Körperpflege während Hajj und Umrah benötigen.",
+    "description": "Von Ihram-konformen Formeln bis zu halal-zertifizierten Standards vereint Sai alles, was Sie fuer eine angenehme und selbstbewusste Koerperpflege waehrend Hajj und Umrah benoetigen – gestuetzt auf die strengen Standards der German Care Fertigungspraezision.",
     "items": [
       {
         "id": "alcohol-fragrance-free",
@@ -111,8 +114,8 @@
   "products": {
     "_comment": "Produktbereich — verwendet in app/components/Products.tsx",
     "eyebrow": "Unsere Produkte",
-    "title": "Hautpflege mit Sorgfalt entwickelt",
-    "description": "Entdecken Sie unsere Kollektion Premium-Formeln, die jeweils Komfort, Selbstvertrauen und sichtbare Ergebnisse liefern sollen.",
+    "title": "Unsere Produkte – Sai Kit von German Care",
+    "description": "Entdecken Sie unsere Premium-Formeln, die speziell fuer Ihre heilige Reise entwickelt wurden. Jedes Produkt bietet den Komfort, den Schutz und das Selbstvertrauen, die Sie brauchen, um sich ganz auf Ihre Pilgerreise zu konzentrieren.",
     "addToCartShort": "In den Warenkorb",
     "addToCart": "In den Warenkorb",
     "moreInfo": "Mehr Infos",
@@ -279,8 +282,8 @@
   "ourStory": {
     "_comment": "Unsere Geschichte — verwendet in app/components/OurStory.tsx",
     "eyebrow": "Unsere Geschichte",
-    "title": "Deutsche Pflege als Fundament – für Ihr tägliches Selbstvertrauen",
-    "description": "Sai wurde aus einer einfachen Überzeugung gegründet: Jeder verdient Zugang zu hochwertiger Hautpflege, inspiriert von deutschen Standards für Präzision, Sicherheit und Sorgfalt. Von der Auswahl der Inhaltsstoffe bis zur Lieferung spiegelt jeder Schritt unser Engagement für Ihr Wohlbefinden wider.",
+    "title": "Verwurzelt in German Care – fuer Ihr absolutes Selbstvertrauen.",
+    "description": "Sai wurde aus einer einfachen Ueberzeugung gegruendet: Jeder verdient Zugang zu Premium-Hautpflege. Durch die Partnerschaft mit German Care stellen wir sicher, dass jede Inhaltsstoffauswahl und jeder Produktionsschritt die hoechsten Standards fuer Sicherheit, Praezision und Qualitaet widerspiegelt.",
     "learnMore": { "label": "Mehr erfahren", "href": "#" },
     "stats": [
       {
@@ -400,7 +403,7 @@
     "contactEmail": "support@saibrand.com",
     "contactAvailability": "Weltweit verfügbar (je nach Versandzonen)",
     "trustLine": "Sichere Zahlung • Schneller Versand • Vertrauenswürdige Qualität",
-    "copyright": "© 2026 Sai Brand. Alle Rechte vorbehalten.",
+    "copyright": "© 2026 Sai Brand. Entwickelt und vertrieben von GII. Alle Rechte vorbehalten.",
     "tagline": "Mit Sorgfalt entwickelt – für Ihr tägliches Selbstvertrauen."
   }
 }

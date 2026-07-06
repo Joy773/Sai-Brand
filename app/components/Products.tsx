@@ -27,6 +27,12 @@ const moreInfoButton =
 const addToCartButton =
   "inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-dark-green px-3 py-2 text-xs font-medium text-warm-white transition-all duration-300 hover:scale-[1.02] hover:bg-dark-green/90 motion-reduce:hover:scale-100 sm:w-auto sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm";
 
+const productMoreInfoButton =
+  "inline-flex w-fit shrink-0 items-center justify-center rounded-full border border-dark-green px-3 py-1.5 text-[11px] font-medium text-dark-green transition-all duration-300 hover:bg-dark-green/5 motion-reduce:transition-none sm:px-4 sm:py-2 sm:text-xs";
+
+const productAddToCartButton =
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 rounded-full bg-dark-green px-3 py-1.5 text-[11px] font-medium text-warm-white transition-all duration-300 hover:bg-dark-green/90 motion-reduce:transition-none sm:gap-1.5 sm:px-4 sm:py-2 sm:text-xs";
+
 export default function Products() {
   const [activeKitImage, setActiveKitImage] = useState(0);
   const {
@@ -152,11 +158,11 @@ export default function Products() {
             return (
             <article
               key={product.image}
-              className={`group flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row ${cardHover} hover:shadow-dark-green/10`}
+              className={`group flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:flex-row sm:items-stretch sm:rounded-3xl ${cardHover} hover:shadow-dark-green/10`}
             >
               <Link
                 href={`/${slug}`}
-                className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-beige/40 p-3 sm:p-4 lg:w-56"
+                className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-beige/40 p-3 sm:w-36 sm:max-w-[38%] sm:p-4 lg:w-44 lg:max-w-[11rem]"
               >
                 <Image
                   src={product.image}
@@ -168,30 +174,30 @@ export default function Products() {
                 />
               </Link>
 
-              <div className="flex flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:p-6 lg:p-8">
-                <div>
+              <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:p-4 lg:p-6">
+                <div className="min-w-0">
                   <Link href={`/${slug}`}>
-                    <h3 className="text-sm font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-xl lg:text-2xl">
+                    <h3 className="line-clamp-2 text-sm font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-base lg:text-xl">
                       {product.name}
                     </h3>
                   </Link>
-                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm lg:text-base">
+                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm">
                     {product.description}
                   </p>
                   {"tags" in product ? <ProductTags tags={product.tags} /> : null}
                 </div>
 
-                <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
-                  <p className="text-sm font-bold text-dark-green sm:text-lg lg:text-xl">
+                <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
+                  <p className="text-sm font-bold text-dark-green sm:text-base lg:text-lg">
                     {product.price}
                   </p>
 
-                  <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-                    <Link href={`/${slug}`} className={moreInfoButton}>
+                  <div className="flex flex-wrap gap-2">
+                    <Link href={`/${slug}`} className={productMoreInfoButton}>
                       {moreInfo}
                     </Link>
-                    <button type="button" className={addToCartButton}>
-                      <LuShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
+                    <button type="button" className={productAddToCartButton}>
+                      <LuShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
                       <span className="sm:hidden">{addToCartShort}</span>
                       <span className="hidden sm:inline">{addToCart}</span>
                     </button>

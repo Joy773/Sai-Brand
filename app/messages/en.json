@@ -25,8 +25,11 @@
 
   "hero": {
     "_comment": "Hero section strings used in app/components/Hero.tsx",
-    "imageAlt": "Hajj & Umrah Personal Care Kit",
-    "headline": ["Hajj & Umrah", "Personal Care Kit"],
+    "imageAlt": "Sai Hajj & Umrah Personal Care Kit",
+    "headline": [
+      "Sai Hajj & Umrah Personal Care Kit —",
+      "Engineered by German Care"
+    ],
     "subheading": "Designed for Ihram, hot climate, travel, Hajj & Umrah. Fragrance-Free.",
     "shopNow": { "label": "Shop Now", "href": "#products" },
     "exploreProducts": { "label": "Explore Products", "href": "#" },
@@ -62,7 +65,7 @@
     "_comment": "Trust badges section used in app/components/TrustBatch.tsx",
     "eyebrow": "Why Sai",
     "title": "Care you can trust for Hajj & Umrah",
-    "description": "From Ihram-safe formulas to halal-certified standards, Sai brings together everything you need for comfortable, confident personal care throughout your pilgrimage.",
+    "description": "From Ihram-safe formulas to halal-certified standards, Sai brings together everything you need for comfortable, confident personal care throughout your pilgrimage, backed by German Care's strict standards of manufacturing precision.",
     "items": [
       {
         "id": "alcohol-fragrance-free",
@@ -111,8 +114,8 @@
   "products": {
     "_comment": "Products section used in app/components/Products.tsx",
     "eyebrow": "Our Products",
-    "title": "Skincare crafted with care",
-    "description": "Explore our collection of premium formulas, each designed to deliver comfort, confidence, and visible results.",
+    "title": "Our Products Sai Kit by German Care",
+    "description": "Discover our premium formulas designed specifically for your sacred journey. Every product delivers the comfort, protection, and confidence you need to focus entirely on your pilgrimage.",
     "addToCartShort": "Add to Cart",
     "addToCart": "Add to Cart",
     "moreInfo": "More Info",
@@ -279,8 +282,8 @@
   "ourStory": {
     "_comment": "Our Story section used in app/components/OurStory.tsx",
     "eyebrow": "Our Story",
-    "title": "Rooted in German care, built for everyday confidence",
-    "description": "Sai was founded on a simple belief. Everyone deserves access to high-quality skincare inspired by German standards of precision, safety, and care. From ingredient selection to final delivery, every step reflects our commitment to your well-being.",
+    "title": "Rooted in German Care, built for your absolute confidence.",
+    "description": "Sai was founded on a simple belief: everyone deserves access to premium skincare. By partnering with German Care, we ensure every ingredient selection and production step reflects the highest standards of safety, precision, and quality.",
     "learnMore": { "label": "Learn More", "href": "#" },
     "stats": [
       {
@@ -400,7 +403,7 @@
     "contactEmail": "support@saibrand.com",
     "contactAvailability": "Available Worldwide (depending on shipping zones)",
     "trustLine": "Secure payments • Fast shipping • Trusted quality",
-    "copyright": "© 2026 Sai Brand. All rights reserved.",
+    "copyright": "© 2026 Sai Brand. Developed and Distributed by GII. All rights reserved.",
     "tagline": "Crafted with care for your everyday confidence."
   }
 }

@@ -30,9 +30,9 @@ export default function Hero() {
   return (
     <section id="hero" className="grid bg-[#F1E5DC] md:min-h-[calc(100svh-4rem)] md:grid-cols-2">
       <div className="order-2 flex flex-col items-center justify-start gap-4 bg-[#F1E5DC] px-6 pb-10 pt-4 text-center sm:px-10 sm:pb-12 sm:pt-6 md:order-1 md:min-h-[calc(100svh-4rem)] md:items-start md:justify-center md:px-12 md:py-16 md:text-left lg:px-16 xl:px-20">
-        <h1 className="text-3xl font-bold leading-tight text-dark-green sm:text-4xl lg:text-5xl xl:text-6xl">
-          {hero.headline.map((line) => (
-            <span key={line} className="block">
+        <h1 className="text-base font-bold leading-tight text-dark-green sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
+          {hero.headline.map((line, index) => (
+            <span key={index} className="block whitespace-nowrap">
               {line}
             </span>
           ))}
