@@ -166,7 +166,7 @@ export default function ShippingDeliveryDetails() {
               {quickNavigation}
             </h2>
 
-            <ul className="mt-4 space-y-1">
+            <ul className="mt-4 max-h-[70vh] space-y-1 overflow-y-auto">
               {sections.map((section, index) => {
                 const Icon = sectionIcons[index] ?? LuFileText;
                 const isActive = activeId === section.id;
