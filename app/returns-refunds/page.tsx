@@ -1,7 +1,6 @@
 import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar";
-import ReturnsRefundDetails from "@/app/components/ReturnsRefundDetails";
-import ReturnsRefundHero from "@/app/components/ReturnsRefundHero";
+import ReturnFund from "@/app/components/ReturnFund";
 import TrustStrip from "@/app/components/TrustStrip";
 import { CookieConsentProvider } from "@/app/i18n/CookieConsentProvider";
 import { LocaleProvider } from "@/app/i18n/LocaleProvider";
@@ -13,8 +12,7 @@ export default function ReturnsRefundPage() {
         <div className="flex min-h-screen flex-col bg-warm-white text-dark-green">
           <Navbar />
           <TrustStrip />
-          <ReturnsRefundHero />
-          <ReturnsRefundDetails />
+          <ReturnFund />
           <Footer />
         </div>
       </CookieConsentProvider>

@@ -522,10 +522,6 @@
         "href": "/withdrawal-policy"
       },
       {
-        "label": "Widerrufsformular",
-        "href": "/withdrawal-form"
-      },
-      {
         "label": "Versand & Lieferung",
         "href": "/shipping-delivery"
       },
@@ -1221,6 +1217,199 @@
         "label": "Änderungen dieser AGB",
         "paragraphs": [
           "Wir können diese AGB von Zeit zu Zeit aktualisieren. Es gilt die zum Zeitpunkt der Bestellung gültige Fassung."
+        ]
+      }
+    ]
+  },
+  "withdrawalPolicy": {
+    "title": "Widerrufsbelehrung",
+    "lastUpdated": "Zuletzt aktualisiert: 01.06.2026",
+    "paragraphs": [
+      "Diese Widerrufsbelehrung gilt für Verbraucherkäufe über www.german-care.com",
+      "Diese Belehrung gilt nur für Verbraucher. Ein Verbraucher ist eine natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt, die überwiegend weder ihrer gewerblichen noch ihrer selbständigen beruflichen Tätigkeit zugerechnet werden können."
+    ],
+    "quickNavigation": "Schnellnavigation",
+    "sections": [
+      {
+        "id": "right-of-withdrawal",
+        "label": "Widerrufsrecht",
+        "paragraphs": [
+          "Verbraucher haben in der Regel das Recht, einen Fernabsatzvertrag innerhalb von vierzehn (14) Tagen ohne Angabe von Gründen zu widerrufen.",
+          "Die Widerrufsfrist beträgt vierzehn (14) Tage ab dem Tag, an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, die Ware in Besitz genommen haben.",
+          "Bei einer Bestellung, die in mehreren Teillieferungen geliefert wird, beginnt die Widerrufsfrist an dem Tag, an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, die letzte Ware in Besitz genommen haben.",
+          "EU-Verbraucherregeln bestätigen, dass Verbraucher Fernabsatzkäufe in der Regel innerhalb von 14 Tagen ab Lieferung widerrufen können, vorbehaltlich bestimmter Ausnahmen. Wird der Verbraucher nicht ordnungsgemäß über das Widerrufsrecht informiert, kann sich die Widerrufsfrist verlängern."
+        ]
+      },
+      {
+        "id": "how-to-exercise",
+        "label": "Ausübung des Widerrufsrechts",
+        "paragraphs": [
+          "Um Ihr Widerrufsrecht auszuüben, müssen Sie uns Ihre Entscheidung, den Vertrag zu widerrufen, durch eine eindeutige Erklärung mitteilen, zum Beispiel per E-Mail oder Brief.",
+          "Bitte senden Sie Ihre Widerrufserklärung an: info@german-care.com",
+          "Sie können das nachstehende Muster-Widerrufsformular verwenden, dies ist jedoch nicht zwingend.",
+          "Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie Ihre Widerrufserklärung vor Ablauf der Widerrufsfrist absenden."
+        ]
+      },
+      {
+        "id": "effects-of-withdrawal",
+        "label": "Folgen des Widerrufs",
+        "paragraphs": [
+          "Wenn Sie den Vertrag widerrufen, erstatten wir alle von Ihnen erhaltenen Zahlungen, einschließlich der Standardlieferkosten, unverzüglich und spätestens innerhalb von vierzehn (14) Tagen ab dem Tag, an dem wir Ihre Widerrufserklärung erhalten haben.",
+          "Dies gilt nicht für zusätzliche Lieferkosten, die aus Ihrer Wahl einer anderen Lieferart als der von uns angebotenen günstigsten Standardlieferung resultieren.",
+          "Wir verwenden für die Erstattung dieselbe Zahlungsmethode, die Sie bei der ursprünglichen Transaktion verwendet haben, sofern nicht ausdrücklich anders vereinbart. Ihnen werden keine Erstattungsgebühren berechnet.",
+          "Wir können die Erstattung zurückhalten, bis wir die Waren zurückerhalten haben oder bis Sie den Nachweis erbracht haben, dass Sie die Waren zurückgesandt haben, je nachdem, welches Ereignis früher eintritt."
+        ]
+      },
+      {
+        "id": "return-of-goods",
+        "label": "Rücksendung der Waren",
+        "paragraphs": [
+          "Sie müssen die Waren unverzüglich und in jedem Fall spätestens innerhalb von vierzehn (14) Tagen ab dem Tag, an dem Sie uns über Ihren Widerruf informiert haben, an uns zurückzusenden oder zu übergeben.",
+          "Die Frist ist gewahrt, wenn Sie die Waren vor Ablauf der vierzehn (14) Tage absenden.",
+          "Rücksendeadresse: wird per E-Mail mitgeteilt."
+        ]
+      },
+      {
+        "id": "return-shipping-costs",
+        "label": "Rücksendekosten",
+        "paragraphs": [
+          "Sie tragen die direkten Kosten der Rücksendung der Waren, sofern wir nichts anderes vereinbart haben oder sofern zwingendes Recht nichts anderes vorsieht."
+        ]
+      },
+      {
+        "id": "loss-of-value",
+        "label": "Wertminderung",
+        "paragraphs": [
+          "Sie haften nur für einen etwaigen Wertverlust der Waren, der auf einen Umgang mit den Waren zurückzuführen ist, der zur Prüfung der Beschaffenheit, Eigenschaften und Funktionsweise der Waren nicht notwendig war.",
+          "Das bedeutet, Sie dürfen die Produkte in einer Weise prüfen, die mit der Prüfung in einem Ladengeschäft vergleichbar ist. Übermäßige Nutzung, Beschädigung, Kontamination, Entfernung von Hygienesiegeln oder Nutzung über die Prüfung hinaus kann den Erstattungsbetrag nach geltendem Recht mindern oder ausschließen."
+        ]
+      },
+      {
+        "id": "hygiene-sealed-exclusion",
+        "label": "Ausschluss des Widerrufs bei versiegelten Hygieneprodukten",
+        "paragraphs": [
+          "Das Widerrufsrecht besteht nicht bei versiegelten Waren, die aus Gründen des Gesundheitsschutzes oder der Hygiene nicht zur Rückgabe geeignet sind, wenn ihre Versiegelung nach der Lieferung entfernt wurde.",
+          "Dies kann für Kosmetik- und Körperpflegeprodukte gelten, einschließlich, aber nicht beschränkt auf:",
+          "Aus Gründen der Hygiene und des Gesundheitsschutzes können wir keine Rückgaben von Produkten annehmen, die geöffnet, unversiegelt, benutzt, kontaminiert, beschädigt wurden oder bei denen das Hygienesiegel, Sicherheitssiegel, Schutzverpackung oder manipulationssichere Verschlüsse nach der Lieferung entfernt wurden.",
+          "Dieser Ausschluss basiert auf den Regeln des Bürgerlichen Gesetzbuchs für versiegelte Waren, die nach Entfernung der Versiegelung nach Lieferung aus Gründen des Gesundheitsschutzes oder der Hygiene zur Rückgabe ungeeignet sind."
+        ],
+        "items": [
+          "Cremes",
+          "Deodorants",
+          "Shampoos",
+          "Sonnenschutzmittel",
+          "Pflegesets",
+          "Produkte mit Hygienesiegeln, Sicherheitssiegeln, Schutzverpackungen oder manipulationssicheren Verschlüssen"
+        ]
+      },
+      {
+        "id": "defective-incorrect-products",
+        "label": "Defekte oder falsche Produkte",
+        "paragraphs": [
+          "Der Ausschluss für geöffnete hygieneempfindliche Produkte berührt nicht Ihre gesetzlichen Rechte, wenn das Produkt defekt, beschädigt oder falsch geliefert wurde.",
+          "Wenn Sie ein defektes, beschädigtes oder falsches Produkt erhalten, kontaktieren Sie uns bitte so schnell wie möglich unter: info@german-care.com"
+        ],
+        "itemsIntro": "Bitte geben Sie an:",
+        "items": [
+          "Ihre Bestellnummer",
+          "eine kurze Beschreibung des Problems",
+          "Fotos des Produkts und der Verpackung",
+          "Ihre bevorzugte Lösung"
+        ]
+      },
+      {
+        "id": "business-customers",
+        "label": "Kein Widerrufsrecht für Geschäftskunden",
+        "paragraphs": [
+          "Das gesetzliche Verbraucherwiderrufsrecht gilt nicht für Geschäftskunden, Wiederverkäufer, Distributoren oder Kunden, die im Rahmen von Handel, Gewerbe oder beruflicher Tätigkeit handeln."
+        ]
+      },
+      {
+        "id": "electronic-withdrawal",
+        "label": "Elektronische Widerrufsfunktion",
+        "paragraphs": [
+          "Wo gesetzlich erforderlich, stellen wir auf unserer Website eine elektronische Widerrufsfunktion bereit.",
+          "Ab dem 19. Juni 2026 führt Deutschland unter § 356a BGB eine neue Anforderung für eine elektronische Widerrufsfunktion für bestimmte Online-B2C-Fernabsatzverträge ein, die über eine Online-Benutzeroberfläche geschlossen werden. Unternehmen sollten sicherstellen, dass die Widerrufsfunktion während der Widerrufsfrist klar zugänglich ist."
+        ],
+        "items": [
+          "Empfohlene Button-Formulierung: Vom Vertrag zurücktreten",
+          "Empfohlene Bestätigungsformulierung: Widerruf bestätigen"
+        ]
+      },
+      {
+        "id": "model-withdrawal-form",
+        "label": "Muster-Widerrufsformular",
+        "paragraphs": [
+          "Sie können das folgende Formular verwenden, dies ist jedoch nicht zwingend."
+        ],
+        "formTitle": "Muster-Widerrufsformular",
+        "formLines": [
+          "E-Mail: info@german-care.com",
+          "Hiermit widerrufe(n) ich/wir den von mir/uns abgeschlossenen Vertrag über den Kauf der folgenden Waren:",
+          "Produkt(e): _______________________________",
+          "Bestellnummer: ____________________________",
+          "Unterschrift des/der Verbraucher(s), nur bei Mitteilung auf Papier:"
+        ]
+      }
+    ]
+  },
+  "legalNotice": {
+    "title": "Impressum",
+    "quickNavigation": "Schnellnavigation",
+    "sections": [
+      {
+        "id": "company-information",
+        "label": "Unternehmensangaben",
+        "paragraphs": [
+          "Marke / Online-Shop: SAI / German Care",
+          "Website: https://www.german-care.com",
+          "Kontakt: E-Mail: info@german-care.com",
+          "Handelsregister:",
+          "Eingetragen beim: Amtsgericht Charlottenburg",
+          "Handelsregisternummer: HRB163859 B",
+          "USt-IdNr.:",
+          "Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:",
+          "DE298512908"
+        ]
+      },
+      {
+        "id": "dispute-resolution",
+        "label": "EU-Streitbeilegung / Verbraucherschlichtung",
+        "paragraphs": [
+          "Die Europäische Kommission stellte zuvor eine Online-Streitbeilegungsplattform für Verbraucherstreitigkeiten bereit. Bitte prüfen Sie die aktuell erforderliche Formulierung vor der Veröffentlichung.",
+          "Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+        ]
+      },
+      {
+        "id": "liability-content",
+        "label": "Haftung für Inhalte",
+        "paragraphs": [
+          "Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Wir sind jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.",
+          "Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte unverzüglich entfernen."
+        ]
+      },
+      {
+        "id": "liability-links",
+        "label": "Haftung für Links",
+        "paragraphs": [
+          "Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.",
+          "Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links unverzüglich entfernen."
+        ]
+      },
+      {
+        "id": "copyright",
+        "label": "Urheberrecht",
+        "paragraphs": [
+          "Die auf dieser Website veröffentlichten Inhalte, Texte, Bilder, Produktfotos, Grafiken, Design, Logos, Produktnamen und sonstigen Materialien sind urheberrechtlich und durch andere Schutzrechte geschützt.",
+          "Jede Vervielfältigung, Bearbeitung, Verbreitung, Speicherung oder Nutzung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers."
+        ]
+      },
+      {
+        "id": "product-brand-notice",
+        "label": "Produkt- und Markenhinweis",
+        "paragraphs": [
+          "SAI- und German-Care-Produktnamen, Verpackungsdesigns, Produktbilder, Beschreibungen und zugehörige Markenelemente werden zur Präsentation und zum Verkauf von Körperpflege- und Kosmetikprodukten verwendet.",
+          "Alle Produktinformationen werden sorgfältig bereitgestellt. Verpackung, Design, Inhaltsstoffe, Größen oder Beschreibungen können jedoch von Zeit zu Zeit aktualisiert werden. Kunden sollten vor der Anwendung stets die Angaben auf der Produktverpackung lesen."
         ]
       }
     ]

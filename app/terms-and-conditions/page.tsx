@@ -1,5 +1,4 @@
-import ConditionDetails from "@/app/components/ConditionDetails";
-import ConditionHero from "@/app/components/ConditionHero";
+import Condition from "@/app/components/Condition";
 import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar";
 import TrustStrip from "@/app/components/TrustStrip";
@@ -13,8 +12,7 @@ export default function TermsConditionsPage() {
         <div className="flex min-h-screen flex-col bg-warm-white text-dark-green">
           <Navbar />
           <TrustStrip />
-          <ConditionHero />
-          <ConditionDetails />
+          <Condition />
           <Footer />
         </div>
       </CookieConsentProvider>

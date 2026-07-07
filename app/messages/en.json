@@ -522,10 +522,6 @@
         "href": "/withdrawal-policy"
       },
       {
-        "label": "Withdrawal Form",
-        "href": "/withdrawal-form"
-      },
-      {
         "label": "Shipping & Delivery",
         "href": "/shipping-delivery"
       },
@@ -1221,6 +1217,199 @@
         "label": "Changes to These Terms",
         "paragraphs": [
           "We may update these Terms from time to time. The version applicable at the time of the order applies."
+        ]
+      }
+    ]
+  },
+  "withdrawalPolicy": {
+    "title": "Withdrawal Policy",
+    "lastUpdated": "Last updated: 01.06.2026",
+    "paragraphs": [
+      "This Withdrawal Policy applies to consumer purchases made through www.german-care.com",
+      "This policy applies only to consumers. A consumer is a natural person who enters into a legal transaction for purposes that are predominantly outside their trade, business, or profession."
+    ],
+    "quickNavigation": "Quick Navigation",
+    "sections": [
+      {
+        "id": "right-of-withdrawal",
+        "label": "Right of Withdrawal",
+        "paragraphs": [
+          "Consumers generally have the right to withdraw from a distance contract within fourteen (14) days without giving any reason.",
+          "The withdrawal period is fourteen (14) days from the day on which you, or a third party designated by you other than the carrier, take possession of the goods.",
+          "For an order delivered in several partial shipments, the withdrawal period begins on the day on which you, or a third party designated by you other than the carrier, take possession of the last goods.",
+          "EU consumer rules confirm that consumers can generally withdraw from distance purchases within 14 days from delivery, subject to certain exceptions. If the consumer is not properly informed about the withdrawal right, the withdrawal period may be extended."
+        ]
+      },
+      {
+        "id": "how-to-exercise",
+        "label": "How to Exercise the Right of Withdrawal",
+        "paragraphs": [
+          "To exercise your right of withdrawal, you must inform us of your decision to withdraw from the contract by a clear statement, for example by email or letter.",
+          "Please send your withdrawal notice to: info@german-care.com",
+          "You may use the model withdrawal form below, but this is not mandatory.",
+          "To meet the withdrawal deadline, it is sufficient that you send your withdrawal notice before the withdrawal period expires."
+        ]
+      },
+      {
+        "id": "effects-of-withdrawal",
+        "label": "Effects of Withdrawal",
+        "paragraphs": [
+          "If you withdraw from the contract, we will reimburse all payments received from you, including the standard delivery costs, without undue delay and no later than fourteen (14) days from the day on which we receive your withdrawal notice.",
+          "This does not apply to additional delivery costs resulting from your choice of a delivery method other than the least expensive standard delivery offered by us.",
+          "We will use the same payment method for the refund that you used for the original transaction, unless expressly agreed otherwise. You will not be charged any refund fees.",
+          "We may withhold reimbursement until we have received the goods back or until you have provided evidence that you have returned the goods, whichever occurs earlier."
+        ]
+      },
+      {
+        "id": "return-of-goods",
+        "label": "Return of Goods",
+        "paragraphs": [
+          "You must return or hand over the goods to us without undue delay and no later than fourteen (14) days from the day on which you informed us of your withdrawal.",
+          "The deadline is met if you send the goods before the fourteen (14) day period expires.",
+          "Return address: will be sent by email."
+        ]
+      },
+      {
+        "id": "return-shipping-costs",
+        "label": "Return Shipping Costs",
+        "paragraphs": [
+          "You bear the direct cost of returning the goods, unless we have agreed otherwise or unless mandatory law provides otherwise."
+        ]
+      },
+      {
+        "id": "loss-of-value",
+        "label": "Loss of Value",
+        "paragraphs": [
+          "You are only liable for any diminished value of the goods resulting from handling the goods beyond what is necessary to establish their nature, characteristics, and functioning.",
+          "This means you may inspect the products in a way comparable to checking them in a physical shop. However, excessive use, damage, contamination, removal of hygiene seals, or use beyond inspection may reduce or exclude the refund amount, subject to applicable law."
+        ]
+      },
+      {
+        "id": "hygiene-sealed-exclusion",
+        "label": "Exclusion of Withdrawal for Hygiene-Sealed Goods",
+        "paragraphs": [
+          "The right of withdrawal does not apply to sealed goods that are not suitable for return for reasons of health protection or hygiene if their seal has been removed after delivery.",
+          "This may apply to cosmetic and personal care products, including but not limited to:",
+          "For hygiene and health protection reasons, we cannot accept returns of products that have been opened, unsealed, used, contaminated, damaged, or where the hygiene seal, safety seal, protective wrapping, or tamper-evident closure has been removed after delivery.",
+          "This exclusion is based on the German Civil Code rules for sealed goods that are unsuitable for return for health protection or hygiene reasons once unsealed after delivery."
+        ],
+        "items": [
+          "creams",
+          "deodorants",
+          "shampoos",
+          "sun protection products",
+          "personal care kits",
+          "products with hygiene seals, safety seals, protective wrapping, or tamper-evident closures"
+        ]
+      },
+      {
+        "id": "defective-incorrect-products",
+        "label": "Defective or Incorrect Products",
+        "paragraphs": [
+          "The exclusion for opened hygiene-sensitive products does not affect your statutory rights if the product is defective, damaged, or incorrectly delivered.",
+          "If you receive a defective, damaged, or incorrect product, please contact us as soon as possible at: info@german-care.com"
+        ],
+        "itemsIntro": "Please include:",
+        "items": [
+          "your order number",
+          "a short description of the issue",
+          "photos of the product and packaging",
+          "your preferred solution"
+        ]
+      },
+      {
+        "id": "business-customers",
+        "label": "No Withdrawal Right for Business Customers",
+        "paragraphs": [
+          "The statutory consumer right of withdrawal does not apply to business customers, resellers, distributors, or customers acting in the course of trade, business, or professional activity."
+        ]
+      },
+      {
+        "id": "electronic-withdrawal",
+        "label": "Electronic Withdrawal Function",
+        "paragraphs": [
+          "Where legally required, we provide an electronic withdrawal function on our website.",
+          "From 19 June 2026, Germany introduces a new electronic withdrawal function requirement under § 356a BGB for certain online B2C distance contracts concluded through an online user interface. Businesses should make sure the withdrawal function is clearly accessible during the withdrawal period."
+        ],
+        "items": [
+          "Recommended button wording: Withdraw from Contract",
+          "Recommended confirmation wording: Confirm Withdrawal"
+        ]
+      },
+      {
+        "id": "model-withdrawal-form",
+        "label": "Model Withdrawal Form",
+        "paragraphs": [
+          "You may use the following form, but it is not mandatory."
+        ],
+        "formTitle": "Model Withdrawal Form",
+        "formLines": [
+          "Email: info@german-care.com",
+          "I/we hereby withdraw from the contract concluded by me/us for the purchase of the following goods:",
+          "Product(s): _______________________________",
+          "Order number: ____________________________",
+          "Signature of consumer(s), only if submitted on paper:"
+        ]
+      }
+    ]
+  },
+  "legalNotice": {
+    "title": "Legal Notice",
+    "quickNavigation": "Quick Navigation",
+    "sections": [
+      {
+        "id": "company-information",
+        "label": "Company Information",
+        "paragraphs": [
+          "Brand / Online shop: SAI / German Care",
+          "Website: https://www.german-care.com",
+          "Contact: Email: info@german-care.com",
+          "Commercial Register:",
+          "Registered with: Amtsgericht Charlottenburg",
+          "Commercial register number: HRB163859 B",
+          "VAT ID:",
+          "VAT identification number according to § 27a German VAT Act:",
+          "DE298512908"
+        ]
+      },
+      {
+        "id": "dispute-resolution",
+        "label": "EU Online Dispute Resolution / Consumer Dispute Resolution",
+        "paragraphs": [
+          "The European Commission previously provided an online dispute resolution platform for consumer disputes. Please verify the current required wording before publication.",
+          "We are not obliged and not willing to participate in dispute resolution proceedings before a consumer arbitration board."
+        ]
+      },
+      {
+        "id": "liability-content",
+        "label": "Liability for Content",
+        "paragraphs": [
+          "As a service provider, we are responsible for our own content on these pages under the general laws. However, we are not obliged to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity.",
+          "Obligations to remove or block the use of information under general law remain unaffected. Liability in this respect is only possible from the time we become aware of a specific legal infringement. Upon becoming aware of such infringements, we will remove the relevant content without undue delay."
+        ]
+      },
+      {
+        "id": "liability-links",
+        "label": "Liability for Links",
+        "paragraphs": [
+          "Our website may contain links to external third-party websites. We have no influence over the current or future content of those external websites. Therefore, we cannot accept liability for external content.",
+          "The respective provider or operator of the linked pages is always responsible for their content. If we become aware of any legal infringement, we will remove such links without undue delay."
+        ]
+      },
+      {
+        "id": "copyright",
+        "label": "Copyright",
+        "paragraphs": [
+          "The content, texts, images, product photos, graphics, design, logos, product names, and other materials published on this website are protected by copyright and other intellectual property laws.",
+          "Any reproduction, editing, distribution, storage, or use beyond the limits of copyright law requires prior written consent from the respective rights holder."
+        ]
+      },
+      {
+        "id": "product-brand-notice",
+        "label": "Product and Brand Notice",
+        "paragraphs": [
+          "SAI and German Care product names, packaging designs, product images, descriptions, and related brand elements are used for the presentation and sale of personal care and cosmetic products.",
+          "All product information is provided with care. However, product packaging, design, ingredients, sizes, or descriptions may be updated from time to time. Customers should always read the information provided on the product packaging before use."
         ]
       }
     ]
