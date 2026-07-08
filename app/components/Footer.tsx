@@ -88,7 +88,13 @@ export default function Footer() {
               {contactTitle}
             </h4>
             <div className="mt-4 flex flex-col gap-3 text-sm text-beige/80 sm:text-base">
-              <p>{contactPrompt}</p>
+              <a
+                href="#contact"
+                onClick={(event) => handleSectionClick(event, "#contact")}
+                className="transition-colors hover:text-beige"
+              >
+                {contactPrompt}
+              </a>
               <a
                 href={`mailto:${contactEmail}`}
                 className="transition-colors hover:text-beige"
