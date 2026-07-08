@@ -1,4 +1,4 @@
-import CTA from "@/app/components/CTA";
+import ContactForm from "@/app/components/ContactForm";
 import FAQ from "@/app/components/FAQ";
 import Footer from "@/app/components/Footer";
 import Hero from "@/app/components/Hero";
@@ -33,7 +33,7 @@ export default function Home() {
           <FAQ />
         </ScrollOnReveal>
         <ScrollOnReveal delay={100}>
-          <CTA />
+          <ContactForm />
         </ScrollOnReveal>
         <ScrollOnReveal delay={100}>
           <Footer />

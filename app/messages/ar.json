@@ -398,7 +398,7 @@
     "description": "اعثر على إجابات سريعة ومفيدة حول Sai Brand ومنتجاتنا والشحن وكل ما تحتاج معرفته لتجربة تسوق سلسة وواثقة.",
     "contactUs": {
       "label": "تواصل معنا",
-      "href": "#"
+      "href": "#contact"
     },
     "viewMore": "عرض المزيد",
     "viewLess": "عرض أقل",
@@ -458,19 +458,6 @@
         "answer": "لاستفسارات التوزيع في دول الخليج أو البيع بالجملة أو الشراكة، تواصل معنا على support@saibrand.com أو استخدم زر تواصل معنا في هذه الصفحة."
       }
     ]
-  },
-  "cta": {
-    "_comment": "قسم الدعوة لاتخاذ إجراء — يُستخدم في app/components/CTA.tsx",
-    "title": "اختبر الفرق الذي تصنعه ساي في عنايتك اليومية.",
-    "description": "اكتشف منتجات عالية الجودة مصممة لتجلب الراحة والعناية والثقة إلى روتينك اليومي. ابدأ رحلتك مع ساي اليوم.",
-    "shopNow": {
-      "label": "تسوق الآن",
-      "href": "#"
-    },
-    "exploreProducts": {
-      "label": "استكشف المنتجات",
-      "href": "#"
-    }
   },
   "footer": {
     "_comment": "قسم التذييل — يُستخدم في app/components/Footer.tsx",
@@ -1413,5 +1400,47 @@
         ]
       }
     ]
+  },
+  "contactForm": {
+    "_comment": "نموذج التواصل — يُستخدم في app/components/ContactForm.tsx",
+    "title": "تواصل معنا",
+    "subtitle": "أي سؤال أو ملاحظة؟ ما عليك سوى مراسلتنا!",
+    "infoTitle": "معلومات التواصل",
+    "infoDescription": "املأ النموذج وسيتواصل معك فريقنا خلال 24 ساعة.",
+    "phone": "+49 30 0000 0000",
+    "email": "info@german-care.com",
+    "location": "برلين، ألمانيا",
+    "firstNameLabel": "الاسم الأول",
+    "lastNameLabel": "اسم العائلة",
+    "firstNamePlaceholder": "أحمد",
+    "lastNamePlaceholder": "علي",
+    "emailLabel": "البريد الإلكتروني",
+    "phoneLabel": "الهاتف",
+    "emailPlaceholder": "hello@example.com",
+    "phonePlaceholder": "+49 170 0000000",
+    "inquiryLabel": "بماذا يمكننا مساعدتك؟",
+    "inquiryOptions": [
+      {
+        "id": "product-question",
+        "label": "سؤال عن المنتج"
+      },
+      {
+        "id": "order-support",
+        "label": "دعم الطلب"
+      },
+      {
+        "id": "wholesale",
+        "label": "الجملة / الشراكة"
+      },
+      {
+        "id": "other",
+        "label": "أخرى"
+      }
+    ],
+    "messageLabel": "الرسالة",
+    "messagePlaceholder": "اكتب رسالتك...",
+    "submitLabel": "إرسال الرسالة",
+    "successMessage": "شكرًا لتواصلك معنا. سنرد عليك خلال 24 ساعة.",
+    "errorMessage": "حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى لاحقًا."
   }
 }

@@ -398,7 +398,7 @@
     "description": "Find quick and helpful answers about Sai Brand, our products, shipping, and everything you need to know for a smooth and confident shopping experience.",
     "contactUs": {
       "label": "Contact Us",
-      "href": "#"
+      "href": "#contact"
     },
     "viewMore": "View More",
     "viewLess": "View Less",
@@ -458,19 +458,6 @@
         "answer": "For GCC distribution, wholesale, or partnership inquiries, please contact us at support@saibrand.com or use the Contact Us button on this page."
       }
     ]
-  },
-  "cta": {
-    "_comment": "Call-to-action section used in app/components/CTA.tsx",
-    "title": "Experience the difference Sai makes in your everyday care.",
-    "description": "Discover premium-quality products designed to bring comfort, care, and confidence into your daily routine. Start your journey with Sai today.",
-    "shopNow": {
-      "label": "Shop Now",
-      "href": "#"
-    },
-    "exploreProducts": {
-      "label": "Explore Products",
-      "href": "#"
-    }
   },
   "footer": {
     "_comment": "Footer section used in app/components/Footer.tsx",
@@ -1413,5 +1400,47 @@
         ]
       }
     ]
+  },
+  "contactForm": {
+    "_comment": "Contact form section used in app/components/ContactForm.tsx",
+    "title": "Contact Us",
+    "subtitle": "Any question or remarks? Just write us a message!",
+    "infoTitle": "Contact Information",
+    "infoDescription": "Fill up the form and our Team will get back to you within 24 hours.",
+    "phone": "+49 30 0000 0000",
+    "email": "info@german-care.com",
+    "location": "Berlin, Germany",
+    "firstNameLabel": "First Name",
+    "lastNameLabel": "Last Name",
+    "firstNamePlaceholder": "John",
+    "lastNamePlaceholder": "Doe",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "emailPlaceholder": "hello@example.com",
+    "phonePlaceholder": "+49 170 0000000",
+    "inquiryLabel": "What can we help you with?",
+    "inquiryOptions": [
+      {
+        "id": "product-question",
+        "label": "Product Question"
+      },
+      {
+        "id": "order-support",
+        "label": "Order Support"
+      },
+      {
+        "id": "wholesale",
+        "label": "Wholesale / Partnership"
+      },
+      {
+        "id": "other",
+        "label": "Other"
+      }
+    ],
+    "messageLabel": "Message",
+    "messagePlaceholder": "Write your message...",
+    "submitLabel": "Send Message",
+    "successMessage": "Thank you for reaching out. We will get back to you within 24 hours.",
+    "errorMessage": "Something went wrong while sending your message. Please try again later."
   }
 }

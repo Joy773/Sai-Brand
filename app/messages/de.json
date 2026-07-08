@@ -148,7 +148,7 @@
         "label": "Vegan",
         "description": "Ohne tierische Inhaltsstoffe für bewusste Pflege. Eine durchdachte Wahl für täglichen Komfort während Hajj und Umrah.",
         "hover": {
-          "id": "dermatologically-tested",
+        "id": "dermatologically-tested",
           "label": "Dermatologisch getestet",
           "description": "Streng unter dermatologischer Aufsicht geprüft. Sanfte, wirksame Formeln für den täglichen Gebrauch auf der Pilgerreise."
         }
@@ -398,7 +398,7 @@
     "description": "Finden Sie schnelle und hilfreiche Antworten zu Sai Brand, unseren Produkten, dem Versand und allem, was Sie für ein reibungsloses und selbstbewusstes Einkaufserlebnis wissen müssen.",
     "contactUs": {
       "label": "Kontaktieren Sie uns",
-      "href": "#"
+      "href": "#contact"
     },
     "viewMore": "Mehr anzeigen",
     "viewLess": "Weniger anzeigen",
@@ -458,19 +458,6 @@
         "answer": "Für GCC-Vertrieb, Großhandel oder Partnerschaftsanfragen kontaktieren Sie uns unter support@saibrand.com oder nutzen Sie die Schaltfläche Kontaktieren Sie uns auf dieser Seite."
       }
     ]
-  },
-  "cta": {
-    "_comment": "Call-to-Action-Bereich — verwendet in app/components/CTA.tsx",
-    "title": "Erleben Sie den Unterschied, den Sai in Ihrer täglichen Pflege macht.",
-    "description": "Entdecken Sie Premium-Produkte, die Komfort, Pflege und Selbstvertrauen in Ihre tägliche Routine bringen. Starten Sie noch heute Ihre Reise mit Sai.",
-    "shopNow": {
-      "label": "Jetzt shoppen",
-      "href": "#"
-    },
-    "exploreProducts": {
-      "label": "Produkte entdecken",
-      "href": "#"
-    }
   },
   "footer": {
     "_comment": "Footer-Bereich — verwendet in app/components/Footer.tsx",
@@ -1413,5 +1400,47 @@
         ]
       }
     ]
+  },
+  "contactForm": {
+    "_comment": "Kontaktformular — verwendet in app/components/ContactForm.tsx",
+    "title": "Kontakt",
+    "subtitle": "Fragen oder Anmerkungen? Schreiben Sie uns einfach eine Nachricht!",
+    "infoTitle": "Kontaktinformationen",
+    "infoDescription": "Füllen Sie das Formular aus und unser Team meldet sich innerhalb von 24 Stunden bei Ihnen.",
+    "phone": "+49 30 0000 0000",
+    "email": "info@german-care.com",
+    "location": "Berlin, Deutschland",
+    "firstNameLabel": "Vorname",
+    "lastNameLabel": "Nachname",
+    "firstNamePlaceholder": "Max",
+    "lastNamePlaceholder": "Mustermann",
+    "emailLabel": "E-Mail",
+    "phoneLabel": "Telefon",
+    "emailPlaceholder": "hallo@beispiel.de",
+    "phonePlaceholder": "+49 170 0000000",
+    "inquiryLabel": "Wobei können wir Ihnen helfen?",
+    "inquiryOptions": [
+      {
+        "id": "product-question",
+        "label": "Produktfrage"
+      },
+      {
+        "id": "order-support",
+        "label": "Bestellsupport"
+      },
+      {
+        "id": "wholesale",
+        "label": "Großhandel / Partnerschaft"
+      },
+      {
+        "id": "other",
+        "label": "Sonstiges"
+      }
+    ],
+    "messageLabel": "Nachricht",
+    "messagePlaceholder": "Schreiben Sie Ihre Nachricht...",
+    "submitLabel": "Nachricht senden",
+    "successMessage": "Vielen Dank für Ihre Nachricht. Wir melden uns innerhalb von 24 Stunden bei Ihnen.",
+    "errorMessage": "Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
   }
 }
