@@ -39,7 +39,14 @@ export default function Hero() {
         </h1>
 
         <p className="mx-auto max-w-md text-sm leading-relaxed text-dark-green/70 md:mx-0 sm:text-base lg:text-lg">
-          {hero.subheading}
+          {(Array.isArray(hero.subheading)
+            ? hero.subheading
+            : [hero.subheading]
+          ).map((line, index) => (
+            <span key={index} className="block">
+              {line}
+            </span>
+          ))}
         </p>
 
         <div className="flex flex-col justify-center gap-3 pt-2 sm:flex-row sm:flex-wrap md:justify-start">
