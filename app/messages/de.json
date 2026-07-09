@@ -38,7 +38,11 @@
       "_comment": "Barrierefreiheits-Labels für den mobilen Hamburger-Button",
       "open": "Menü öffnen",
       "close": "Menü schließen"
-    }
+    },
+    "cart": "Warenkorb anzeigen",
+    "signup": "Registrieren",
+    "logout": "Abmelden",
+    "logoutSuccess": "Abgemeldet"
   },
   "hero": {
     "_comment": "Hero-Bereich — verwendet in app/components/Hero.tsx",
@@ -356,6 +360,37 @@
     "_comment": "Aehnliche Produkte — verwendet in app/components/RelatedProducts.tsx",
     "title": "Aehnliche Produkte",
     "subtitle": "Auch nuetzlich fuer Hadsch & Umra"
+  },
+  "cart": {
+    "_comment": "Warenkorbseite — verwendet in app/components/Cart.tsx",
+    "title": "Warenkorb",
+    "empty": "Ihr Warenkorb ist leer.",
+    "continueShopping": "Weiter einkaufen",
+    "productDetails": "Produktdetails",
+    "subtotal": "Zwischensumme",
+    "action": "Aktion",
+    "weight": "Gewicht",
+    "weightNA": "k. A.",
+    "qty": "Menge",
+    "price": "Preis",
+    "quantity": "Menge",
+    "lineTotal": "Zwischensumme",
+    "total": "Gesamt",
+    "orderSummary": "Bestelluebersicht",
+    "deliveryAddress": "Lieferadresse",
+    "addressPlaceholder": "Geben Sie Ihre vollstaendige Lieferadresse ein (Strasse, Stadt, Postleitzahl, Land)",
+    "paymentMethod": "Zahlungsmethode",
+    "cashOnDelivery": "Nachnahme (COD)",
+    "onlinePayment": "Online-Zahlung",
+    "shippingFee": "Versandkosten",
+    "free": "Kostenlos",
+    "totalAmount": "Gesamtbetrag:",
+    "placeOrder": "Bestellung aufgeben",
+    "remove": "Artikel entfernen",
+    "decreaseQuantity": "Menge verringern",
+    "increaseQuantity": "Menge erhoehen",
+    "addedToCart": "In den Warenkorb gelegt",
+    "removedFromCart": "Aus dem Warenkorb entfernt"
   },
   "ourStory": {
     "_comment": "Unsere Geschichte — verwendet in app/components/OurStory.tsx",
@@ -1442,5 +1477,38 @@
     "submitLabel": "Nachricht senden",
     "successMessage": "Vielen Dank für Ihre Nachricht. Wir melden uns innerhalb von 24 Stunden bei Ihnen.",
     "errorMessage": "Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
+  },
+  "signupModal": {
+    "_comment": "Registrierungsmodal — verwendet in app/components/SignupModal.tsx",
+    "title": "Konto erstellen",
+    "subtitleBefore": "Haben Sie bereits ein Konto?",
+    "signInLink": "Anmelden",
+    "nameLabel": "Vollständiger Name",
+    "namePlaceholder": "Max Mustermann",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "hallo@beispiel.de",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Mindestens 8 Zeichen",
+    "confirmPasswordLabel": "Passwort bestätigen",
+    "confirmPasswordPlaceholder": "Passwort erneut eingeben",
+    "submitLabel": "Konto erstellen",
+    "close": "Schließen",
+    "successMessage": "Konto erfolgreich erstellt. Sie sind jetzt angemeldet.",
+    "errorMessage": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein."
+  },
+  "signInModal": {
+    "_comment": "Anmeldemodal — verwendet in app/components/SignInModal.tsx",
+    "title": "Anmelden",
+    "subtitleBefore": "Noch kein Konto?",
+    "signUpLink": "Registrieren",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "hallo@beispiel.de",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Passwort eingeben",
+    "submitLabel": "Anmelden",
+    "close": "Schließen",
+    "successMessage": "Erfolgreich angemeldet.",
+    "errorMessage": "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut."
   }
 }

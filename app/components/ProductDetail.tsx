@@ -13,6 +13,8 @@ import {
 import { useMessages } from "@/app/i18n/LocaleProvider";
 import { getKitProductTags, KIT_SLUG, productSlugs, type CatalogSlug } from "@/app/lib/products";
 import ProductTags from "@/app/components/ProductTags";
+import { showAddedToCartToast } from "@/app/lib/showAddedToCartToast";
+import { useCartStore } from "@/app/store/cart-store";
 
 const kitImages = ["/kit-1.png", "/kit-2.png", "/kit-3.png", "/kit-4.png"];
 
@@ -59,9 +61,11 @@ type ProductDetailProps = {
 
 export default function ProductDetail({ slug }: ProductDetailProps) {
   const { products, productPage } = useMessages();
+  const { addedToCart } = useMessages().cart;
   const [activeTab, setActiveTab] = useState<TabId>("keyBenefits");
   const [quantity, setQuantity] = useState(1);
   const isKit = slug === KIT_SLUG;
+  const addItem = useCartStore((state) => state.addItem);
 
   const product = isKit
     ? {
@@ -83,6 +87,16 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
   const activeContent = product.details?.[activeTab];
   const decreaseQuantity = () => setQuantity((current) => Math.max(1, current - 1));
   const increaseQuantity = () => setQuantity((current) => current + 1);
+  const handleAddToCart = () => {
+    addItem({
+      slug,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity,
+    });
+    showAddedToCartToast(addedToCart);
+  };
 
   return (
     <main className="flex-1 px-6 py-10 lg:px-8 lg:py-16">
@@ -187,6 +201,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
 
                 <button
                   type="button"
+                  onClick={handleAddToCart}
                   className="inline-flex w-fit min-w-0 shrink-0 items-center justify-center gap-2 self-start rounded-full bg-dark-green px-5 py-3 text-sm font-medium text-warm-white transition-colors hover:bg-dark-green/90 sm:w-auto sm:self-auto sm:px-6"
                 >
                   <LuShoppingCart className="h-4 w-4" aria-hidden />

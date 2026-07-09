@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import AppToaster from "@/app/components/AppToaster";
+import AuthSessionProvider from "@/app/components/SessionProvider";
 import { SITE_URL } from "@/app/lib/site";
 import "./globals.css";
 
@@ -29,7 +31,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <AuthSessionProvider>
+          {children}
+          <AppToaster />
+        </AuthSessionProvider>
+      </body>
     </html>
   );
 }

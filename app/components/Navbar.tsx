@@ -1,7 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
+import { LuShoppingCart } from "react-icons/lu";
+import { toast } from "sonner";
 import { codeToLocale } from "@/app/i18n/locales";
 import {
   useLocale,
@@ -10,6 +14,9 @@ import {
 } from "@/app/i18n/LocaleProvider";
 import type { LocaleCode } from "@/app/i18n/locales";
 import { handleSectionClick } from "@/app/lib/scrollToSection";
+import SignupModal from "@/app/components/SignupModal";
+import SignInModal from "@/app/components/SignInModal";
+import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
 
 function LanguageSwitcher({
   className = "",
@@ -54,9 +61,32 @@ function LanguageSwitcher({
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { navLinks, menu } = useMessages().navbar;
+  const [signupOpen, setSignupOpen] = useState(false);
+  const [signInOpen, setSignInOpen] = useState(false);
+  const { navLinks, menu, cart: cartLabel, signup, logout, logoutSuccess } =
+    useMessages().navbar;
+  const { status } = useSession();
+  const itemCount = useCartStore(selectCartItemCount);
+  const isAuthenticated = status === "authenticated";
+
+  const authButtonClassName =
+    "rounded-full bg-dark-green px-4 py-2 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90";
 
   const closeMenu = () => setMenuOpen(false);
+  const openSignup = () => {
+    closeMenu();
+    setSignInOpen(false);
+    setSignupOpen(true);
+  };
+  const openSignIn = () => {
+    setSignupOpen(false);
+    setSignInOpen(true);
+  };
+  const handleLogout = async () => {
+    closeMenu();
+    await signOut({ redirect: false });
+    toast.success(logoutSuccess);
+  };
 
   return (
     <header className="bg-[#F3E8DF]">
@@ -91,33 +121,66 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <LanguageSwitcher className="hidden md:flex" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSwitcher className="hidden md:flex" />
 
-        <button
-          type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-md text-dark-green transition-colors hover:text-dark-green/70 md:hidden"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-expanded={menuOpen}
-          aria-label={menuOpen ? menu.close : menu.open}
-        >
-          <span className="relative block h-4 w-5">
-            <span
-              className={`absolute left-0 block h-0.5 w-5 bg-current transition-all duration-200 ${
-                menuOpen ? "top-2 rotate-45" : "top-0"
-              }`}
-            />
-            <span
-              className={`absolute left-0 top-2 block h-0.5 w-5 bg-current transition-all duration-200 ${
-                menuOpen ? "opacity-0" : "opacity-100"
-              }`}
-            />
-            <span
-              className={`absolute left-0 block h-0.5 w-5 bg-current transition-all duration-200 ${
-                menuOpen ? "top-2 -rotate-45" : "top-4"
-              }`}
-            />
-          </span>
-        </button>
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className={`hidden md:inline-flex ${authButtonClassName}`}
+            >
+              {logout}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={openSignup}
+              className={`hidden md:inline-flex ${authButtonClassName}`}
+            >
+              {signup}
+            </button>
+          )}
+
+          <Link
+            href="/cart"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-dark-green transition-colors hover:text-dark-green/70"
+            aria-label={cartLabel}
+          >
+            <LuShoppingCart className="h-5 w-5" aria-hidden />
+            {itemCount > 0 ? (
+              <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-dark-green px-1 text-[10px] font-semibold text-warm-white">
+                {itemCount}
+              </span>
+            ) : null}
+          </Link>
+
+          <button
+            type="button"
+            className="flex h-10 w-10 items-center justify-center rounded-md text-dark-green transition-colors hover:text-dark-green/70 md:hidden"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? menu.close : menu.open}
+          >
+            <span className="relative block h-4 w-5">
+              <span
+                className={`absolute left-0 block h-0.5 w-5 bg-current transition-all duration-200 ${
+                  menuOpen ? "top-2 rotate-45" : "top-0"
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-2 block h-0.5 w-5 bg-current transition-all duration-200 ${
+                  menuOpen ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`absolute left-0 block h-0.5 w-5 bg-current transition-all duration-200 ${
+                  menuOpen ? "top-2 -rotate-45" : "top-4"
+                }`}
+              />
+            </span>
+          </button>
+        </div>
       </nav>
 
       <div
@@ -140,6 +203,25 @@ export default function Navbar() {
                 </a>
               </li>
             ))}
+            <li>
+              {isAuthenticated ? (
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className={`inline-flex ${authButtonClassName}`}
+                >
+                  {logout}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={openSignup}
+                  className={`inline-flex ${authButtonClassName}`}
+                >
+                  {signup}
+                </button>
+              )}
+            </li>
           </ul>
 
           <div className="mt-6 border-t border-dark-green/10 pt-4">
@@ -147,6 +229,17 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      <SignupModal
+        isOpen={signupOpen}
+        onClose={() => setSignupOpen(false)}
+        onOpenSignIn={openSignIn}
+      />
+      <SignInModal
+        isOpen={signInOpen}
+        onClose={() => setSignInOpen(false)}
+        onOpenSignup={openSignup}
+      />
     </header>
   );
 }

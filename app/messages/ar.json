@@ -38,7 +38,11 @@
       "_comment": "تسميات إمكانية الوصول لزر القائمة على الجوال",
       "open": "فتح القائمة",
       "close": "إغلاق القائمة"
-    }
+    },
+    "cart": "عرض السلة",
+    "signup": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "logoutSuccess": "تم تسجيل الخروج"
   },
   "hero": {
     "_comment": "قسم البطل — يُستخدم في app/components/Hero.tsx",
@@ -356,6 +360,37 @@
     "_comment": "قسم المنتجات ذات الصلة — يُستخدم في app/components/RelatedProducts.tsx",
     "title": "منتجات ذات صلة",
     "subtitle": "مفيد أيضاً للحج والعمرة"
+  },
+  "cart": {
+    "_comment": "صفحة السلة — تُستخدم في app/components/Cart.tsx",
+    "title": "سلة التسوق",
+    "empty": "سلتك فارغة.",
+    "continueShopping": "متابعة التسوق",
+    "productDetails": "تفاصيل المنتج",
+    "subtotal": "المجموع الفرعي",
+    "action": "إجراء",
+    "weight": "الوزن",
+    "weightNA": "غير متوفر",
+    "qty": "الكمية",
+    "price": "السعر",
+    "quantity": "الكمية",
+    "lineTotal": "المجموع الفرعي",
+    "total": "الإجمالي",
+    "orderSummary": "ملخص الطلب",
+    "deliveryAddress": "عنوان التوصيل",
+    "addressPlaceholder": "أدخل عنوان التوصيل الكامل (الشارع، المدينة، الرمز البريدي، الدولة)",
+    "paymentMethod": "طريقة الدفع",
+    "cashOnDelivery": "الدفع عند الاستلام",
+    "onlinePayment": "الدفع الإلكتروني",
+    "shippingFee": "رسوم الشحن",
+    "free": "مجاني",
+    "totalAmount": "المبلغ الإجمالي:",
+    "placeOrder": "تأكيد الطلب",
+    "remove": "إزالة المنتج",
+    "decreaseQuantity": "تقليل الكمية",
+    "increaseQuantity": "زيادة الكمية",
+    "addedToCart": "تمت الإضافة إلى السلة",
+    "removedFromCart": "تمت الإزالة من السلة"
   },
   "ourStory": {
     "_comment": "قسم قصتنا — يُستخدم في app/components/OurStory.tsx",
@@ -1442,5 +1477,38 @@
     "submitLabel": "إرسال الرسالة",
     "successMessage": "شكرًا لتواصلك معنا. سنرد عليك خلال 24 ساعة.",
     "errorMessage": "حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى لاحقًا."
+  },
+  "signupModal": {
+    "_comment": "نافذة التسجيل — تُستخدم في app/components/SignupModal.tsx",
+    "title": "إنشاء حساب",
+    "subtitleBefore": "لديك حساب بالفعل؟",
+    "signInLink": "تسجيل الدخول",
+    "nameLabel": "الاسم الكامل",
+    "namePlaceholder": "أحمد محمد",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "hello@example.com",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "8 أحرف على الأقل",
+    "confirmPasswordLabel": "تأكيد كلمة المرور",
+    "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور",
+    "submitLabel": "إنشاء حساب",
+    "close": "إغلاق",
+    "successMessage": "تم إنشاء الحساب بنجاح. أنت مسجّل الدخول الآن.",
+    "errorMessage": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "passwordMismatch": "كلمتا المرور غير متطابقتين."
+  },
+  "signInModal": {
+    "_comment": "نافذة تسجيل الدخول — تُستخدم في app/components/SignInModal.tsx",
+    "title": "تسجيل الدخول",
+    "subtitleBefore": "ليس لديك حساب؟",
+    "signUpLink": "إنشاء حساب",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "hello@example.com",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "submitLabel": "تسجيل الدخول",
+    "close": "إغلاق",
+    "successMessage": "تم تسجيل الدخول بنجاح.",
+    "errorMessage": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى."
   }
 }

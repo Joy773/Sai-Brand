@@ -11,6 +11,8 @@ import {
   type CatalogSlug,
 } from "@/app/lib/products";
 import ProductTags from "@/app/components/ProductTags";
+import { showAddedToCartToast } from "@/app/lib/showAddedToCartToast";
+import { useCartStore } from "@/app/store/cart-store";
 
 const cardHover =
   "transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none";
@@ -31,7 +33,32 @@ type RelatedProductsProps = {
 export default function RelatedProducts({ slug }: RelatedProductsProps) {
   const { title, subtitle } = useMessages().relatedProducts;
   const { addToCartShort, addToCart, moreInfo, kit, items } = useMessages().products;
+  const { addedToCart } = useMessages().cart;
   const kitTags = getKitProductTags(items);
+  const addItem = useCartStore((state) => state.addItem);
+
+  const handleAddKitToCart = () => {
+    addItem({
+      slug: KIT_SLUG,
+      name: kit.name,
+      price: kit.price,
+      image: "/kit-1.png",
+    });
+    showAddedToCartToast(addedToCart);
+  };
+
+  const handleAddProductToCart = (
+    productSlug: NonNullable<ReturnType<typeof getSlugFromImage>>,
+    product: (typeof items)[number],
+  ) => {
+    addItem({
+      slug: productSlug,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+    });
+    showAddedToCartToast(addedToCart);
+  };
 
   const relatedProducts = items.filter((product) => {
     const productSlug = getSlugFromImage(product.image);
@@ -112,7 +139,11 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                     <Link href={`/${KIT_SLUG}`} className={moreInfoButton}>
                       {moreInfo}
                     </Link>
-                    <button type="button" className={addToCartButton}>
+                    <button
+                      type="button"
+                      onClick={handleAddKitToCart}
+                      className={addToCartButton}
+                    >
                       <LuShoppingCart
                         className="h-3.5 w-3.5 sm:h-4 sm:w-4"
                         aria-hidden
@@ -173,7 +204,13 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                       <Link href={`/${productSlug}`} className={moreInfoButton}>
                         {moreInfo}
                       </Link>
-                      <button type="button" className={addToCartButton}>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleAddProductToCart(productSlug, product)
+                        }
+                        className={addToCartButton}
+                      >
                         <LuShoppingCart
                           className="h-3.5 w-3.5 sm:h-4 sm:w-4"
                           aria-hidden

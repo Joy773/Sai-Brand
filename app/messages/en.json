@@ -38,7 +38,11 @@
       "_comment": "Mobile hamburger button accessibility labels",
       "open": "Open menu",
       "close": "Close menu"
-    }
+    },
+    "cart": "View cart",
+    "signup": "Signup",
+    "logout": "Logout",
+    "logoutSuccess": "Logged out"
   },
   "hero": {
     "_comment": "Hero section strings used in app/components/Hero.tsx",
@@ -356,6 +360,37 @@
     "_comment": "Related products section used in app/components/RelatedProducts.tsx",
     "title": "Related Products",
     "subtitle": "Also Useful for Hajj & Umrah"
+  },
+  "cart": {
+    "_comment": "Cart page used in app/components/Cart.tsx",
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty.",
+    "continueShopping": "Continue Shopping",
+    "productDetails": "Product Details",
+    "subtotal": "Subtotal",
+    "action": "Action",
+    "weight": "Weight",
+    "weightNA": "N/A",
+    "qty": "Qty",
+    "price": "Price",
+    "quantity": "Quantity",
+    "lineTotal": "Subtotal",
+    "total": "Total",
+    "orderSummary": "Order Summary",
+    "deliveryAddress": "Delivery Address",
+    "addressPlaceholder": "Enter your full delivery address (street, city, postal code, country)",
+    "paymentMethod": "Payment Method",
+    "cashOnDelivery": "Cash On Delivery (COD)",
+    "onlinePayment": "Online Payment",
+    "shippingFee": "Shipping Fee",
+    "free": "Free",
+    "totalAmount": "Total Amount:",
+    "placeOrder": "Place Order",
+    "remove": "Remove item",
+    "decreaseQuantity": "Decrease quantity",
+    "increaseQuantity": "Increase quantity",
+    "addedToCart": "Added to Cart",
+    "removedFromCart": "Removed from Cart"
   },
   "ourStory": {
     "_comment": "Our Story section used in app/components/OurStory.tsx",
@@ -1442,5 +1477,38 @@
     "submitLabel": "Send Message",
     "successMessage": "Thank you for reaching out. We will get back to you within 24 hours.",
     "errorMessage": "Something went wrong while sending your message. Please try again later."
+  },
+  "signupModal": {
+    "_comment": "Signup modal used in app/components/SignupModal.tsx",
+    "title": "Create an account",
+    "subtitleBefore": "Already Has an account?",
+    "signInLink": "Sign In",
+    "nameLabel": "Full Name",
+    "namePlaceholder": "John Doe",
+    "emailLabel": "Email",
+    "emailPlaceholder": "hello@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "submitLabel": "Create Account",
+    "close": "Close",
+    "successMessage": "Account created successfully. You are now signed in.",
+    "errorMessage": "Something went wrong. Please try again.",
+    "passwordMismatch": "Passwords do not match."
+  },
+  "signInModal": {
+    "_comment": "Sign in modal used in app/components/SignInModal.tsx",
+    "title": "Sign In",
+    "subtitleBefore": "Don't have an account?",
+    "signUpLink": "Sign Up",
+    "emailLabel": "Email",
+    "emailPlaceholder": "hello@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submitLabel": "Sign In",
+    "close": "Close",
+    "successMessage": "Signed in successfully.",
+    "errorMessage": "Invalid email or password. Please try again."
   }
 }

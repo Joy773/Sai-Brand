@@ -7,6 +7,8 @@ import { LuCheck, LuShoppingCart } from "react-icons/lu";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 import { getKitProductTags, getSlugFromImage, KIT_SLUG } from "@/app/lib/products";
 import ProductTags from "@/app/components/ProductTags";
+import { showAddedToCartToast } from "@/app/lib/showAddedToCartToast";
+import { useCartStore } from "@/app/store/cart-store";
 
 const kitImages = [
   "/kit-1.png",
@@ -45,7 +47,32 @@ export default function Products() {
     kit,
     items: products,
   } = useMessages().products;
+  const { addedToCart } = useMessages().cart;
   const kitTags = getKitProductTags(products);
+  const addItem = useCartStore((state) => state.addItem);
+
+  const handleAddKitToCart = () => {
+    addItem({
+      slug: KIT_SLUG,
+      name: kit.name,
+      price: kit.price,
+      image: kitImages[activeKitImage],
+    });
+    showAddedToCartToast(addedToCart);
+  };
+
+  const handleAddProductToCart = (
+    slug: NonNullable<ReturnType<typeof getSlugFromImage>>,
+    product: (typeof products)[number],
+  ) => {
+    addItem({
+      slug,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+    });
+    showAddedToCartToast(addedToCart);
+  };
 
   return (
     <section id="products" className="bg-beige/30 px-6 py-16 lg:px-8 lg:py-24">
@@ -140,7 +167,11 @@ export default function Products() {
                 <Link href={`/${KIT_SLUG}`} className={moreInfoButton}>
                   {moreInfo}
                 </Link>
-                <button type="button" className={addToCartButton}>
+                <button
+                  type="button"
+                  onClick={handleAddKitToCart}
+                  className={addToCartButton}
+                >
                   <LuShoppingCart className="h-4 w-4" aria-hidden />
                   <span className="sm:hidden">{addToCartShort}</span>
                   <span className="hidden sm:inline">{addToCart}</span>
@@ -196,7 +227,11 @@ export default function Products() {
                     <Link href={`/${slug}`} className={productMoreInfoButton}>
                       {moreInfo}
                     </Link>
-                    <button type="button" className={productAddToCartButton}>
+                    <button
+                      type="button"
+                      onClick={() => handleAddProductToCart(slug, product)}
+                      className={productAddToCartButton}
+                    >
                       <LuShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
                       <span className="sm:hidden">{addToCartShort}</span>
                       <span className="hidden sm:inline">{addToCart}</span>
