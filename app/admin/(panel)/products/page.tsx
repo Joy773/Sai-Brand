@@ -6,7 +6,9 @@ import { LuTrash2 } from "react-icons/lu";
 import { toast } from "sonner";
 import AddProductModal, {
   type NewProductInput,
+  type ProductLocaleContent,
   type ProductStatus,
+  type ProductType,
 } from "@/app/components/AddProductModal";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 
@@ -14,87 +16,90 @@ type AdminProduct = {
   id: string;
   name: string;
   slug: string;
+  productType: ProductType;
   price: string;
   size: string;
   images: string[];
   status: ProductStatus;
-  description: string;
-  ingredients: string;
-  keyBenefits: string;
-  safetyNotes: string;
-  howToUse: string;
+  translations: {
+    en: ProductLocaleContent;
+    de: ProductLocaleContent;
+    ar: ProductLocaleContent;
+  };
 };
+
+const emptyLocaleContent = (): ProductLocaleContent => ({
+  name: "",
+  description: "",
+  ingredients: "",
+  keyBenefits: "",
+  safetyNotes: "",
+  howToUse: "",
+});
+
+function createTranslations(name: string): AdminProduct["translations"] {
+  return {
+    en: { ...emptyLocaleContent(), name },
+    de: emptyLocaleContent(),
+    ar: emptyLocaleContent(),
+  };
+}
 
 const initialProducts: AdminProduct[] = [
   {
     id: "PRD-001",
     name: "Hajj & Umrah Personal Care Kit",
     slug: "german-care-complete-kit",
+    productType: "kit",
     price: "€53.99",
     size: "4-piece travel kit",
     images: ["/hero-img.png"],
     status: "in_stock",
-    description: "",
-    ingredients: "",
-    keyBenefits: "",
-    safetyNotes: "",
-    howToUse: "",
+    translations: createTranslations("Hajj & Umrah Personal Care Kit"),
   },
   {
     id: "PRD-002",
     name: "Anti-Chafing Body Cream",
     slug: "anti-chafing-body-cream",
+    productType: "single",
     price: "€15.90",
     size: "50 ml",
     images: ["/anti-chafing-main.png"],
     status: "in_stock",
-    description: "",
-    ingredients: "",
-    keyBenefits: "",
-    safetyNotes: "",
-    howToUse: "",
+    translations: createTranslations("Anti-Chafing Body Cream"),
   },
   {
     id: "PRD-003",
     name: "Deodorant Roller – Fragrance-Free",
     slug: "deodorant-roller",
+    productType: "single",
     price: "€13.99",
     size: "50 ml",
     images: ["/deodoran-main.png"],
     status: "low_stock",
-    description: "",
-    ingredients: "",
-    keyBenefits: "",
-    safetyNotes: "",
-    howToUse: "",
+    translations: createTranslations("Deodorant Roller – Fragrance-Free"),
   },
   {
     id: "PRD-004",
     name: "Daily Use Shampoo – Fragrance-Free",
     slug: "daily-use-shampoo",
+    productType: "single",
     price: "€12.99",
     size: "100 ml",
     images: ["/shampoo-main.png"],
     status: "in_stock",
-    description: "",
-    ingredients: "",
-    keyBenefits: "",
-    safetyNotes: "",
-    howToUse: "",
+    translations: createTranslations("Daily Use Shampoo – Fragrance-Free"),
   },
   {
     id: "PRD-005",
     name: "Sunblock SPF 50+ with Hyaluronic Acid",
     slug: "sunblock-spf-50",
+    productType: "single",
     price: "€18.99",
     size: "60 ml",
     images: ["/sunblock-main.png"],
     status: "in_stock",
-    description: "",
-    ingredients: "",
-    keyBenefits: "",
-    safetyNotes: "",
-    howToUse: "",
+    translations: createTranslations("Sunblock SPF 50+ with Hyaluronic Acid"),
   },
 ];
 
@@ -102,33 +107,6 @@ const statusStyles: Record<ProductStatus, string> = {
   in_stock: "bg-dark-green/10 text-dark-green",
   low_stock: "bg-gold/20 text-dark-green",
 };
-
-function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-}
-
-function formatPrice(value: string): string {
-  const amount = Number.parseFloat(value);
-  if (Number.isNaN(amount)) {
-    return value;
-  }
-
-  return `€${amount.toFixed(2)}`;
-}
-
-function createProductId(existingProducts: AdminProduct[]): string {
-  const maxId = existingProducts.reduce((max, product) => {
-    const numericPart = Number.parseInt(product.id.replace(/\D/g, ""), 10);
-    return Number.isNaN(numericPart) ? max : Math.max(max, numericPart);
-  }, 0);
-
-  return `PRD-${String(maxId + 1).padStart(3, "0")}`;
-}
 
 export default function AdminProductsPage() {
   const {
@@ -140,27 +118,26 @@ export default function AdminProductsPage() {
   const [products, setProducts] = useState<AdminProduct[]>(initialProducts);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const handleAddProduct = (input: NewProductInput) => {
-    const slug = slugify(input.name);
-
-    setProducts((current) => [
-      {
-        id: createProductId(current),
-        name: input.name.trim(),
-        slug: slug || `product-${Date.now()}`,
-        price: formatPrice(input.price),
-        size: `${input.sizeMl} ml`,
-        images:
-          input.images.length > 0 ? input.images : ["/hero-img.png"],
-        status: input.status,
-        description: input.description.trim(),
-        ingredients: input.ingredients.trim(),
-        keyBenefits: input.keyBenefits.trim(),
-        safetyNotes: input.safetyNotes.trim(),
-        howToUse: input.howToUse.trim(),
+  const handleAddProduct = async (input: NewProductInput) => {
+    const response = await fetch("/api/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      ...current,
-    ]);
+      body: JSON.stringify(input),
+    });
+
+    const data = (await response.json()) as {
+      ok?: boolean;
+      product?: AdminProduct;
+      error?: string;
+    };
+
+    if (!response.ok || !data.ok || !data.product) {
+      throw new Error(data.error ?? productsTable.saveError);
+    }
+
+    setProducts((current) => [data.product!, ...current]);
   };
 
   const handleDeleteProduct = (productId: string) => {

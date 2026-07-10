@@ -8,38 +8,58 @@ import { useMessages } from "@/app/i18n/LocaleProvider";
 
 export type ProductStatus = "in_stock" | "low_stock";
 
-export type NewProductInput = {
+export type ProductType = "single" | "kit";
+
+export type ProductLocaleKey = "en" | "de" | "ar";
+
+export type ProductLocaleContent = {
   name: string;
   description: string;
-  price: string;
-  sizeMl: string;
-  status: ProductStatus;
-  images: string[];
   ingredients: string;
   keyBenefits: string;
   safetyNotes: string;
   howToUse: string;
 };
 
+export type NewProductInput = {
+  productType: ProductType;
+  en: ProductLocaleContent;
+  de: ProductLocaleContent;
+  ar: ProductLocaleContent;
+  price: string;
+  sizeMl: string;
+  kitSize: string;
+  status: ProductStatus;
+  images: string[];
+};
+
 type AddProductModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (product: NewProductInput) => void;
+  onAdd: (product: NewProductInput) => void | Promise<void>;
 };
 
 type FormState = NewProductInput;
 
-const initialFormState: FormState = {
+const emptyLocaleContent = (): ProductLocaleContent => ({
   name: "",
   description: "",
-  price: "",
-  sizeMl: "",
-  status: "in_stock",
-  images: [],
   ingredients: "",
   keyBenefits: "",
   safetyNotes: "",
   howToUse: "",
+});
+
+const initialFormState: FormState = {
+  productType: "single",
+  en: emptyLocaleContent(),
+  de: emptyLocaleContent(),
+  ar: emptyLocaleContent(),
+  price: "",
+  sizeMl: "",
+  kitSize: "",
+  status: "in_stock",
+  images: [],
 };
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
@@ -50,6 +70,14 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
   "image/gif",
 ];
+
+type LocaleFieldKey =
+  | "name"
+  | "description"
+  | "ingredients"
+  | "keyBenefits"
+  | "safetyNotes"
+  | "howToUse";
 
 const inputClassName =
   "w-full rounded-xl border border-beige bg-warm-white/60 px-4 py-2.5 text-sm text-dark-green outline-none transition-colors placeholder:text-dark-green/35 focus:border-gold";
@@ -66,6 +94,125 @@ function readFileAsDataUrl(file: File): Promise<string> {
     reader.onerror = () => reject(reader.error);
     reader.readAsDataURL(file);
   });
+}
+
+type LocaleSectionProps = {
+  locale: ProductLocaleKey;
+  title: string;
+  content: ProductLocaleContent;
+  labels: Record<`${LocaleFieldKey}Label`, string> &
+    Record<`${LocaleFieldKey}Placeholder`, string>;
+  onChange: (field: LocaleFieldKey, value: string) => void;
+  dir?: "ltr" | "rtl";
+};
+
+function LocaleProductSection({
+  locale,
+  title,
+  content,
+  labels,
+  onChange,
+  dir = "ltr",
+}: LocaleSectionProps) {
+  return (
+    <section
+      dir={dir}
+      className="space-y-4 rounded-2xl border border-beige bg-beige/20 p-4 sm:p-5"
+      aria-labelledby={`add-product-${locale}-section`}
+    >
+      <h3
+        id={`add-product-${locale}-section`}
+        className="text-sm font-semibold uppercase tracking-[0.12em] text-dark-green"
+      >
+        {title}
+      </h3>
+
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+          {labels.nameLabel}
+        </span>
+        <input
+          type="text"
+          name={`${locale}-name`}
+          value={content.name}
+          onChange={(event) => onChange("name", event.target.value)}
+          placeholder={labels.namePlaceholder}
+          className={inputClassName}
+          required
+        />
+      </label>
+
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+          {labels.descriptionLabel}
+        </span>
+        <textarea
+          name={`${locale}-description`}
+          value={content.description}
+          onChange={(event) => onChange("description", event.target.value)}
+          placeholder={labels.descriptionPlaceholder}
+          className={textareaClassName}
+          required
+        />
+      </label>
+
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+          {labels.ingredientsLabel}
+        </span>
+        <textarea
+          name={`${locale}-ingredients`}
+          value={content.ingredients}
+          onChange={(event) => onChange("ingredients", event.target.value)}
+          placeholder={labels.ingredientsPlaceholder}
+          className={textareaClassName}
+          required
+        />
+      </label>
+
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+          {labels.keyBenefitsLabel}
+        </span>
+        <textarea
+          name={`${locale}-keyBenefits`}
+          value={content.keyBenefits}
+          onChange={(event) => onChange("keyBenefits", event.target.value)}
+          placeholder={labels.keyBenefitsPlaceholder}
+          className={textareaClassName}
+          required
+        />
+      </label>
+
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+          {labels.safetyNotesLabel}
+        </span>
+        <textarea
+          name={`${locale}-safetyNotes`}
+          value={content.safetyNotes}
+          onChange={(event) => onChange("safetyNotes", event.target.value)}
+          placeholder={labels.safetyNotesPlaceholder}
+          className={textareaClassName}
+          required
+        />
+      </label>
+
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+          {labels.howToUseLabel}
+        </span>
+        <textarea
+          name={`${locale}-howToUse`}
+          value={content.howToUse}
+          onChange={(event) => onChange("howToUse", event.target.value)}
+          placeholder={labels.howToUsePlaceholder}
+          className={textareaClassName}
+          required
+        />
+      </label>
+    </section>
+  );
 }
 
 export default function AddProductModal({
@@ -105,8 +252,34 @@ export default function AddProductModal({
     return null;
   }
 
-  const updateField = (field: keyof FormState, value: string) => {
+  const updateField = (
+    field: Exclude<keyof FormState, ProductLocaleKey>,
+    value: string | ProductStatus | ProductType | string[],
+  ) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleProductTypeChange = (productType: ProductType) => {
+    setForm((prev) => ({
+      ...prev,
+      productType,
+      sizeMl: productType === "single" ? prev.sizeMl : "",
+      kitSize: productType === "kit" ? prev.kitSize : "",
+    }));
+  };
+
+  const updateLocaleField = (
+    locale: ProductLocaleKey,
+    field: LocaleFieldKey,
+    value: string,
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      [locale]: {
+        ...prev[locale],
+        [field]: value,
+      },
+    }));
   };
 
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -178,7 +351,7 @@ export default function AddProductModal({
     fileInputRef.current?.click();
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isSubmitting) {
@@ -187,10 +360,62 @@ export default function AddProductModal({
 
     setIsSubmitting(true);
 
-    onAdd(form);
-    toast.success(modal.successMessage);
-    onClose();
-    setIsSubmitting(false);
+    try {
+      await onAdd(form);
+      toast.success(modal.successMessage);
+      onClose();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : modal.saveError,
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const englishLabels = {
+    nameLabel: modal.nameLabel,
+    namePlaceholder: modal.namePlaceholder,
+    descriptionLabel: modal.descriptionLabel,
+    descriptionPlaceholder: modal.descriptionPlaceholder,
+    ingredientsLabel: modal.ingredientsLabel,
+    ingredientsPlaceholder: modal.ingredientsPlaceholder,
+    keyBenefitsLabel: modal.keyBenefitsLabel,
+    keyBenefitsPlaceholder: modal.keyBenefitsPlaceholder,
+    safetyNotesLabel: modal.safetyNotesLabel,
+    safetyNotesPlaceholder: modal.safetyNotesPlaceholder,
+    howToUseLabel: modal.howToUseLabel,
+    howToUsePlaceholder: modal.howToUsePlaceholder,
+  };
+
+  const germanLabels = {
+    nameLabel: modal.nameLabelDe,
+    namePlaceholder: modal.namePlaceholderDe,
+    descriptionLabel: modal.descriptionLabelDe,
+    descriptionPlaceholder: modal.descriptionPlaceholderDe,
+    ingredientsLabel: modal.ingredientsLabelDe,
+    ingredientsPlaceholder: modal.ingredientsPlaceholderDe,
+    keyBenefitsLabel: modal.keyBenefitsLabelDe,
+    keyBenefitsPlaceholder: modal.keyBenefitsPlaceholderDe,
+    safetyNotesLabel: modal.safetyNotesLabelDe,
+    safetyNotesPlaceholder: modal.safetyNotesPlaceholderDe,
+    howToUseLabel: modal.howToUseLabelDe,
+    howToUsePlaceholder: modal.howToUsePlaceholderDe,
+  };
+
+  const arabicLabels = {
+    nameLabel: modal.nameLabelAr,
+    namePlaceholder: modal.namePlaceholderAr,
+    descriptionLabel: modal.descriptionLabelAr,
+    descriptionPlaceholder: modal.descriptionPlaceholderAr,
+    ingredientsLabel: modal.ingredientsLabelAr,
+    ingredientsPlaceholder: modal.ingredientsPlaceholderAr,
+    keyBenefitsLabel: modal.keyBenefitsLabelAr,
+    keyBenefitsPlaceholder: modal.keyBenefitsPlaceholderAr,
+    safetyNotesLabel: modal.safetyNotesLabelAr,
+    safetyNotesPlaceholder: modal.safetyNotesPlaceholderAr,
+    howToUseLabel: modal.howToUseLabelAr,
+    howToUsePlaceholder: modal.howToUsePlaceholderAr,
   };
 
   return (
@@ -203,7 +428,7 @@ export default function AddProductModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-product-modal-title"
-        className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-beige bg-warm-white p-6 shadow-2xl sm:p-8"
+        className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-beige bg-warm-white p-6 shadow-2xl sm:p-8"
       >
         <button
           type="button"
@@ -226,37 +451,49 @@ export default function AddProductModal({
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <label className="block">
+        <form onSubmit={(event) => void handleSubmit(event)} className="mt-6 space-y-4">
+          <div className="block">
             <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-              {modal.nameLabel}
+              {modal.productTypeLabel}
             </span>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={(event) => updateField("name", event.target.value)}
-              placeholder={modal.namePlaceholder}
+            <select
+              name="productType"
+              value={form.productType}
+              onChange={(event) =>
+                handleProductTypeChange(event.target.value as ProductType)
+              }
               className={inputClassName}
               required
-            />
-          </label>
+            >
+              <option value="single">{modal.productTypeSingle}</option>
+              <option value="kit">{modal.productTypeKit}</option>
+            </select>
+          </div>
 
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-              {modal.descriptionLabel}
-            </span>
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={(event) =>
-                updateField("description", event.target.value)
-              }
-              placeholder={modal.descriptionPlaceholder}
-              className={textareaClassName}
-              required
-            />
-          </label>
+          <LocaleProductSection
+            locale="en"
+            title={modal.englishSection}
+            content={form.en}
+            labels={englishLabels}
+            onChange={(field, value) => updateLocaleField("en", field, value)}
+          />
+
+          <LocaleProductSection
+            locale="de"
+            title={modal.germanSection}
+            content={form.de}
+            labels={germanLabels}
+            onChange={(field, value) => updateLocaleField("de", field, value)}
+          />
+
+          <LocaleProductSection
+            locale="ar"
+            title={modal.arabicSection}
+            content={form.ar}
+            labels={arabicLabels}
+            onChange={(field, value) => updateLocaleField("ar", field, value)}
+            dir="rtl"
+          />
 
           <div className="block">
             <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
@@ -333,7 +570,9 @@ export default function AddProductModal({
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div
+            className={`grid gap-4 ${form.productType === "single" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+          >
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
                 {modal.priceLabel}
@@ -351,21 +590,42 @@ export default function AddProductModal({
               />
             </label>
 
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-                {modal.sizeLabel}
-              </span>
-              <input
-                type="number"
-                name="sizeMl"
-                value={form.sizeMl}
-                onChange={(event) => updateField("sizeMl", event.target.value)}
-                placeholder={modal.sizePlaceholder}
-                className={inputClassName}
-                min="1"
-                required
-              />
-            </label>
+            {form.productType === "single" ? (
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+                  {modal.sizeLabel}
+                </span>
+                <input
+                  type="number"
+                  name="sizeMl"
+                  value={form.sizeMl}
+                  onChange={(event) =>
+                    updateField("sizeMl", event.target.value)
+                  }
+                  placeholder={modal.sizePlaceholder}
+                  className={inputClassName}
+                  min="1"
+                  required
+                />
+              </label>
+            ) : (
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+                  {modal.kitSizeLabel}
+                </span>
+                <input
+                  type="text"
+                  name="kitSize"
+                  value={form.kitSize}
+                  onChange={(event) =>
+                    updateField("kitSize", event.target.value)
+                  }
+                  placeholder={modal.kitSizePlaceholder}
+                  className={inputClassName}
+                  required
+                />
+              </label>
+            )}
 
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
@@ -385,68 +645,6 @@ export default function AddProductModal({
               </select>
             </label>
           </div>
-
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-              {modal.ingredientsLabel}
-            </span>
-            <textarea
-              name="ingredients"
-              value={form.ingredients}
-              onChange={(event) =>
-                updateField("ingredients", event.target.value)
-              }
-              placeholder={modal.ingredientsPlaceholder}
-              className={textareaClassName}
-              required
-            />
-          </label>
-
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-              {modal.keyBenefitsLabel}
-            </span>
-            <textarea
-              name="keyBenefits"
-              value={form.keyBenefits}
-              onChange={(event) =>
-                updateField("keyBenefits", event.target.value)
-              }
-              placeholder={modal.keyBenefitsPlaceholder}
-              className={textareaClassName}
-              required
-            />
-          </label>
-
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-              {modal.safetyNotesLabel}
-            </span>
-            <textarea
-              name="safetyNotes"
-              value={form.safetyNotes}
-              onChange={(event) =>
-                updateField("safetyNotes", event.target.value)
-              }
-              placeholder={modal.safetyNotesPlaceholder}
-              className={textareaClassName}
-              required
-            />
-          </label>
-
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-              {modal.howToUseLabel}
-            </span>
-            <textarea
-              name="howToUse"
-              value={form.howToUse}
-              onChange={(event) => updateField("howToUse", event.target.value)}
-              placeholder={modal.howToUsePlaceholder}
-              className={textareaClassName}
-              required
-            />
-          </label>
 
           <button
             type="submit"
