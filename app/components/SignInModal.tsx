@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { LuX } from "react-icons/lu";
 import { toast } from "sonner";
@@ -10,6 +11,7 @@ type SignInModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onOpenSignup?: () => void;
+  onSuccess?: () => void;
 };
 
 type FormState = {
@@ -29,6 +31,7 @@ export default function SignInModal({
   isOpen,
   onClose,
   onOpenSignup,
+  onSuccess,
 }: SignInModalProps) {
   const {
     title,
@@ -45,6 +48,8 @@ export default function SignInModal({
   } = useMessages().signInModal;
 
   const dialogRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [form, setForm] = useState<FormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -103,7 +108,15 @@ export default function SignInModal({
       }
 
       toast.success(successMessage);
-      onClose();
+
+      const callbackUrl = searchParams.get("callbackUrl");
+      if (onSuccess) {
+        onSuccess();
+      } else if (callbackUrl?.startsWith("/")) {
+        router.replace(callbackUrl);
+      } else {
+        onClose();
+      }
     } catch {
       toast.error(errorMessage);
     } finally {

@@ -386,6 +386,9 @@
     "free": "Free",
     "totalAmount": "Total Amount:",
     "placeOrder": "Place Order",
+    "orderPlaced": "Order placed successfully.",
+    "completeDeliveryAddress": "Complete Delivery address to Place Order",
+    "orderFailed": "Failed to place order. Please try again.",
     "remove": "Remove item",
     "decreaseQuantity": "Decrease quantity",
     "increaseQuantity": "Increase quantity",
@@ -1510,5 +1513,159 @@
     "close": "Close",
     "successMessage": "Signed in successfully.",
     "errorMessage": "Invalid email or password. Please try again."
+  },
+  "adminLogin": {
+    "_comment": "Admin login page used in app/components/AdminLogin.tsx",
+    "title": "Admin Sign In",
+    "subtitle": "Sign in to access the admin dashboard.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "admin@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submitLabel": "Sign In",
+    "successMessage": "Signed in successfully.",
+    "errorMessage": "Invalid email or password. Please try again.",
+    "welcomeTitle": "Welcome back",
+    "welcomeSubtitle": "You are signed in as {name}.",
+    "logout": "Log Out",
+    "logoutSuccess": "Logged out",
+    "notAdminError": "You do not have admin access."
+  },
+  "adminSidebar": {
+    "_comment": "Admin sidebar used in app/components/Sidebar.tsx",
+    "brandLabel": "Admin Panel",
+    "logout": "Log Out",
+    "logoutSuccess": "Logged out",
+    "navLinks": [
+      {
+        "id": "dashboard",
+        "label": "Dashboard",
+        "href": "/admin/dashboard"
+      },
+      {
+        "id": "products",
+        "label": "Products",
+        "href": "/admin/products"
+      },
+      {
+        "id": "orders",
+        "label": "Orders",
+        "href": "/admin/orders"
+      },
+      {
+        "id": "users",
+        "label": "Users",
+        "href": "/admin/users"
+      }
+    ]
+  },
+  "adminPanel": {
+    "_comment": "Admin panel pages",
+    "dashboardTitle": "Dashboard",
+    "dashboardDescription": "Overview of your store activity and key metrics.",
+    "dashboardStats": [
+      {
+        "id": "users",
+        "label": "Total Users"
+      },
+      {
+        "id": "orders",
+        "label": "Total Orders"
+      },
+      {
+        "id": "revenue",
+        "label": "Revenue"
+      }
+    ],
+    "dashboardLoading": "Loading dashboard stats...",
+    "dashboardLoadError": "Failed to load dashboard stats. Please try again.",
+    "ordersTitle": "Orders",
+    "ordersDescription": "View and manage customer orders.",
+    "ordersFilters": [
+      { "id": "all", "label": "All Orders" },
+      { "id": "pending", "label": "Pending Orders" },
+      { "id": "completed", "label": "Completed Orders" }
+    ],
+    "ordersTable": {
+      "orderId": "Order ID",
+      "customer": "Customer",
+      "email": "Email",
+      "address": "Address",
+      "items": "Items",
+      "total": "Total",
+      "date": "Date",
+      "status": "Status",
+      "statusPending": "Pending",
+      "statusCompleted": "Completed",
+      "loading": "Loading orders...",
+      "loadError": "Failed to load orders. Please try again."
+    },
+    "ordersEmpty": "No orders found for this filter.",
+    "statusUpdated": "Order status updated.",
+    "usersTitle": "Users",
+    "usersDescription": "View and manage registered users.",
+    "usersTable": {
+      "name": "Name",
+      "email": "Email",
+      "address": "Address",
+      "createdAt": "Created At",
+      "loading": "Loading users...",
+      "empty": "No registered users found.",
+      "loadError": "Failed to load users. Please try again.",
+      "noAddress": "—"
+    },
+    "productsTitle": "Products",
+    "productsDescription": "View and manage store products.",
+    "productsTable": {
+      "addProduct": "Add Product",
+      "product": "Product",
+      "sku": "SKU",
+      "price": "Price",
+      "size": "Size",
+      "status": "Status",
+      "statusInStock": "In Stock",
+      "statusLowStock": "Low Stock",
+      "actions": "Actions",
+      "delete": "Delete",
+      "productDeleted": "Product deleted."
+    },
+    "addProductModal": {
+      "title": "Add Product",
+      "subtitle": "Fill in the product details below.",
+      "nameLabel": "Product Name",
+      "namePlaceholder": "e.g. Anti-Chafing Body Cream",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Short product description for the storefront.",
+      "imageLabel": "Product Images",
+      "imageHint": "Upload one or more JPG, PNG, WEBP, or GIF images up to 5 MB each.",
+      "chooseImage": "Choose images from device",
+      "addMoreImages": "Add more",
+      "changeImage": "Change image",
+      "removeImage": "Remove image",
+      "imagePreviewAlt": "Selected product image preview",
+      "imageCount": "{current} of {max} images selected",
+      "imageInvalidType": "Please choose valid image files (JPG, PNG, WEBP, or GIF).",
+      "imageTooLarge": "Each image must be 5 MB or smaller.",
+      "imageMaxCount": "You can upload up to {count} images per product.",
+      "imageReadError": "Could not read one of the selected images. Please try again.",
+      "priceLabel": "Price (€)",
+      "pricePlaceholder": "15.90",
+      "sizeLabel": "Size (ml)",
+      "sizePlaceholder": "50",
+      "statusLabel": "Status",
+      "statusInStock": "In Stock",
+      "statusLowStock": "Low Stock",
+      "ingredientsLabel": "Ingredients",
+      "ingredientsPlaceholder": "List ingredients, one per line.",
+      "keyBenefitsLabel": "Key Benefits",
+      "keyBenefitsPlaceholder": "List key benefits, one per line.",
+      "safetyNotesLabel": "Safety Notes",
+      "safetyNotesPlaceholder": "List safety notes, one per line.",
+      "howToUseLabel": "How to Use",
+      "howToUsePlaceholder": "Describe how to use the product.",
+      "submitLabel": "Add Product",
+      "close": "Close",
+      "successMessage": "Product added successfully."
+    }
   }
 }

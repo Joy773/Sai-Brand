@@ -388,6 +388,9 @@
     "free": "مجاني",
     "totalAmount": "المبلغ الإجمالي:",
     "placeOrder": "تأكيد الطلب",
+    "orderPlaced": "تم تقديم الطلب بنجاح.",
+    "completeDeliveryAddress": "أكمل عنوان التوصيل لتأكيد الطلب",
+    "orderFailed": "تعذر تأكيد الطلب. يرجى المحاولة مرة أخرى.",
     "remove": "إزالة المنتج",
     "decreaseQuantity": "تقليل الكمية",
     "increaseQuantity": "زيادة الكمية",
@@ -1512,5 +1515,159 @@
     "close": "إغلاق",
     "successMessage": "تم تسجيل الدخول بنجاح.",
     "errorMessage": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى."
+  },
+  "adminLogin": {
+    "_comment": "صفحة تسجيل دخول المسؤول — تُستخدم في app/components/AdminLogin.tsx",
+    "title": "تسجيل دخول المسؤول",
+    "subtitle": "سجّل الدخول للوصول إلى لوحة تحكم المسؤول.",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "admin@example.com",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "submitLabel": "تسجيل الدخول",
+    "successMessage": "تم تسجيل الدخول بنجاح.",
+    "errorMessage": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",
+    "welcomeTitle": "مرحباً بعودتك",
+    "welcomeSubtitle": "أنت مسجّل الدخول باسم {name}.",
+    "logout": "تسجيل الخروج",
+    "logoutSuccess": "تم تسجيل الخروج",
+    "notAdminError": "ليس لديك صلاحية المسؤول."
+  },
+  "adminSidebar": {
+    "_comment": "الشريط الجانبي للمسؤول — يُستخدم في app/components/Sidebar.tsx",
+    "brandLabel": "لوحة المسؤول",
+    "logout": "تسجيل الخروج",
+    "logoutSuccess": "تم تسجيل الخروج",
+    "navLinks": [
+      {
+        "id": "dashboard",
+        "label": "لوحة التحكم",
+        "href": "/admin/dashboard"
+      },
+      {
+        "id": "products",
+        "label": "المنتجات",
+        "href": "/admin/products"
+      },
+      {
+        "id": "orders",
+        "label": "الطلبات",
+        "href": "/admin/orders"
+      },
+      {
+        "id": "users",
+        "label": "المستخدمون",
+        "href": "/admin/users"
+      }
+    ]
+  },
+  "adminPanel": {
+    "_comment": "صفحات لوحة المسؤول",
+    "dashboardTitle": "لوحة التحكم",
+    "dashboardDescription": "نظرة عامة على نشاط المتجر والمؤشرات الرئيسية.",
+    "dashboardStats": [
+      {
+        "id": "users",
+        "label": "إجمالي المستخدمين"
+      },
+      {
+        "id": "orders",
+        "label": "إجمالي الطلبات"
+      },
+      {
+        "id": "revenue",
+        "label": "الإيرادات"
+      }
+    ],
+    "dashboardLoading": "جارٍ تحميل إحصائيات لوحة التحكم...",
+    "dashboardLoadError": "تعذر تحميل إحصائيات لوحة التحكم. يرجى المحاولة مرة أخرى.",
+    "ordersTitle": "الطلبات",
+    "ordersDescription": "عرض وإدارة طلبات العملاء.",
+    "ordersFilters": [
+      { "id": "all", "label": "جميع الطلبات" },
+      { "id": "pending", "label": "الطلبات المعلقة" },
+      { "id": "completed", "label": "الطلبات المكتملة" }
+    ],
+    "ordersTable": {
+      "orderId": "رقم الطلب",
+      "customer": "العميل",
+      "email": "البريد الإلكتروني",
+      "address": "العنوان",
+      "items": "المنتجات",
+      "total": "الإجمالي",
+      "date": "التاريخ",
+      "status": "الحالة",
+      "statusPending": "معلق",
+      "statusCompleted": "مكتمل",
+      "loading": "جارٍ تحميل الطلبات...",
+      "loadError": "تعذر تحميل الطلبات. يرجى المحاولة مرة أخرى."
+    },
+    "ordersEmpty": "لا توجد طلبات لهذا الفلتر.",
+    "statusUpdated": "تم تحديث حالة الطلب.",
+    "usersTitle": "المستخدمون",
+    "usersDescription": "عرض وإدارة المستخدمين المسجلين.",
+    "usersTable": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "address": "العنوان",
+      "createdAt": "تاريخ الإنشاء",
+      "loading": "جارٍ تحميل المستخدمين...",
+      "empty": "لا يوجد مستخدمون مسجلون.",
+      "loadError": "تعذر تحميل المستخدمين. يرجى المحاولة مرة أخرى.",
+      "noAddress": "—"
+    },
+    "productsTitle": "المنتجات",
+    "productsDescription": "عرض وإدارة منتجات المتجر.",
+    "productsTable": {
+      "addProduct": "إضافة منتج",
+      "product": "المنتج",
+      "sku": "رمز المنتج",
+      "price": "السعر",
+      "size": "الحجم",
+      "status": "الحالة",
+      "statusInStock": "متوفر",
+      "statusLowStock": "مخزون منخفض",
+      "actions": "الإجراءات",
+      "delete": "حذف",
+      "productDeleted": "تم حذف المنتج."
+    },
+    "addProductModal": {
+      "title": "إضافة منتج",
+      "subtitle": "أدخل تفاصيل المنتج أدناه.",
+      "nameLabel": "اسم المنتج",
+      "namePlaceholder": "مثال: كريم مضاد للاحتكاك",
+      "descriptionLabel": "الوصف",
+      "descriptionPlaceholder": "وصف مختصر للمنتج في المتجر.",
+      "imageLabel": "صور المنتج",
+      "imageHint": "ارفع صورة واحدة أو أكثر بصيغة JPG أو PNG أو WEBP أو GIF بحجم يصل إلى 5 ميجابايت لكل صورة.",
+      "chooseImage": "اختر صورًا من الجهاز",
+      "addMoreImages": "إضافة المزيد",
+      "changeImage": "تغيير الصورة",
+      "removeImage": "إزالة الصورة",
+      "imagePreviewAlt": "معاينة صورة المنتج المحددة",
+      "imageCount": "{current} من {max} صور محددة",
+      "imageInvalidType": "يرجى اختيار ملفات صور صالحة (JPG أو PNG أو WEBP أو GIF).",
+      "imageTooLarge": "يجب ألا يتجاوز حجم كل صورة 5 ميجابايت.",
+      "imageMaxCount": "يمكنك رفع ما يصل إلى {count} صور لكل منتج.",
+      "imageReadError": "تعذر قراءة إحدى الصور المحددة. يرجى المحاولة مرة أخرى.",
+      "priceLabel": "السعر (€)",
+      "pricePlaceholder": "15.90",
+      "sizeLabel": "الحجم (مل)",
+      "sizePlaceholder": "50",
+      "statusLabel": "الحالة",
+      "statusInStock": "متوفر",
+      "statusLowStock": "مخزون منخفض",
+      "ingredientsLabel": "المكونات",
+      "ingredientsPlaceholder": "اذكر المكونات، واحد في كل سطر.",
+      "keyBenefitsLabel": "الفوائد الرئيسية",
+      "keyBenefitsPlaceholder": "اذكر الفوائد الرئيسية، واحدة في كل سطر.",
+      "safetyNotesLabel": "ملاحظات السلامة",
+      "safetyNotesPlaceholder": "اذكر ملاحظات السلامة، واحدة في كل سطر.",
+      "howToUseLabel": "طريقة الاستخدام",
+      "howToUsePlaceholder": "اشرح كيفية استخدام المنتج.",
+      "submitLabel": "إضافة منتج",
+      "close": "إغلاق",
+      "successMessage": "تمت إضافة المنتج بنجاح."
+    }
   }
 }

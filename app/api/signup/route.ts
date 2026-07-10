@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
 import User from "@/app/models/User";
 
@@ -10,6 +11,45 @@ type SignupPayload = {
 };
 
 const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+export async function GET() {
+  const session = await auth();
+
+  if (session?.user?.role !== "admin") {
+    return NextResponse.json(
+      { ok: false, error: "Unauthorized." },
+      { status: 401 },
+    );
+  }
+
+  try {
+    await connectDB();
+
+    const users = await User.find()
+      .select("name email createdAt")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return NextResponse.json({
+      ok: true,
+      users: users.map((user) => ({
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        address: "",
+        createdAt: user.createdAt,
+      })),
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("[signup api] Failed to fetch users", error);
+
+    return NextResponse.json(
+      { ok: false, error: "Failed to load users. Please try again." },
+      { status: 500 },
+    );
+  }
+}
 
 export async function POST(request: NextRequest) {
   let body: SignupPayload;

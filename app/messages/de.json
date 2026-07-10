@@ -386,6 +386,9 @@
     "free": "Kostenlos",
     "totalAmount": "Gesamtbetrag:",
     "placeOrder": "Bestellung aufgeben",
+    "orderPlaced": "Bestellung erfolgreich aufgegeben.",
+    "completeDeliveryAddress": "Vervollständigen Sie die Lieferadresse, um die Bestellung aufzugeben",
+    "orderFailed": "Bestellung konnte nicht aufgegeben werden. Bitte versuchen Sie es erneut.",
     "remove": "Artikel entfernen",
     "decreaseQuantity": "Menge verringern",
     "increaseQuantity": "Menge erhoehen",
@@ -1510,5 +1513,159 @@
     "close": "Schließen",
     "successMessage": "Erfolgreich angemeldet.",
     "errorMessage": "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut."
+  },
+  "adminLogin": {
+    "_comment": "Admin-Anmeldeseite — verwendet in app/components/AdminLogin.tsx",
+    "title": "Admin-Anmeldung",
+    "subtitle": "Melden Sie sich an, um auf das Admin-Dashboard zuzugreifen.",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "admin@beispiel.de",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Passwort eingeben",
+    "submitLabel": "Anmelden",
+    "successMessage": "Erfolgreich angemeldet.",
+    "errorMessage": "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut.",
+    "welcomeTitle": "Willkommen zurück",
+    "welcomeSubtitle": "Sie sind angemeldet als {name}.",
+    "logout": "Abmelden",
+    "logoutSuccess": "Abgemeldet",
+    "notAdminError": "Sie haben keinen Admin-Zugriff."
+  },
+  "adminSidebar": {
+    "_comment": "Admin-Seitenleiste — verwendet in app/components/Sidebar.tsx",
+    "brandLabel": "Admin-Bereich",
+    "logout": "Abmelden",
+    "logoutSuccess": "Abgemeldet",
+    "navLinks": [
+      {
+        "id": "dashboard",
+        "label": "Dashboard",
+        "href": "/admin/dashboard"
+      },
+      {
+        "id": "products",
+        "label": "Produkte",
+        "href": "/admin/products"
+      },
+      {
+        "id": "orders",
+        "label": "Bestellungen",
+        "href": "/admin/orders"
+      },
+      {
+        "id": "users",
+        "label": "Benutzer",
+        "href": "/admin/users"
+      }
+    ]
+  },
+  "adminPanel": {
+    "_comment": "Admin-Panel-Seiten",
+    "dashboardTitle": "Dashboard",
+    "dashboardDescription": "Überblick über Ihre Shop-Aktivitäten und wichtige Kennzahlen.",
+    "dashboardStats": [
+      {
+        "id": "users",
+        "label": "Benutzer gesamt"
+      },
+      {
+        "id": "orders",
+        "label": "Bestellungen gesamt"
+      },
+      {
+        "id": "revenue",
+        "label": "Umsatz"
+      }
+    ],
+    "dashboardLoading": "Dashboard-Statistiken werden geladen...",
+    "dashboardLoadError": "Dashboard-Statistiken konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+    "ordersTitle": "Bestellungen",
+    "ordersDescription": "Kundenbestellungen anzeigen und verwalten.",
+    "ordersFilters": [
+      { "id": "all", "label": "Alle Bestellungen" },
+      { "id": "pending", "label": "Ausstehende Bestellungen" },
+      { "id": "completed", "label": "Abgeschlossene Bestellungen" }
+    ],
+    "ordersTable": {
+      "orderId": "Bestell-Nr.",
+      "customer": "Kunde",
+      "email": "E-Mail",
+      "address": "Adresse",
+      "items": "Artikel",
+      "total": "Gesamt",
+      "date": "Datum",
+      "status": "Status",
+      "statusPending": "Ausstehend",
+      "statusCompleted": "Abgeschlossen",
+      "loading": "Bestellungen werden geladen...",
+      "loadError": "Bestellungen konnten nicht geladen werden. Bitte versuchen Sie es erneut."
+    },
+    "ordersEmpty": "Keine Bestellungen für diesen Filter gefunden.",
+    "statusUpdated": "Bestellstatus aktualisiert.",
+    "usersTitle": "Benutzer",
+    "usersDescription": "Registrierte Benutzer anzeigen und verwalten.",
+    "usersTable": {
+      "name": "Name",
+      "email": "E-Mail",
+      "address": "Adresse",
+      "createdAt": "Erstellt am",
+      "loading": "Benutzer werden geladen...",
+      "empty": "Keine registrierten Benutzer gefunden.",
+      "loadError": "Benutzer konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+      "noAddress": "—"
+    },
+    "productsTitle": "Produkte",
+    "productsDescription": "Shop-Produkte anzeigen und verwalten.",
+    "productsTable": {
+      "addProduct": "Produkt hinzufügen",
+      "product": "Produkt",
+      "sku": "SKU",
+      "price": "Preis",
+      "size": "Größe",
+      "status": "Status",
+      "statusInStock": "Auf Lager",
+      "statusLowStock": "Geringer Bestand",
+      "actions": "Aktionen",
+      "delete": "Löschen",
+      "productDeleted": "Produkt gelöscht."
+    },
+    "addProductModal": {
+      "title": "Produkt hinzufügen",
+      "subtitle": "Füllen Sie die Produktdetails unten aus.",
+      "nameLabel": "Produktname",
+      "namePlaceholder": "z. B. Anti-Chafing Body Cream",
+      "descriptionLabel": "Beschreibung",
+      "descriptionPlaceholder": "Kurze Produktbeschreibung für den Shop.",
+      "imageLabel": "Produktbilder",
+      "imageHint": "Laden Sie ein oder mehrere JPG-, PNG-, WEBP- oder GIF-Bilder mit jeweils bis zu 5 MB hoch.",
+      "chooseImage": "Bilder vom Gerät auswählen",
+      "addMoreImages": "Mehr hinzufügen",
+      "changeImage": "Bild ändern",
+      "removeImage": "Bild entfernen",
+      "imagePreviewAlt": "Vorschau des ausgewählten Produktbildes",
+      "imageCount": "{current} von {max} Bildern ausgewählt",
+      "imageInvalidType": "Bitte wählen Sie gültige Bilddateien (JPG, PNG, WEBP oder GIF).",
+      "imageTooLarge": "Jedes Bild darf maximal 5 MB groß sein.",
+      "imageMaxCount": "Sie können bis zu {count} Bilder pro Produkt hochladen.",
+      "imageReadError": "Eines der ausgewählten Bilder konnte nicht gelesen werden. Bitte versuchen Sie es erneut.",
+      "priceLabel": "Preis (€)",
+      "pricePlaceholder": "15,90",
+      "sizeLabel": "Größe (ml)",
+      "sizePlaceholder": "50",
+      "statusLabel": "Status",
+      "statusInStock": "Auf Lager",
+      "statusLowStock": "Geringer Bestand",
+      "ingredientsLabel": "Inhaltsstoffe",
+      "ingredientsPlaceholder": "Inhaltsstoffe auflisten, einer pro Zeile.",
+      "keyBenefitsLabel": "Hauptvorteile",
+      "keyBenefitsPlaceholder": "Hauptvorteile auflisten, einer pro Zeile.",
+      "safetyNotesLabel": "Sicherheitshinweise",
+      "safetyNotesPlaceholder": "Sicherheitshinweise auflisten, einer pro Zeile.",
+      "howToUseLabel": "Anwendung",
+      "howToUsePlaceholder": "Beschreiben Sie die Anwendung des Produkts.",
+      "submitLabel": "Produkt hinzufügen",
+      "close": "Schließen",
+      "successMessage": "Produkt erfolgreich hinzugefügt."
+    }
   }
 }

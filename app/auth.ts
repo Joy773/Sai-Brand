@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/app/lib/mongodb";
 import User from "@/app/models/User";
+import { isAdminRoute, isProtectedRoute } from "@/app/lib/auth-routes";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -18,6 +19,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!email || !password) {
           return null;
+        }
+
+        const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+        const adminPassword = process.env.ADMIN_PASSWORD;
+
+        if (
+          adminEmail &&
+          adminPassword &&
+          email === adminEmail &&
+          password === adminPassword
+        ) {
+          return {
+            id: "admin",
+            name: "Admin",
+            email: adminEmail,
+            role: "admin",
+          };
         }
 
         await connectDB();
@@ -36,6 +54,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user._id.toString(),
           name: user.name,
           email: user.email,
+          role: "user",
         };
       },
     }),
@@ -44,12 +63,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     strategy: "jwt",
   },
   pages: {
-    signIn: "/login",
+    signIn: "/",
   },
   callbacks: {
+    authorized({ auth, request }) {
+      const { pathname } = request.nextUrl;
+
+      if (isAdminRoute(pathname)) {
+        if (auth?.user?.role === "admin") {
+          return true;
+        }
+
+        return Response.redirect(new URL("/admin", request.nextUrl));
+      }
+
+      if (!isProtectedRoute(pathname)) {
+        return true;
+      }
+
+      return !!auth?.user;
+    },
     jwt({ token, user }) {
       if (user?.id) {
         token.id = user.id;
+      }
+
+      if (user && "role" in user && typeof user.role === "string") {
+        token.role = user.role;
       }
 
       return token;
@@ -57,6 +97,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     session({ session, token }) {
       if (session.user) {
         session.user.id = (token.id as string) ?? token.sub ?? "";
+        session.user.role = (token.role as string) ?? "user";
       }
 
       return session;

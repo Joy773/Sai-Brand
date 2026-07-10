@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { LuArrowLeft, LuX } from "react-icons/lu";
+import { toast } from "sonner";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 import { formatPrice, parsePrice } from "@/app/lib/price";
 import {
@@ -12,6 +13,8 @@ import {
 import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
 
 const MAX_QUANTITY = 20;
+
+type PaymentType = "cod" | "online";
 
 export default function Cart() {
   const {
@@ -35,6 +38,9 @@ export default function Cart() {
     free,
     totalAmount,
     placeOrder,
+    orderPlaced,
+    completeDeliveryAddress,
+    orderFailed,
     remove,
     removedFromCart,
   } = useMessages().cart;
@@ -43,7 +49,11 @@ export default function Cart() {
   const itemCount = useCartStore(selectCartItemCount);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
+  const clearCart = useCartStore((state) => state.clearCart);
   const [address, setAddress] = useState("");
+  const [paymentType, setPaymentType] = useState<PaymentType>("cod");
+  const [addressError, setAddressError] = useState<string | null>(null);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   const referencePrice = items[0]?.price ?? "€0.00";
   const subtotal = items.reduce(
@@ -56,6 +66,61 @@ export default function Cart() {
   const handleRemoveItem = (slug: (typeof items)[number]["slug"]) => {
     removeItem(slug);
     showRemovedFromCartToast(removedFromCart);
+  };
+
+  const handlePlaceOrder = async () => {
+    if (address.trim().length === 0) {
+      setAddressError(completeDeliveryAddress);
+      return;
+    }
+
+    setAddressError(null);
+
+    if (paymentType !== "cod" || isPlacingOrder || items.length === 0) {
+      return;
+    }
+
+    setIsPlacingOrder(true);
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          address: address.trim(),
+          products: items.map((item) => ({
+            slug: item.slug,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            quantity: item.quantity,
+          })),
+          total: subtotal,
+        }),
+      });
+
+      const data = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error ?? orderFailed);
+      }
+
+      clearCart();
+      toast.success(orderPlaced);
+    } catch (placeOrderError) {
+      toast.error(
+        placeOrderError instanceof Error
+          ? placeOrderError.message
+          : orderFailed,
+      );
+    } finally {
+      setIsPlacingOrder(false);
+    }
   };
 
   return (
@@ -194,7 +259,12 @@ export default function Cart() {
                   <span className="sr-only">{deliveryAddress}</span>
                   <textarea
                     value={address}
-                    onChange={(event) => setAddress(event.target.value)}
+                    onChange={(event) => {
+                      setAddress(event.target.value);
+                      if (addressError) {
+                        setAddressError(null);
+                      }
+                    }}
                     placeholder={addressPlaceholder}
                     rows={4}
                     className="w-full resize-none rounded-md border border-beige bg-warm-white px-3 py-2.5 text-sm leading-relaxed text-dark-green outline-none placeholder:text-dark-green/40 focus:border-dark-green"
@@ -207,7 +277,10 @@ export default function Cart() {
                   {paymentMethod}
                 </p>
                 <select
-                  defaultValue="cod"
+                  value={paymentType}
+                  onChange={(event) =>
+                    setPaymentType(event.target.value as PaymentType)
+                  }
                   className="mt-2 w-full rounded-md border border-beige bg-warm-white px-3 py-2.5 text-sm text-dark-green outline-none focus:border-dark-green"
                   aria-label={paymentMethod}
                 >
@@ -238,10 +311,20 @@ export default function Cart() {
 
               <button
                 type="button"
-                className="mt-6 w-full rounded-md bg-dark-green px-4 py-3.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90"
+                onClick={() => void handlePlaceOrder()}
+                disabled={isPlacingOrder}
+                className="mt-6 w-full rounded-md bg-dark-green px-4 py-3.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {placeOrder}
               </button>
+              {addressError ? (
+                <p
+                  role="alert"
+                  className="mt-3 text-center text-sm font-medium text-red-600"
+                >
+                  {addressError}
+                </p>
+              ) : null}
             </aside>
           </div>
         )}

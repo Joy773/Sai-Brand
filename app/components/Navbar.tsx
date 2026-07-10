@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { LuShoppingCart } from "react-icons/lu";
 import { toast } from "sonner";
 import { codeToLocale } from "@/app/i18n/locales";
@@ -59,15 +60,18 @@ function LanguageSwitcher({
   );
 }
 
-export default function Navbar() {
+function NavbarContent() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const { navLinks, menu, cart: cartLabel, signup, logout, logoutSuccess } =
     useMessages().navbar;
   const { status } = useSession();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const itemCount = useCartStore(selectCartItemCount);
   const isAuthenticated = status === "authenticated";
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const authButtonClassName =
     "rounded-full bg-dark-green px-4 py-2 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90";
@@ -86,6 +90,31 @@ export default function Navbar() {
     closeMenu();
     await signOut({ redirect: false });
     toast.success(logoutSuccess);
+  };
+
+  useEffect(() => {
+    if (callbackUrl && status === "unauthenticated") {
+      setSignInOpen(true);
+    }
+  }, [callbackUrl, status]);
+
+  const handleSignInClose = () => {
+    setSignInOpen(false);
+
+    if (callbackUrl) {
+      router.replace("/");
+    }
+  };
+
+  const handleSignInSuccess = () => {
+    setSignInOpen(false);
+
+    if (callbackUrl?.startsWith("/")) {
+      router.replace(callbackUrl);
+      return;
+    }
+
+    router.replace("/");
   };
 
   return (
@@ -237,9 +266,20 @@ export default function Navbar() {
       />
       <SignInModal
         isOpen={signInOpen}
-        onClose={() => setSignInOpen(false)}
+        onClose={handleSignInClose}
         onOpenSignup={openSignup}
+        onSuccess={handleSignInSuccess}
       />
     </header>
+  );
+}
+
+export default function Navbar() {
+  return (
+    <Suspense
+      fallback={<header className="h-16 bg-[#F3E8DF]" aria-hidden="true" />}
+    >
+      <NavbarContent />
+    </Suspense>
   );
 }
