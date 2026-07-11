@@ -1,4 +1,4 @@
-const protectedRoutePrefixes = ["/cart"] as const;
+const protectedRoutePrefixes = [] as const;
 
 const adminRoutePrefix = "/admin/";
 
