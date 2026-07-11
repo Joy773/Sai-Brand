@@ -400,6 +400,27 @@
     "addedToCart": "In den Warenkorb gelegt",
     "removedFromCart": "Aus dem Warenkorb entfernt"
   },
+  "checkout": {
+    "_comment": "Checkout-Seite — verwendet in app/components/Checkout.tsx",
+    "title": "Kasse",
+    "empty": "Ihr Warenkorb ist leer.",
+    "continueShopping": "Weiter einkaufen",
+    "backToCart": "Zurueck zum Warenkorb",
+    "orderSummary": "Bestelluebersicht",
+    "deliveryAddress": "Lieferadresse",
+    "paymentMethod": "Zahlungsmethode",
+    "onlinePayment": "Online-Zahlung",
+    "price": "Preis",
+    "shippingFee": "Versandkosten",
+    "free": "Kostenlos",
+    "totalAmount": "Gesamtbetrag:",
+    "payNow": "Mit Stripe bezahlen",
+    "redirecting": "Weiterleitung zu Stripe...",
+    "checkoutFailed": "Checkout konnte nicht gestartet werden. Bitte versuchen Sie es erneut.",
+    "missingAddress": "Bitte geben Sie zuerst Ihre Lieferadresse im Warenkorb ein.",
+    "paymentSuccess": "Zahlung erfolgreich. Vielen Dank fuer Ihre Bestellung!",
+    "paymentCancelled": "Zahlung abgebrochen. Sie koennen es jederzeit erneut versuchen."
+  },
   "ourStory": {
     "_comment": "Unsere Geschichte — verwendet in app/components/OurStory.tsx",
     "eyebrow": "Unsere Geschichte",

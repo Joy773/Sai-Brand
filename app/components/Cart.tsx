@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Suspense, useState } from "react";
 import { LuArrowLeft, LuX } from "react-icons/lu";
 import { toast } from "sonner";
+import { CHECKOUT_ADDRESS_KEY } from "@/app/components/Checkout";
 import SignInModal from "@/app/components/SignInModal";
 import SignupModal from "@/app/components/SignupModal";
 import { useMessages } from "@/app/i18n/LocaleProvider";
@@ -20,6 +22,7 @@ const MAX_QUANTITY = 20;
 type PaymentType = "cod" | "online";
 
 function CartContent() {
+  const router = useRouter();
   const {
     title,
     empty,
@@ -97,7 +100,13 @@ function CartContent() {
 
     setAddressError(null);
 
-    if (paymentType !== "cod" || isPlacingOrder || items.length === 0) {
+    if (items.length === 0 || isPlacingOrder) {
+      return;
+    }
+
+    if (paymentType === "online") {
+      sessionStorage.setItem(CHECKOUT_ADDRESS_KEY, address.trim());
+      router.push("/checkout");
       return;
     }
 

@@ -400,6 +400,27 @@
     "addedToCart": "Added to Cart",
     "removedFromCart": "Removed from Cart"
   },
+  "checkout": {
+    "_comment": "Checkout page used in app/components/Checkout.tsx",
+    "title": "Checkout",
+    "empty": "Your cart is empty.",
+    "continueShopping": "Continue Shopping",
+    "backToCart": "Back to Cart",
+    "orderSummary": "Order Summary",
+    "deliveryAddress": "Delivery Address",
+    "paymentMethod": "Payment Method",
+    "onlinePayment": "Online Payment",
+    "price": "Price",
+    "shippingFee": "Shipping Fee",
+    "free": "Free",
+    "totalAmount": "Total Amount:",
+    "payNow": "Pay with Stripe",
+    "redirecting": "Redirecting to Stripe...",
+    "checkoutFailed": "Failed to start checkout. Please try again.",
+    "missingAddress": "Please enter your delivery address in the cart first.",
+    "paymentSuccess": "Payment successful. Thank you for your order!",
+    "paymentCancelled": "Payment was cancelled. You can try again anytime."
+  },
   "ourStory": {
     "_comment": "Our Story section used in app/components/OurStory.tsx",
     "eyebrow": "Our Story",

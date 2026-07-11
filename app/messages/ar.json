@@ -402,6 +402,27 @@
     "addedToCart": "تمت الإضافة إلى السلة",
     "removedFromCart": "تمت الإزالة من السلة"
   },
+  "checkout": {
+    "_comment": "صفحة الدفع — تُستخدم في app/components/Checkout.tsx",
+    "title": "إتمام الطلب",
+    "empty": "سلتك فارغة.",
+    "continueShopping": "متابعة التسوق",
+    "backToCart": "العودة إلى السلة",
+    "orderSummary": "ملخص الطلب",
+    "deliveryAddress": "عنوان التوصيل",
+    "paymentMethod": "طريقة الدفع",
+    "onlinePayment": "الدفع عبر الإنترنت",
+    "price": "السعر",
+    "shippingFee": "رسوم الشحن",
+    "free": "مجاني",
+    "totalAmount": "المبلغ الإجمالي:",
+    "payNow": "ادفع عبر Stripe",
+    "redirecting": "جارٍ التحويل إلى Stripe...",
+    "checkoutFailed": "تعذر بدء الدفع. يرجى المحاولة مرة أخرى.",
+    "missingAddress": "يرجى إدخال عنوان التوصيل في السلة أولاً.",
+    "paymentSuccess": "تم الدفع بنجاح. شكراً لطلبك!",
+    "paymentCancelled": "تم إلغاء الدفع. يمكنك المحاولة مرة أخرى في أي وقت."
+  },
   "ourStory": {
     "_comment": "قسم قصتنا — يُستخدم في app/components/OurStory.tsx",
     "eyebrow": "قصتنا",
