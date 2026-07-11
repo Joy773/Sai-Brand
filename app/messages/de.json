@@ -188,6 +188,11 @@
     "addToCartShort": "In den Warenkorb",
     "addToCart": "In den Warenkorb",
     "moreInfo": "Mehr Infos",
+    "loading": "Produkte werden geladen...",
+    "empty": "Noch keine Produkte verfügbar.",
+    "loadError": "Produkte konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+    "inStock": "Auf Lager",
+    "lowStock": "Geringer Bestand",
     "kit": {
       "name": "Hajj & Umrah Pflege-Set",
       "description": "Alles, was Sie fuer Hadsch und Umra brauchen, in einem Set. Anti-Chafing-Creme fuer lange Fussmaersche im Ihram, ein parfuemfreies Deodorant fuer taegliche Frische, Sonnenschutz mit LSF 50+ gegen die starke Sonne und ein mildes Shampoo zur Erfrischung nach heissen, anstrengenden Reisetagen.",
@@ -1627,12 +1632,18 @@
       "statusLowStock": "Geringer Bestand",
       "actions": "Aktionen",
       "delete": "Löschen",
+      "update": "Aktualisieren",
       "productDeleted": "Produkt gelöscht.",
+      "productUpdated": "Produkt aktualisiert.",
+      "deleteError": "Produkt konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
+      "updateError": "Produkt konnte nicht aktualisiert werden. Bitte versuchen Sie es erneut.",
       "saveError": "Produkt konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
     },
     "addProductModal": {
       "title": "Produkt hinzufügen",
+      "editTitle": "Produkt aktualisieren",
       "subtitle": "Füllen Sie die Produktdetails unten auf Englisch, Deutsch und Arabisch aus.",
+      "editSubtitle": "Aktualisieren Sie die Produktdetails unten auf Englisch, Deutsch und Arabisch.",
       "englishSection": "Englisch",
       "germanSection": "Deutsch",
       "arabicSection": "Arabisch",
@@ -1681,6 +1692,8 @@
       "imageTooLarge": "Jedes Bild darf maximal 5 MB groß sein.",
       "imageMaxCount": "Sie können bis zu {count} Bilder pro Produkt hochladen.",
       "imageReadError": "Eines der ausgewählten Bilder konnte nicht gelesen werden. Bitte versuchen Sie es erneut.",
+      "imageUploadError": "Eines der ausgewählten Bilder konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut.",
+      "imageUploading": "Bilder werden hochgeladen...",
       "priceLabel": "Preis (€)",
       "pricePlaceholder": "15,90",
       "sizeLabel": "Größe (ml)",
@@ -1697,9 +1710,12 @@
       "howToUseLabel": "Anwendung",
       "howToUsePlaceholder": "Beschreiben Sie die Anwendung des Produkts.",
       "submitLabel": "Produkt hinzufügen",
+      "updateLabel": "Produkt aktualisieren",
       "close": "Schließen",
       "successMessage": "Produkt erfolgreich hinzugefügt.",
-      "saveError": "Produkt konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
+      "updateSuccessMessage": "Produkt erfolgreich aktualisiert.",
+      "saveError": "Produkt konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      "updateError": "Produkt konnte nicht aktualisiert werden. Bitte versuchen Sie es erneut."
     }
   }
 }

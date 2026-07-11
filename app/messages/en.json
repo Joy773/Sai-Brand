@@ -188,6 +188,11 @@
     "addToCartShort": "Add to Cart",
     "addToCart": "Add to Cart",
     "moreInfo": "More Info",
+    "loading": "Loading products...",
+    "empty": "No products available yet.",
+    "loadError": "Failed to load products. Please try again.",
+    "inStock": "In Stock",
+    "lowStock": "Low Stock",
     "kit": {
       "name": "Hajj & Umrah Personal Care Kit",
       "description": "Everything you need for Hajj and Umrah in one kit. Anti-chafing cream for long walks in Ihram, a fragrance-free deodorant for daily freshness, SPF 50+ sunblock for the intense sun, and a gentle shampoo to refresh after hot, tiring days of travel.",
@@ -1627,12 +1632,18 @@
       "statusLowStock": "Low Stock",
       "actions": "Actions",
       "delete": "Delete",
+      "update": "Update",
       "productDeleted": "Product deleted.",
+      "productUpdated": "Product updated.",
+      "deleteError": "Failed to delete product. Please try again.",
+      "updateError": "Failed to update product. Please try again.",
       "saveError": "Failed to save product. Please try again."
     },
     "addProductModal": {
       "title": "Add Product",
+      "editTitle": "Update Product",
       "subtitle": "Fill in the product details below in English, German, and Arabic.",
+      "editSubtitle": "Update the product details below in English, German, and Arabic.",
       "englishSection": "English",
       "germanSection": "German",
       "arabicSection": "Arabic",
@@ -1681,6 +1692,8 @@
       "imageTooLarge": "Each image must be 5 MB or smaller.",
       "imageMaxCount": "You can upload up to {count} images per product.",
       "imageReadError": "Could not read one of the selected images. Please try again.",
+      "imageUploadError": "Could not upload one of the selected images. Please try again.",
+      "imageUploading": "Uploading images...",
       "priceLabel": "Price (€)",
       "pricePlaceholder": "15.90",
       "sizeLabel": "Size (ml)",
@@ -1697,9 +1710,12 @@
       "howToUseLabel": "How to Use",
       "howToUsePlaceholder": "Describe how to use the product.",
       "submitLabel": "Add Product",
+      "updateLabel": "Update Product",
       "close": "Close",
       "successMessage": "Product added successfully.",
-      "saveError": "Failed to save product. Please try again."
+      "updateSuccessMessage": "Product updated successfully.",
+      "saveError": "Failed to save product. Please try again.",
+      "updateError": "Failed to update product. Please try again."
     }
   }
 }

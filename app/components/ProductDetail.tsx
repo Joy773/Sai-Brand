@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LuArrowLeft,
   LuCheck,
@@ -10,13 +10,9 @@ import {
   LuPlus,
   LuShoppingCart,
 } from "react-icons/lu";
-import { useMessages } from "@/app/i18n/LocaleProvider";
-import { getKitProductTags, KIT_SLUG, productSlugs, type CatalogSlug } from "@/app/lib/products";
-import ProductTags from "@/app/components/ProductTags";
+import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
 import { showAddedToCartToast } from "@/app/lib/showAddedToCartToast";
 import { useCartStore } from "@/app/store/cart-store";
-
-const kitImages = ["/kit-1.png", "/kit-2.png", "/kit-3.png", "/kit-4.png"];
 
 const tabIds = [
   "keyBenefits",
@@ -27,76 +23,151 @@ const tabIds = [
 
 type TabId = (typeof tabIds)[number];
 
-type IngredientGroup = {
-  name: string;
-  list: string;
+type StoreProductDetails = {
+  keyBenefits: string[];
+  howToUse: string;
+  ingredients: string;
+  safetyNotes: string;
 };
 
-function isStringList(content: unknown): content is string[] {
-  return (
-    Array.isArray(content) &&
-    content.every((item) => typeof item === "string")
-  );
-}
-
-function isIngredientGroups(content: unknown): content is IngredientGroup[] {
-  return (
-    Array.isArray(content) &&
-    content.length > 0 &&
-    content.every(
-      (item) =>
-        typeof item === "object" &&
-        item !== null &&
-        "name" in item &&
-        "list" in item &&
-        typeof item.name === "string" &&
-        typeof item.list === "string",
-    )
-  );
-}
+type StoreProduct = {
+  id: string;
+  name: string;
+  description: string;
+  slug: string;
+  productType: "single" | "kit";
+  price: string;
+  size: string;
+  image: string;
+  images: string[];
+  status: "in_stock" | "low_stock";
+  details: StoreProductDetails;
+};
 
 type ProductDetailProps = {
-  slug: CatalogSlug;
+  slug: string;
 };
 
 export default function ProductDetail({ slug }: ProductDetailProps) {
-  const { products, productPage } = useMessages();
+  const { locale } = useLocale();
+  const { productPage, products: productMessages } = useMessages();
   const { addedToCart } = useMessages().cart;
-  const [activeTab, setActiveTab] = useState<TabId>("keyBenefits");
-  const [quantity, setQuantity] = useState(1);
-  const isKit = slug === KIT_SLUG;
   const addItem = useCartStore((state) => state.addItem);
 
-  const product = isKit
-    ? {
-        name: products.kit.name,
-        description: products.kit.description,
-        price: products.kit.price,
-        size: products.kit.size,
-        image: kitImages[0],
-        includes: products.kit.includes,
-        tags: getKitProductTags(products.items),
-        details: products.kit.details,
+  const [product, setProduct] = useState<StoreProduct | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<TabId>("keyBenefits");
+  const [activeImage, setActiveImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadProduct = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `/api/products?slug=${encodeURIComponent(slug)}&locale=${locale}`,
+        );
+        const data = (await response.json()) as {
+          ok?: boolean;
+          product?: StoreProduct;
+          error?: string;
+        };
+
+        if (!response.ok || !data.ok || !data.product) {
+          throw new Error(data.error ?? "Product not found.");
+        }
+
+        if (!cancelled) {
+          setProduct(data.product);
+          setActiveImage(0);
+          setQuantity(1);
+          setActiveTab("keyBenefits");
+        }
+      } catch (loadFailure) {
+        if (!cancelled) {
+          setProduct(null);
+          setError(
+            loadFailure instanceof Error
+              ? loadFailure.message
+              : "Failed to load product.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
-    : products.items.find((item) => productSlugs[slug] === item.image);
+    };
 
-  if (!product) {
-    return null;
-  }
+    void loadProduct();
 
-  const activeContent = product.details?.[activeTab];
-  const decreaseQuantity = () => setQuantity((current) => Math.max(1, current - 1));
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, locale]);
+
+  const decreaseQuantity = () =>
+    setQuantity((current) => Math.max(1, current - 1));
   const increaseQuantity = () => setQuantity((current) => current + 1);
+
   const handleAddToCart = () => {
+    if (!product) {
+      return;
+    }
+
+    const images =
+      product.images.length > 0 ? product.images : [product.image];
+
     addItem({
-      slug,
+      slug: product.slug,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: images[activeImage] ?? product.image,
       quantity,
     });
     showAddedToCartToast(addedToCart);
   };
+
+  if (isLoading) {
+    return (
+      <main className="flex-1 px-6 py-10 lg:px-8 lg:py-16">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-base text-dark-green/70">Loading product...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <main className="flex-1 px-6 py-10 lg:px-8 lg:py-16">
+        <div className="mx-auto max-w-7xl">
+          <Link
+            href="/#products"
+            className="inline-flex items-center gap-2 text-sm font-medium text-dark-green/70 transition-colors hover:text-dark-green"
+          >
+            <LuArrowLeft className="h-4 w-4" aria-hidden />
+            {productPage.backToProducts}
+          </Link>
+          <p className="mt-8 text-base text-red-700">
+            {error ?? "Product not found."}
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  const images =
+    product.images.length > 0 ? product.images : [product.image || "/hero-img.png"];
+  const activeContent =
+    activeTab === "keyBenefits"
+      ? product.details.keyBenefits
+      : product.details[activeTab];
 
   return (
     <main className="flex-1 px-6 py-10 lg:px-8 lg:py-16">
@@ -111,15 +182,42 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
 
         <article className="mt-8 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:mt-10 lg:flex-row lg:items-start lg:overflow-visible">
           <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-beige/40 p-6 sm:p-8 lg:sticky lg:top-8 lg:aspect-auto lg:h-[32rem] lg:w-1/2 lg:rounded-l-3xl">
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-contain object-center"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              priority
-              unoptimized
-            />
+            {images.map((image, index) => (
+              <Image
+                key={`${product.id}-${image}-${index}`}
+                src={image}
+                alt={product.name}
+                fill
+                className={`object-contain object-center transition-opacity duration-500 ${
+                  activeImage === index
+                    ? "opacity-100"
+                    : "pointer-events-none opacity-0"
+                }`}
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority={index === 0}
+                unoptimized
+                aria-hidden={activeImage !== index}
+              />
+            ))}
+
+            {images.length > 1 ? (
+              <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center gap-2">
+                {images.map((image, index) => (
+                  <button
+                    key={`${product.id}-dot-${image}-${index}`}
+                    type="button"
+                    onClick={() => setActiveImage(index)}
+                    aria-label={`Show image ${index + 1}`}
+                    aria-current={activeImage === index ? "true" : undefined}
+                    className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                      activeImage === index
+                        ? "bg-dark-green"
+                        : "bg-dark-green/30 hover:bg-dark-green/50"
+                    }`}
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="flex flex-1 flex-col p-6 sm:p-8 lg:p-10">
@@ -130,24 +228,23 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
               {product.description}
             </p>
 
-            {"tags" in product ? <ProductTags tags={product.tags} /> : null}
-
-            {"includes" in product && product.includes ? (
-              <ul className="mt-6 space-y-2">
-                {product.includes.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-center gap-2 text-sm text-dark-green sm:text-base"
-                  >
-                    <LuCheck
-                      className="h-4 w-4 shrink-0 text-gold"
-                      aria-hidden
-                    />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            {product.size ? (
+              <p className="mt-6 text-sm text-dark-green sm:text-base">
+                {productPage.size}: {product.size}
+              </p>
             ) : null}
+
+            <p
+              className={`mt-3 text-sm font-semibold ${
+                product.status === "low_stock"
+                  ? "text-amber-700"
+                  : "text-emerald-700"
+              }`}
+            >
+              {product.status === "low_stock"
+                ? productMessages.lowStock
+                : productMessages.inStock}
+            </p>
 
             <div className="mt-6 space-y-4 sm:mt-8">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -168,7 +265,6 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
                     {product.price}
                   </p>
                 </div>
-
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -210,64 +306,47 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
               </div>
             </div>
 
-            {product.details ? (
-              <>
-                <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-                  {tabIds.map((tabId) => (
-                    <button
-                      key={tabId}
-                      type="button"
-                      onClick={() => setActiveTab(tabId)}
-                      aria-pressed={activeTab === tabId}
-                      className={`rounded-full border px-3 py-2.5 text-xs font-medium transition-colors sm:px-4 sm:text-sm ${
-                        activeTab === tabId
-                          ? "border-dark-green bg-dark-green text-warm-white"
-                          : "border-dark-green/25 bg-transparent text-dark-green hover:border-dark-green/50"
-                      }`}
-                    >
-                      {productPage.tabs[tabId]}
-                    </button>
-                  ))}
-                </div>
+            <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+              {tabIds.map((tabId) => (
+                <button
+                  key={tabId}
+                  type="button"
+                  onClick={() => setActiveTab(tabId)}
+                  aria-pressed={activeTab === tabId}
+                  className={`rounded-full border px-3 py-2.5 text-xs font-medium transition-colors sm:px-4 sm:text-sm ${
+                    activeTab === tabId
+                      ? "border-dark-green bg-dark-green text-warm-white"
+                      : "border-dark-green/25 bg-transparent text-dark-green hover:border-dark-green/50"
+                  }`}
+                >
+                  {productPage.tabs[tabId]}
+                </button>
+              ))}
+            </div>
 
-                <div className="mt-4 rounded-2xl border border-dark-green/10 bg-beige/20 p-4 sm:p-5">
-                  {activeTab === "keyBenefits" && isStringList(activeContent) ? (
-                    <ul className="space-y-2">
-                      {activeContent.map((benefit) => (
-                        <li
-                          key={benefit}
-                          className="flex items-start gap-2 text-sm leading-relaxed text-dark-green/80 sm:text-base"
-                        >
-                          <LuCheck
-                            className="mt-0.5 h-4 w-4 shrink-0 text-gold"
-                            aria-hidden
-                          />
-                          {benefit}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : activeTab === "ingredients" &&
-                    isIngredientGroups(activeContent) ? (
-                    <div className="space-y-5">
-                      {activeContent.map((item) => (
-                        <div key={item.name}>
-                          <h4 className="text-sm font-semibold text-dark-green sm:text-base">
-                            {item.name}
-                          </h4>
-                          <p className="mt-1 text-sm leading-relaxed text-dark-green/80 sm:text-base">
-                            {item.list}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm leading-relaxed text-dark-green/80 sm:text-base">
-                      {typeof activeContent === "string" ? activeContent : ""}
-                    </p>
-                  )}
-                </div>
-              </>
-            ) : null}
+            <div className="mt-4 rounded-2xl border border-dark-green/10 bg-beige/20 p-4 sm:p-5">
+              {activeTab === "keyBenefits" &&
+              Array.isArray(activeContent) ? (
+                <ul className="space-y-2">
+                  {activeContent.map((benefit) => (
+                    <li
+                      key={benefit}
+                      className="flex items-start gap-2 text-sm leading-relaxed text-dark-green/80 sm:text-base"
+                    >
+                      <LuCheck
+                        className="mt-0.5 h-4 w-4 shrink-0 text-gold"
+                        aria-hidden
+                      />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="whitespace-pre-line text-sm leading-relaxed text-dark-green/80 sm:text-base">
+                  {typeof activeContent === "string" ? activeContent : ""}
+                </p>
+              )}
+            </div>
           </div>
         </article>
       </div>

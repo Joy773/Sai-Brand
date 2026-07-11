@@ -2,10 +2,9 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { CatalogSlug } from "@/app/lib/products";
 
 export type CartItem = {
-  slug: CatalogSlug;
+  slug: string;
   name: string;
   price: string;
   image: string;
@@ -19,10 +18,10 @@ type AddToCartInput = Omit<CartItem, "quantity"> & {
 type CartStore = {
   items: CartItem[];
   addItem: (item: AddToCartInput) => void;
-  removeItem: (slug: CatalogSlug) => void;
-  updateQuantity: (slug: CatalogSlug, quantity: number) => void;
+  removeItem: (slug: string) => void;
+  updateQuantity: (slug: string, quantity: number) => void;
   clearCart: () => void;
-  isInCart: (slug: CatalogSlug) => boolean;
+  isInCart: (slug: string) => boolean;
 };
 
 export const useCartStore = create<CartStore>()(

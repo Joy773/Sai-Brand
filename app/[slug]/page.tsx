@@ -6,20 +6,22 @@ import RelatedProducts from "@/app/components/RelatedProducts";
 import TrustStrip from "@/app/components/TrustStrip";
 import { CookieConsentProvider } from "@/app/i18n/CookieConsentProvider";
 import { LocaleProvider } from "@/app/i18n/LocaleProvider";
-import { allProductSlugs, isCatalogSlug } from "@/app/lib/products";
+import { connectDB } from "@/app/lib/mongodb";
+import Product from "@/app/models/Product";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return allProductSlugs.map((slug) => ({ slug }));
-}
+export const dynamicParams = true;
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
 
-  if (!isCatalogSlug(slug)) {
+  await connectDB();
+  const productExists = await Product.exists({ slug });
+
+  if (!productExists) {
     notFound();
   }
 

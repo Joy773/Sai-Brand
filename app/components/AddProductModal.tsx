@@ -36,7 +36,9 @@ export type NewProductInput = {
 type AddProductModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (product: NewProductInput) => void | Promise<void>;
+  onSubmit: (product: NewProductInput) => void | Promise<void>;
+  initialValues?: NewProductInput | null;
+  mode?: "create" | "edit";
 };
 
 type FormState = NewProductInput;
@@ -84,16 +86,40 @@ const inputClassName =
 
 const textareaClassName = `${inputClassName} min-h-[88px] resize-y`;
 
-function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = typeof reader.result === "string" ? reader.result : "";
-      resolve(result);
+async function uploadImageFile(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 60_000);
+
+  try {
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+      signal: controller.signal,
+    });
+
+    const data = (await response.json()) as {
+      ok?: boolean;
+      url?: string;
+      error?: string;
     };
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
+
+    if (!response.ok || !data.ok || !data.url) {
+      throw new Error(data.error ?? "Failed to upload image.");
+    }
+
+    return data.url;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("Image upload timed out. Please try again.");
+    }
+
+    throw error;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
 }
 
 type LocaleSectionProps = {
@@ -218,12 +244,17 @@ function LocaleProductSection({
 export default function AddProductModal({
   isOpen,
   onClose,
-  onAdd,
+  onSubmit,
+  initialValues = null,
+  mode = "create",
 }: AddProductModalProps) {
   const modal = useMessages().adminPanel.addProductModal;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadRequestIdRef = useRef(0);
   const [form, setForm] = useState<FormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const isEditMode = mode === "edit";
 
   useEffect(() => {
     if (!isOpen) {
@@ -239,14 +270,21 @@ export default function AddProductModal({
 
   useEffect(() => {
     if (!isOpen) {
+      uploadRequestIdRef.current += 1;
       setForm(initialFormState);
       setIsSubmitting(false);
+      setIsUploadingImages(false);
 
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
+      return;
     }
-  }, [isOpen]);
+
+    setForm(initialValues ?? initialFormState);
+    setIsSubmitting(false);
+    setIsUploadingImages(false);
+  }, [isOpen, initialValues]);
 
   if (!isOpen) {
     return null;
@@ -292,7 +330,7 @@ export default function AddProductModal({
     const files = Array.from(event.target.files ?? []);
     event.target.value = "";
 
-    if (files.length === 0) {
+    if (files.length === 0 || isUploadingImages) {
       return;
     }
 
@@ -307,7 +345,7 @@ export default function AddProductModal({
       toast.error(modal.imageMaxCount.replace("{count}", String(MAX_IMAGES)));
     }
 
-    const newImages: string[] = [];
+    const validFiles: File[] = [];
 
     for (const file of filesToProcess) {
       if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
@@ -320,24 +358,49 @@ export default function AddProductModal({
         continue;
       }
 
-      try {
-        const dataUrl = await readFileAsDataUrl(file);
-        if (dataUrl) {
-          newImages.push(dataUrl);
-        }
-      } catch {
-        toast.error(modal.imageReadError);
-      }
+      validFiles.push(file);
     }
 
-    if (newImages.length === 0) {
+    if (validFiles.length === 0) {
       return;
     }
 
-    setForm((prev) => ({
-      ...prev,
-      images: [...prev.images, ...newImages],
-    }));
+    const requestId = ++uploadRequestIdRef.current;
+    setIsUploadingImages(true);
+
+    const newImages: string[] = [];
+
+    try {
+      for (const file of validFiles) {
+        if (uploadRequestIdRef.current !== requestId) {
+          return;
+        }
+
+        try {
+          const imageUrl = await uploadImageFile(file);
+          newImages.push(imageUrl);
+        } catch (error) {
+          toast.error(
+            error instanceof Error ? error.message : modal.imageUploadError,
+          );
+        }
+      }
+
+      if (uploadRequestIdRef.current !== requestId) {
+        return;
+      }
+
+      if (newImages.length > 0) {
+        setForm((prev) => ({
+          ...prev,
+          images: [...prev.images, ...newImages],
+        }));
+      }
+    } finally {
+      if (uploadRequestIdRef.current === requestId) {
+        setIsUploadingImages(false);
+      }
+    }
   };
 
   const handleRemoveImage = (index: number) => {
@@ -361,12 +424,18 @@ export default function AddProductModal({
     setIsSubmitting(true);
 
     try {
-      await onAdd(form);
-      toast.success(modal.successMessage);
+      await onSubmit(form);
+      toast.success(
+        isEditMode ? modal.updateSuccessMessage : modal.successMessage,
+      );
       onClose();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : modal.saveError,
+        error instanceof Error
+          ? error.message
+          : isEditMode
+            ? modal.updateError
+            : modal.saveError,
       );
     } finally {
       setIsSubmitting(false);
@@ -444,10 +513,10 @@ export default function AddProductModal({
             id="add-product-modal-title"
             className="text-2xl font-bold text-dark-green sm:text-[1.75rem]"
           >
-            {modal.title}
+            {isEditMode ? modal.editTitle : modal.title}
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-dark-green/70">
-            {modal.subtitle}
+            {isEditMode ? modal.editSubtitle : modal.subtitle}
           </p>
         </div>
 
@@ -529,11 +598,14 @@ export default function AddProductModal({
                       <button
                         type="button"
                         onClick={handleChooseImage}
-                        className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border border-beige bg-warm-white text-dark-green/70 transition-colors hover:border-gold hover:bg-beige/20 hover:text-dark-green"
+                        disabled={isUploadingImages}
+                        className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border border-beige bg-warm-white text-dark-green/70 transition-colors hover:border-gold hover:bg-beige/20 hover:text-dark-green disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         <LuImagePlus className="h-6 w-6" aria-hidden />
                         <span className="px-1 text-center text-[10px] font-semibold leading-tight text-dark-green sm:text-xs">
-                          {modal.addMoreImages}
+                          {isUploadingImages
+                            ? modal.imageUploading
+                            : modal.addMoreImages}
                         </span>
                       </button>
                     ) : null}
@@ -548,11 +620,14 @@ export default function AddProductModal({
                 <button
                   type="button"
                   onClick={handleChooseImage}
-                  className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-beige bg-warm-white px-4 py-8 text-dark-green/70 transition-colors hover:border-gold hover:bg-beige/20 hover:text-dark-green"
+                  disabled={isUploadingImages}
+                  className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-beige bg-warm-white px-4 py-8 text-dark-green/70 transition-colors hover:border-gold hover:bg-beige/20 hover:text-dark-green disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <LuImagePlus className="h-8 w-8" aria-hidden />
                   <span className="text-sm font-semibold text-dark-green">
-                    {modal.chooseImage}
+                    {isUploadingImages
+                      ? modal.imageUploading
+                      : modal.chooseImage}
                   </span>
                 </button>
               )}
@@ -564,7 +639,8 @@ export default function AddProductModal({
                 type="file"
                 accept="image/jpeg,image/png,image/webp,image/gif"
                 multiple
-                onChange={handleImageChange}
+                onChange={(event) => void handleImageChange(event)}
+                disabled={isUploadingImages}
                 className="hidden"
               />
             </div>
@@ -651,7 +727,7 @@ export default function AddProductModal({
             disabled={isSubmitting}
             className="mt-2 w-full rounded-full bg-dark-green px-5 py-2.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {modal.submitLabel}
+            {isEditMode ? modal.updateLabel : modal.submitLabel}
           </button>
         </form>
       </div>
