@@ -1,6 +1,5 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { LuX } from "react-icons/lu";
 import { toast } from "sonner";
@@ -122,19 +121,9 @@ export default function SignupModal({
         return;
       }
 
-      const signInResult = await signIn("credentials", {
-        email: form.email,
-        password: form.password,
-        redirect: false,
-      });
-
-      if (signInResult?.error) {
-        toast.error(errorMessage);
-        return;
-      }
-
       toast.success(successMessage);
       onClose();
+      onOpenSignIn?.();
     } catch {
       toast.error(errorMessage);
     } finally {

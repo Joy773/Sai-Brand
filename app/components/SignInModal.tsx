@@ -1,5 +1,6 @@
 "use client";
 
+import emailjs from "@emailjs/browser";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
@@ -19,13 +20,64 @@ type FormState = {
   password: string;
 };
 
+type VerificationSendResult = {
+  ok?: boolean;
+  error?: string;
+  email?: string;
+  verificationLink?: string;
+};
+
 const initialFormState: FormState = {
   email: "",
   password: "",
 };
 
+const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const templateId =
+  process.env.NEXT_PUBLIC_EMAILJS_VERIFICATION_TEMPLATE_ID ||
+  process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
 const inputClassName =
   "w-full rounded-xl border border-beige bg-warm-white/60 px-4 py-2.5 text-sm text-dark-green outline-none transition-colors placeholder:text-dark-green/35 focus:border-gold";
+
+async function sendViaBrowser(email: string, verificationLink: string) {
+  if (!serviceId || !templateId || !publicKey) {
+    throw new Error("Email service is not configured.");
+  }
+
+  await emailjs.send(
+    serviceId,
+    templateId,
+    {
+      user_email: email,
+      verification_link: verificationLink,
+    },
+    { publicKey },
+  );
+}
+
+async function sendVerificationEmail(email: string, password: string) {
+  const response = await fetch("/api/send-verification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const data = (await response.json()) as VerificationSendResult;
+
+  if (response.ok && data.ok) {
+    return;
+  }
+
+  // Fallback: browser EmailJS (works when non-browser API is disabled)
+  if (data.email && data.verificationLink) {
+    await sendViaBrowser(data.email, data.verificationLink);
+    return;
+  }
+
+  throw new Error(data.error || "Failed to send verification email.");
+}
 
 export default function SignInModal({
   isOpen,
@@ -45,6 +97,7 @@ export default function SignInModal({
     close,
     successMessage,
     errorMessage,
+    emailNotVerified,
   } = useMessages().signInModal;
 
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -86,6 +139,19 @@ export default function SignInModal({
     }
   };
 
+  const handleUnverifiedLogin = async () => {
+    try {
+      await sendVerificationEmail(form.email, form.password);
+      toast.success(emailNotVerified);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to send verification email.";
+      // eslint-disable-next-line no-console
+      console.error("[SignInModal] verification email failed:", error);
+      toast.error(message);
+    }
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -96,14 +162,24 @@ export default function SignInModal({
     try {
       setIsSubmitting(true);
 
-      const signInResult = await signIn("credentials", {
-        email: form.email,
-        password: form.password,
-        redirect: false,
-      });
+      try {
+        const signInResult = await signIn("credentials", {
+          email: form.email,
+          password: form.password,
+          redirect: false,
+        });
 
-      if (signInResult?.error) {
-        toast.error(errorMessage);
+        if (signInResult?.error) {
+          if (signInResult.code === "email_not_verified") {
+            await handleUnverifiedLogin();
+            return;
+          }
+
+          toast.error(errorMessage);
+          return;
+        }
+      } catch {
+        await handleUnverifiedLogin();
         return;
       }
 

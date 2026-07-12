@@ -20,6 +20,16 @@ const userSchema = new mongoose.Schema(
       minlength: [8, "Password must be at least 8 characters"],
       select: false,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+    },
+    autoLoginToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,

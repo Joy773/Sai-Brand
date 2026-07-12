@@ -1,9 +1,13 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { isAdminRoute, isProtectedRoute } from "@/app/lib/auth-routes";
 import { connectDB } from "@/app/lib/mongodb";
 import User from "@/app/models/User";
-import { isAdminRoute, isProtectedRoute } from "@/app/lib/auth-routes";
+
+class EmailNotVerifiedError extends CredentialsSignin {
+  code = "email_not_verified";
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -12,12 +16,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        autoLoginToken: { label: "Auto Login Token", type: "text" },
       },
       async authorize(credentials) {
         const email = credentials?.email?.toString().trim().toLowerCase();
         const password = credentials?.password?.toString();
+        const autoLoginToken = credentials?.autoLoginToken?.toString().trim();
 
-        if (!email || !password) {
+        if (!email) {
           return null;
         }
 
@@ -40,6 +46,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         await connectDB();
 
+        if (autoLoginToken) {
+          const user = await User.findOne({ email, autoLoginToken });
+          if (!user || !user.emailVerified) {
+            return null;
+          }
+
+          user.autoLoginToken = undefined;
+          await user.save();
+
+          return {
+            id: user._id.toString(),
+            name: user.name,
+            email: user.email,
+            role: "user",
+          };
+        }
+
+        if (!password) {
+          return null;
+        }
+
         const user = await User.findOne({ email }).select("+password");
         if (!user || !user.password) {
           return null;
@@ -48,6 +75,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
           return null;
+        }
+
+        if (!user.emailVerified) {
+          throw new EmailNotVerifiedError("Please verify your email first.");
         }
 
         return {

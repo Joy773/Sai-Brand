@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
 import User from "@/app/models/User";
@@ -100,11 +101,14 @@ export async function POST(request: NextRequest) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const verificationToken = uuidv4();
 
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
+      emailVerified: false,
+      verificationToken,
     });
 
     return NextResponse.json(

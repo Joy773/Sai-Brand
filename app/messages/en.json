@@ -1522,7 +1522,7 @@
     "confirmPasswordPlaceholder": "Re-enter your password",
     "submitLabel": "Create Account",
     "close": "Close",
-    "successMessage": "Account created successfully. You are now signed in.",
+    "successMessage": "Account created successfully.",
     "errorMessage": "Something went wrong. Please try again.",
     "passwordMismatch": "Passwords do not match."
   },
@@ -1538,7 +1538,19 @@
     "submitLabel": "Sign In",
     "close": "Close",
     "successMessage": "Signed in successfully.",
-    "errorMessage": "Invalid email or password. Please try again."
+    "errorMessage": "Invalid email or password. Please try again.",
+    "emailNotVerified": "Please verify your email first. Check your inbox for the verification link."
+  },
+  "verifyEmail": {
+    "_comment": "Email verification result page",
+    "successTitle": "Email verified successfully!",
+    "successDescription": "You are being signed in automatically. This page will close in a few seconds.",
+    "redirecting": "Signing you in…",
+    "loginSuccess": "Login successful",
+    "loginFailed": "Email verified, but automatic sign-in failed. Please sign in manually.",
+    "invalidTitle": "Invalid or expired link",
+    "invalidDescription": "This verification link is invalid or has already been used. Please sign in to request a new one.",
+    "goHome": "Go to home"
   },
   "adminLogin": {
     "_comment": "Admin login page used in app/components/AdminLogin.tsx",

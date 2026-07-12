@@ -1522,7 +1522,7 @@
     "confirmPasswordPlaceholder": "Passwort erneut eingeben",
     "submitLabel": "Konto erstellen",
     "close": "Schließen",
-    "successMessage": "Konto erfolgreich erstellt. Sie sind jetzt angemeldet.",
+    "successMessage": "Konto erfolgreich erstellt.",
     "errorMessage": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "passwordMismatch": "Die Passwörter stimmen nicht überein."
   },
@@ -1538,7 +1538,19 @@
     "submitLabel": "Anmelden",
     "close": "Schließen",
     "successMessage": "Erfolgreich angemeldet.",
-    "errorMessage": "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut."
+    "errorMessage": "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut.",
+    "emailNotVerified": "Bitte bestaetigen Sie zuerst Ihre E-Mail-Adresse. Ein Bestaetigungslink wurde an Ihr Postfach gesendet."
+  },
+  "verifyEmail": {
+    "_comment": "E-Mail-Bestaetigungsseite",
+    "successTitle": "E-Mail erfolgreich bestaetigt!",
+    "successDescription": "Sie werden automatisch angemeldet. Diese Seite schliesst in wenigen Sekunden.",
+    "redirecting": "Anmeldung laeuft…",
+    "loginSuccess": "Anmeldung erfolgreich",
+    "loginFailed": "E-Mail bestaetigt, aber die automatische Anmeldung ist fehlgeschlagen. Bitte melden Sie sich manuell an.",
+    "invalidTitle": "Ungueltiger oder abgelaufener Link",
+    "invalidDescription": "Dieser Bestaetigungslink ist ungueltig oder wurde bereits verwendet. Bitte melden Sie sich an, um einen neuen anzufordern.",
+    "goHome": "Zur Startseite"
   },
   "adminLogin": {
     "_comment": "Admin-Anmeldeseite — verwendet in app/components/AdminLogin.tsx",
