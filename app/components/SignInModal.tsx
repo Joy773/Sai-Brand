@@ -28,7 +28,6 @@ type VerificationSendResult = {
   serviceId?: string;
   templateId?: string;
   publicKey?: string;
-  useBrowserFallback?: boolean;
 };
 
 const initialFormState: FormState = {
@@ -39,22 +38,6 @@ const initialFormState: FormState = {
 const inputClassName =
   "w-full rounded-xl border border-beige bg-warm-white/60 px-4 py-2.5 text-sm text-dark-green outline-none transition-colors placeholder:text-dark-green/35 focus:border-gold";
 
-async function sendViaBrowser(
-  email: string,
-  verificationLink: string,
-  config: { serviceId: string; templateId: string; publicKey: string },
-) {
-  await emailjs.send(
-    config.serviceId,
-    config.templateId,
-    {
-      user_email: email,
-      verification_link: verificationLink,
-    },
-    { publicKey: config.publicKey },
-  );
-}
-
 async function sendVerificationEmail(email: string, password: string) {
   const response = await fetch("/api/send-verification", {
     method: "POST",
@@ -64,29 +47,27 @@ async function sendVerificationEmail(email: string, password: string) {
 
   const data = (await response.json()) as VerificationSendResult;
 
-  if (response.ok && data.ok) {
-    return;
-  }
-
-  // Fallback: browser EmailJS using server-provided config (works on Vercel
-  // even when NEXT_PUBLIC_* values were missing at build time)
   if (
-    data.useBrowserFallback &&
-    data.email &&
-    data.verificationLink &&
-    data.serviceId &&
-    data.templateId &&
-    data.publicKey
+    !response.ok ||
+    !data.ok ||
+    !data.email ||
+    !data.verificationLink ||
+    !data.serviceId ||
+    !data.templateId ||
+    !data.publicKey
   ) {
-    await sendViaBrowser(data.email, data.verificationLink, {
-      serviceId: data.serviceId,
-      templateId: data.templateId,
-      publicKey: data.publicKey,
-    });
-    return;
+    throw new Error(data.error || "Failed to prepare verification email.");
   }
 
-  throw new Error(data.error || "Failed to send verification email.");
+  await emailjs.send(
+    data.serviceId,
+    data.templateId,
+    {
+      user_email: data.email,
+      verification_link: data.verificationLink,
+    },
+    { publicKey: data.publicKey },
+  );
 }
 
 export default function SignInModal({

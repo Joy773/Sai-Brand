@@ -15,15 +15,6 @@ const TEMPLATE_ID =
   process.env.NEXT_PUBLIC_EMAILJS_VERIFICATION_TEMPLATE_ID ||
   process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-const PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY;
-
-function emailjsClientConfig() {
-  return {
-    serviceId: SERVICE_ID,
-    templateId: TEMPLATE_ID,
-    publicKey: PUBLIC_KEY,
-  };
-}
 
 export async function POST(request: NextRequest) {
   let body: Payload;
@@ -49,11 +40,7 @@ export async function POST(request: NextRequest) {
 
   if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
     return NextResponse.json(
-      {
-        ok: false,
-        error:
-          "Email service is not configured. Check EmailJS env vars on Vercel.",
-      },
+      { ok: false, error: "Email service is not configured." },
       { status: 500 },
     );
   }
@@ -90,59 +77,22 @@ export async function POST(request: NextRequest) {
 
     const verificationLink = `${SITE_URL}/verify-email/${verificationToken}`;
 
-    const emailjsPayload: Record<string, unknown> = {
-      service_id: SERVICE_ID,
-      template_id: TEMPLATE_ID,
-      user_id: PUBLIC_KEY,
-      template_params: {
-        user_email: email,
-        verification_link: verificationLink,
-      },
-    };
-
-    if (PRIVATE_KEY) {
-      emailjsPayload.accessToken = PRIVATE_KEY;
-    }
-
-    const emailjsResponse = await fetch(
-      "https://api.emailjs.com/api/v1.0/email/send",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(emailjsPayload),
-      },
-    );
-
-    if (!emailjsResponse.ok) {
-      const errorText = await emailjsResponse.text();
-      // eslint-disable-next-line no-console
-      console.error("[send-verification] EmailJS error:", errorText);
-
-      // Return link + EmailJS config so the browser can send as fallback
-      return NextResponse.json(
-        {
-          ok: false,
-          error: errorText || "Failed to send verification email.",
-          email,
-          verificationLink,
-          ...emailjsClientConfig(),
-          useBrowserFallback: true,
-        },
-        { status: 502 },
-      );
-    }
-
+    // Client sends via EmailJS browser SDK (works on free plan / localhost
+    // without Domains or private key).
     return NextResponse.json({
       ok: true,
       email,
       verificationLink,
+      serviceId: SERVICE_ID,
+      templateId: TEMPLATE_ID,
+      publicKey: PUBLIC_KEY,
     });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("[send-verification]", error);
 
     return NextResponse.json(
-      { ok: false, error: "Failed to send verification email." },
+      { ok: false, error: "Failed to prepare verification email." },
       { status: 500 },
     );
   }
