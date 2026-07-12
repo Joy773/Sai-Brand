@@ -25,6 +25,10 @@ type VerificationSendResult = {
   error?: string;
   email?: string;
   verificationLink?: string;
+  serviceId?: string;
+  templateId?: string;
+  publicKey?: string;
+  useBrowserFallback?: boolean;
 };
 
 const initialFormState: FormState = {
@@ -32,28 +36,22 @@ const initialFormState: FormState = {
   password: "",
 };
 
-const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-const templateId =
-  process.env.NEXT_PUBLIC_EMAILJS_VERIFICATION_TEMPLATE_ID ||
-  process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-
 const inputClassName =
   "w-full rounded-xl border border-beige bg-warm-white/60 px-4 py-2.5 text-sm text-dark-green outline-none transition-colors placeholder:text-dark-green/35 focus:border-gold";
 
-async function sendViaBrowser(email: string, verificationLink: string) {
-  if (!serviceId || !templateId || !publicKey) {
-    throw new Error("Email service is not configured.");
-  }
-
+async function sendViaBrowser(
+  email: string,
+  verificationLink: string,
+  config: { serviceId: string; templateId: string; publicKey: string },
+) {
   await emailjs.send(
-    serviceId,
-    templateId,
+    config.serviceId,
+    config.templateId,
     {
       user_email: email,
       verification_link: verificationLink,
     },
-    { publicKey },
+    { publicKey: config.publicKey },
   );
 }
 
@@ -70,9 +68,21 @@ async function sendVerificationEmail(email: string, password: string) {
     return;
   }
 
-  // Fallback: browser EmailJS (works when non-browser API is disabled)
-  if (data.email && data.verificationLink) {
-    await sendViaBrowser(data.email, data.verificationLink);
+  // Fallback: browser EmailJS using server-provided config (works on Vercel
+  // even when NEXT_PUBLIC_* values were missing at build time)
+  if (
+    data.useBrowserFallback &&
+    data.email &&
+    data.verificationLink &&
+    data.serviceId &&
+    data.templateId &&
+    data.publicKey
+  ) {
+    await sendViaBrowser(data.email, data.verificationLink, {
+      serviceId: data.serviceId,
+      templateId: data.templateId,
+      publicKey: data.publicKey,
+    });
     return;
   }
 

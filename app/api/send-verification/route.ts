@@ -17,6 +17,14 @@ const TEMPLATE_ID =
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 const PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY;
 
+function emailjsClientConfig() {
+  return {
+    serviceId: SERVICE_ID,
+    templateId: TEMPLATE_ID,
+    publicKey: PUBLIC_KEY,
+  };
+}
+
 export async function POST(request: NextRequest) {
   let body: Payload;
 
@@ -41,7 +49,11 @@ export async function POST(request: NextRequest) {
 
   if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
     return NextResponse.json(
-      { ok: false, error: "Email service is not configured." },
+      {
+        ok: false,
+        error:
+          "Email service is not configured. Check EmailJS env vars on Vercel.",
+      },
       { status: 500 },
     );
   }
@@ -72,7 +84,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fresh link on every login attempt for unverified users
     const verificationToken = uuidv4();
     user.verificationToken = verificationToken;
     await user.save();
@@ -107,12 +118,15 @@ export async function POST(request: NextRequest) {
       // eslint-disable-next-line no-console
       console.error("[send-verification] EmailJS error:", errorText);
 
+      // Return link + EmailJS config so the browser can send as fallback
       return NextResponse.json(
         {
           ok: false,
           error: errorText || "Failed to send verification email.",
-          verificationLink,
           email,
+          verificationLink,
+          ...emailjsClientConfig(),
+          useBrowserFallback: true,
         },
         { status: 502 },
       );
