@@ -12,14 +12,65 @@ import SignInModal from "@/app/components/SignInModal";
 import SignupModal from "@/app/components/SignupModal";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 import { formatPrice, parsePrice } from "@/app/lib/price";
-import {
-  showRemovedFromCartToast,
-} from "@/app/lib/showAddedToCartToast";
+import { showRemovedFromCartToast } from "@/app/lib/showAddedToCartToast";
 import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
 
 const MAX_QUANTITY = 20;
 
 type PaymentType = "cod" | "online";
+
+type AddressForm = {
+  firstName: string;
+  lastName: string;
+  streetAddress: string;
+  country: string;
+  stateProvince: string;
+  city: string;
+  zipPostalCode: string;
+  phoneNumber: string;
+};
+
+type AddressField = keyof AddressForm;
+
+const initialAddressForm: AddressForm = {
+  firstName: "",
+  lastName: "",
+  streetAddress: "",
+  country: "DE",
+  stateProvince: "",
+  city: "",
+  zipPostalCode: "",
+  phoneNumber: "",
+};
+
+const requiredAddressFields: AddressField[] = [
+  "firstName",
+  "lastName",
+  "streetAddress",
+  "country",
+  "city",
+  "zipPostalCode",
+  "phoneNumber",
+];
+
+const inputClassName =
+  "w-full rounded-md border bg-warm-white px-3 py-2 text-sm text-dark-green outline-none placeholder:text-dark-green/35 focus:border-dark-green";
+
+function formatDeliveryAddress(
+  form: AddressForm,
+  countryLabel: string,
+): string {
+  return [
+    `${form.firstName.trim()} ${form.lastName.trim()}`.trim(),
+    form.streetAddress.trim(),
+    [form.zipPostalCode.trim(), form.city.trim()].filter(Boolean).join(" "),
+    form.stateProvince.trim(),
+    countryLabel,
+    form.phoneNumber.trim() ? `Phone: ${form.phoneNumber.trim()}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
 
 function CartContent() {
   const router = useRouter();
@@ -35,7 +86,16 @@ function CartContent() {
     qty,
     orderSummary,
     deliveryAddress,
-    addressPlaceholder,
+    firstName,
+    lastName,
+    streetAddress,
+    country,
+    stateProvince,
+    city,
+    zipPostalCode,
+    phoneNumber,
+    requiredField,
+    countries,
     paymentMethod,
     cashOnDelivery,
     onlinePayment,
@@ -57,7 +117,11 @@ function CartContent() {
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const clearCart = useCartStore((state) => state.clearCart);
-  const [address, setAddress] = useState("");
+  const [addressForm, setAddressForm] =
+    useState<AddressForm>(initialAddressForm);
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<AddressField, string>>
+  >({});
   const [paymentType, setPaymentType] = useState<PaymentType>("cod");
   const [addressError, setAddressError] = useState<string | null>(null);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -70,7 +134,42 @@ function CartContent() {
     0,
   );
 
-  const quantityOptions = Array.from({ length: MAX_QUANTITY }, (_, index) => index + 1);
+  const quantityOptions = Array.from(
+    { length: MAX_QUANTITY },
+    (_, index) => index + 1,
+  );
+
+  const countryOptions = Object.entries(countries) as [string, string][];
+  const selectedCountryLabel =
+    countries[addressForm.country as keyof typeof countries] ??
+    addressForm.country;
+
+  const updateAddressField = (field: AddressField, value: string) => {
+    setAddressForm((prev) => ({ ...prev, [field]: value }));
+    if (fieldErrors[field]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+    if (addressError) {
+      setAddressError(null);
+    }
+  };
+
+  const validateAddressForm = () => {
+    const nextErrors: Partial<Record<AddressField, string>> = {};
+
+    for (const field of requiredAddressFields) {
+      if (!addressForm[field].trim()) {
+        nextErrors[field] = requiredField;
+      }
+    }
+
+    setFieldErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
 
   const handleRemoveItem = (slug: (typeof items)[number]["slug"]) => {
     removeItem(slug);
@@ -93,7 +192,7 @@ function CartContent() {
       return;
     }
 
-    if (address.trim().length === 0) {
+    if (!validateAddressForm()) {
       setAddressError(completeDeliveryAddress);
       return;
     }
@@ -104,8 +203,13 @@ function CartContent() {
       return;
     }
 
+    const formattedAddress = formatDeliveryAddress(
+      addressForm,
+      selectedCountryLabel,
+    );
+
     if (paymentType === "online") {
-      sessionStorage.setItem(CHECKOUT_ADDRESS_KEY, address.trim());
+      sessionStorage.setItem(CHECKOUT_ADDRESS_KEY, formattedAddress);
       router.push("/checkout");
       return;
     }
@@ -119,7 +223,19 @@ function CartContent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          address: address.trim(),
+          firstName: addressForm.firstName.trim(),
+          lastName: addressForm.lastName.trim(),
+          streetAddress: addressForm.streetAddress.trim(),
+          country: selectedCountryLabel,
+          stateProvince: addressForm.stateProvince.trim(),
+          city: addressForm.city.trim(),
+          zipPostalCode: addressForm.zipPostalCode.trim(),
+          phoneNumber: addressForm.phoneNumber.trim(),
+          address: formattedAddress,
+          paymentMethod: paymentType,
+          price: subtotal,
+          shippingFee: 0,
+          total: subtotal,
           products: items.map((item) => ({
             slug: item.slug,
             name: item.name,
@@ -127,7 +243,6 @@ function CartContent() {
             image: item.image,
             quantity: item.quantity,
           })),
-          total: subtotal,
         }),
       });
 
@@ -153,6 +268,11 @@ function CartContent() {
     }
   };
 
+  const fieldClassName = (field: AddressField) =>
+    `${inputClassName} ${
+      fieldErrors[field] ? "border-red-500" : "border-beige"
+    }`;
+
   return (
     <>
       <main className="flex-1 bg-warm-white px-6 py-10 lg:px-8 lg:py-14">
@@ -174,7 +294,7 @@ function CartContent() {
               </div>
             </div>
           ) : (
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_380px]">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_400px]">
               <section>
                 <div className="flex items-baseline gap-2">
                   <h1 className="text-2xl font-bold text-dark-green sm:text-3xl">
@@ -262,7 +382,11 @@ function CartContent() {
                             aria-label={remove}
                             className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-dark-green text-warm-white transition-colors hover:bg-dark-green/90"
                           >
-                            <LuX className="h-4 w-4" strokeWidth={2.5} aria-hidden />
+                            <LuX
+                              className="h-4 w-4"
+                              strokeWidth={2.5}
+                              aria-hidden
+                            />
                           </button>
                         </div>
                       </li>
@@ -280,27 +404,212 @@ function CartContent() {
               </section>
 
               <aside className="h-fit rounded-xl border border-beige bg-beige/40 p-5 shadow-sm sm:p-6">
-                <h2 className="text-lg font-bold text-dark-green">{orderSummary}</h2>
+                <h2 className="text-lg font-bold text-dark-green">
+                  {orderSummary}
+                </h2>
 
                 <div className="mt-5 border-b border-beige/70 pb-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.12em] text-dark-green/50">
                     {deliveryAddress}
                   </p>
-                  <label className="mt-2 block">
-                    <span className="sr-only">{deliveryAddress}</span>
-                    <textarea
-                      value={address}
-                      onChange={(event) => {
-                        setAddress(event.target.value);
-                        if (addressError) {
-                          setAddressError(null);
+
+                  <div className="mt-3 space-y-3">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-1 block text-sm text-dark-green">
+                          {firstName}{" "}
+                          <span className="text-red-600" aria-hidden>
+                            *
+                          </span>
+                        </span>
+                        <input
+                          type="text"
+                          value={addressForm.firstName}
+                          onChange={(event) =>
+                            updateAddressField("firstName", event.target.value)
+                          }
+                          className={fieldClassName("firstName")}
+                          autoComplete="given-name"
+                        />
+                        {fieldErrors.firstName ? (
+                          <span className="mt-1 block text-xs text-dark-green/80">
+                            {fieldErrors.firstName}
+                          </span>
+                        ) : null}
+                      </label>
+
+                      <label className="block">
+                        <span className="mb-1 block text-sm text-dark-green">
+                          {lastName}{" "}
+                          <span className="text-red-600" aria-hidden>
+                            *
+                          </span>
+                        </span>
+                        <input
+                          type="text"
+                          value={addressForm.lastName}
+                          onChange={(event) =>
+                            updateAddressField("lastName", event.target.value)
+                          }
+                          className={fieldClassName("lastName")}
+                          autoComplete="family-name"
+                        />
+                        {fieldErrors.lastName ? (
+                          <span className="mt-1 block text-xs text-dark-green/80">
+                            {fieldErrors.lastName}
+                          </span>
+                        ) : null}
+                      </label>
+                    </div>
+
+                    <label className="block">
+                      <span className="mb-1 block text-sm text-dark-green">
+                        {streetAddress}{" "}
+                        <span className="text-red-600" aria-hidden>
+                          *
+                        </span>
+                      </span>
+                      <input
+                        type="text"
+                        value={addressForm.streetAddress}
+                        onChange={(event) =>
+                          updateAddressField(
+                            "streetAddress",
+                            event.target.value,
+                          )
                         }
-                      }}
-                      placeholder={addressPlaceholder}
-                      rows={4}
-                      className="w-full resize-none rounded-md border border-beige bg-warm-white px-3 py-2.5 text-sm leading-relaxed text-dark-green outline-none placeholder:text-dark-green/40 focus:border-dark-green"
-                    />
-                  </label>
+                        className={fieldClassName("streetAddress")}
+                        autoComplete="street-address"
+                      />
+                      {fieldErrors.streetAddress ? (
+                        <span className="mt-1 block text-xs text-dark-green/80">
+                          {fieldErrors.streetAddress}
+                        </span>
+                      ) : null}
+                    </label>
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-1 block text-sm text-dark-green">
+                          {country}{" "}
+                          <span className="text-red-600" aria-hidden>
+                            *
+                          </span>
+                        </span>
+                        <select
+                          value={addressForm.country}
+                          onChange={(event) =>
+                            updateAddressField("country", event.target.value)
+                          }
+                          className={fieldClassName("country")}
+                          autoComplete="country"
+                        >
+                          {countryOptions.map(([code, label]) => (
+                            <option key={code} value={code}>
+                              {label}
+                            </option>
+                          ))}
+                        </select>
+                        {fieldErrors.country ? (
+                          <span className="mt-1 block text-xs text-dark-green/80">
+                            {fieldErrors.country}
+                          </span>
+                        ) : null}
+                      </label>
+
+                      <label className="block">
+                        <span className="mb-1 block text-sm text-dark-green">
+                          {stateProvince}
+                        </span>
+                        <input
+                          type="text"
+                          value={addressForm.stateProvince}
+                          onChange={(event) =>
+                            updateAddressField(
+                              "stateProvince",
+                              event.target.value,
+                            )
+                          }
+                          className={`${inputClassName} border-beige`}
+                          autoComplete="address-level1"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-1 block text-sm text-dark-green">
+                          {city}{" "}
+                          <span className="text-red-600" aria-hidden>
+                            *
+                          </span>
+                        </span>
+                        <input
+                          type="text"
+                          value={addressForm.city}
+                          onChange={(event) =>
+                            updateAddressField("city", event.target.value)
+                          }
+                          className={fieldClassName("city")}
+                          autoComplete="address-level2"
+                        />
+                        {fieldErrors.city ? (
+                          <span className="mt-1 block text-xs text-dark-green/80">
+                            {fieldErrors.city}
+                          </span>
+                        ) : null}
+                      </label>
+
+                      <label className="block">
+                        <span className="mb-1 block text-sm text-dark-green">
+                          {zipPostalCode}{" "}
+                          <span className="text-red-600" aria-hidden>
+                            *
+                          </span>
+                        </span>
+                        <input
+                          type="text"
+                          value={addressForm.zipPostalCode}
+                          onChange={(event) =>
+                            updateAddressField(
+                              "zipPostalCode",
+                              event.target.value,
+                            )
+                          }
+                          className={fieldClassName("zipPostalCode")}
+                          autoComplete="postal-code"
+                        />
+                        {fieldErrors.zipPostalCode ? (
+                          <span className="mt-1 block text-xs text-dark-green/80">
+                            {fieldErrors.zipPostalCode}
+                          </span>
+                        ) : null}
+                      </label>
+                    </div>
+
+                    <label className="block sm:max-w-[50%]">
+                      <span className="mb-1 block text-sm text-dark-green">
+                        {phoneNumber}{" "}
+                        <span className="text-red-600" aria-hidden>
+                          *
+                        </span>
+                      </span>
+                      <input
+                        type="tel"
+                        value={addressForm.phoneNumber}
+                        onChange={(event) =>
+                          updateAddressField("phoneNumber", event.target.value)
+                        }
+                        className={fieldClassName("phoneNumber")}
+                        autoComplete="tel"
+                      />
+                      {fieldErrors.phoneNumber ? (
+                        <span className="mt-1 block text-xs text-dark-green/80">
+                          {fieldErrors.phoneNumber}
+                        </span>
+                      ) : null}
+                    </label>
+                  </div>
                 </div>
 
                 <div className="mt-5 border-b border-beige/70 pb-5">

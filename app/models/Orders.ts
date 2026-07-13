@@ -35,7 +35,7 @@ const orderSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, "Customer name is required"],
       trim: true,
     },
     email: {
@@ -44,16 +44,73 @@ const orderSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    firstName: {
+      type: String,
+      required: [true, "First name is required"],
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: [true, "Last name is required"],
+      trim: true,
+    },
+    streetAddress: {
+      type: String,
+      required: [true, "Street address is required"],
+      trim: true,
+    },
+    country: {
+      type: String,
+      required: [true, "Country is required"],
+      trim: true,
+    },
+    stateProvince: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    city: {
+      type: String,
+      required: [true, "City is required"],
+      trim: true,
+    },
+    zipPostalCode: {
+      type: String,
+      required: [true, "Zip/Postal code is required"],
+      trim: true,
+    },
+    phoneNumber: {
+      type: String,
+      required: [true, "Phone number is required"],
+      trim: true,
+    },
     address: {
       type: String,
       required: [true, "Address is required"],
       trim: true,
     },
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "online"],
+      required: [true, "Payment method is required"],
+    },
+    price: {
+      type: Number,
+      required: [true, "Price is required"],
+      min: [0, "Price must be zero or greater"],
+    },
+    shippingFee: {
+      type: Number,
+      required: [true, "Shipping fee is required"],
+      min: [0, "Shipping fee must be zero or greater"],
+      default: 0,
+    },
     products: {
       type: [orderProductSchema],
       required: [true, "Products are required"],
       validate: {
-        validator: (value: unknown[]) => Array.isArray(value) && value.length > 0,
+        validator: (value: unknown[]) =>
+          Array.isArray(value) && value.length > 0,
         message: "At least one product is required.",
       },
     },

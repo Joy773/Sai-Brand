@@ -12,7 +12,18 @@ type OrderProductPayload = {
 };
 
 type CreateOrderPayload = {
+  firstName?: string;
+  lastName?: string;
+  streetAddress?: string;
+  country?: string;
+  stateProvince?: string;
+  city?: string;
+  zipPostalCode?: string;
+  phoneNumber?: string;
   address?: string;
+  paymentMethod?: "cod" | "online";
+  price?: number;
+  shippingFee?: number;
   products?: OrderProductPayload[];
   total?: number;
 };
@@ -53,6 +64,28 @@ function formatOrderDate(value: Date | string) {
   return date.toISOString().slice(0, 10);
 }
 
+function buildAddress(fields: {
+  firstName: string;
+  lastName: string;
+  streetAddress: string;
+  city: string;
+  zipPostalCode: string;
+  stateProvince: string;
+  country: string;
+  phoneNumber: string;
+}) {
+  return [
+    `${fields.firstName} ${fields.lastName}`.trim(),
+    fields.streetAddress,
+    [fields.zipPostalCode, fields.city].filter(Boolean).join(" "),
+    fields.stateProvince,
+    fields.country,
+    fields.phoneNumber ? `Phone: ${fields.phoneNumber}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 export async function GET() {
   const session = await auth();
 
@@ -66,9 +99,7 @@ export async function GET() {
   try {
     await connectDB();
 
-    const orders = await Order.find()
-      .sort({ orderPlaceTime: -1 })
-      .lean();
+    const orders = await Order.find().sort({ orderPlaceTime: -1 }).lean();
 
     return NextResponse.json({
       ok: true,
@@ -82,8 +113,20 @@ export async function GET() {
           orderId: formatOrderId(id),
           customerName: order.name,
           email: order.email,
+          firstName: order.firstName ?? "",
+          lastName: order.lastName ?? "",
+          streetAddress: order.streetAddress ?? "",
+          country: order.country ?? "",
+          stateProvince: order.stateProvince ?? "",
+          city: order.city ?? "",
+          zipPostalCode: order.zipPostalCode ?? "",
+          phoneNumber: order.phoneNumber ?? "",
           address: order.address,
+          paymentMethod: order.paymentMethod ?? "cod",
+          price: order.price ?? order.total,
+          shippingFee: order.shippingFee ?? 0,
           itemsSummary: formatItemsSummary(order.products),
+          itemNames: order.products.map((product) => product.name),
           products: order.products,
           total: order.total,
           date: formatOrderDate(order.orderPlaceTime),
@@ -125,13 +168,38 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const address = body.address?.trim();
+  const firstName = body.firstName?.trim() ?? "";
+  const lastName = body.lastName?.trim() ?? "";
+  const streetAddress = body.streetAddress?.trim() ?? "";
+  const country = body.country?.trim() ?? "";
+  const stateProvince = body.stateProvince?.trim() ?? "";
+  const city = body.city?.trim() ?? "";
+  const zipPostalCode = body.zipPostalCode?.trim() ?? "";
+  const phoneNumber = body.phoneNumber?.trim() ?? "";
+  const paymentMethod = body.paymentMethod;
   const products = body.products;
+  const price = body.price;
+  const shippingFee = body.shippingFee ?? 0;
   const total = body.total;
 
-  if (!address) {
+  if (
+    !firstName ||
+    !lastName ||
+    !streetAddress ||
+    !country ||
+    !city ||
+    !zipPostalCode ||
+    !phoneNumber
+  ) {
     return NextResponse.json(
-      { ok: false, error: "Delivery address is required." },
+      { ok: false, error: "Complete delivery address is required." },
+      { status: 400 },
+    );
+  }
+
+  if (paymentMethod !== "cod" && paymentMethod !== "online") {
+    return NextResponse.json(
+      { ok: false, error: "Invalid payment method." },
       { status: 400 },
     );
   }
@@ -150,6 +218,24 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (typeof price !== "number" || Number.isNaN(price) || price < 0) {
+    return NextResponse.json(
+      { ok: false, error: "Invalid order price." },
+      { status: 400 },
+    );
+  }
+
+  if (
+    typeof shippingFee !== "number" ||
+    Number.isNaN(shippingFee) ||
+    shippingFee < 0
+  ) {
+    return NextResponse.json(
+      { ok: false, error: "Invalid shipping fee." },
+      { status: 400 },
+    );
+  }
+
   if (typeof total !== "number" || Number.isNaN(total) || total < 0) {
     return NextResponse.json(
       { ok: false, error: "Invalid order total." },
@@ -157,15 +243,31 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const name = session.user.name?.trim();
   const email = session.user.email?.trim().toLowerCase();
-
-  if (!name || !email) {
+  if (!email) {
     return NextResponse.json(
       { ok: false, error: "User profile is incomplete." },
       { status: 400 },
     );
   }
+
+  const customerName =
+    `${firstName} ${lastName}`.trim() ||
+    session.user.name?.trim() ||
+    email;
+
+  const address =
+    body.address?.trim() ||
+    buildAddress({
+      firstName,
+      lastName,
+      streetAddress,
+      city,
+      zipPostalCode,
+      stateProvince,
+      country,
+      phoneNumber,
+    });
 
   try {
     await connectDB();
@@ -173,9 +275,20 @@ export async function POST(request: NextRequest) {
     const orderTime = new Date();
 
     const order = await Order.create({
-      name,
+      name: customerName,
       email,
+      firstName,
+      lastName,
+      streetAddress,
+      country,
+      stateProvince,
+      city,
+      zipPostalCode,
+      phoneNumber,
       address,
+      paymentMethod,
+      price,
+      shippingFee,
       products: products.map((product) => ({
         slug: product.slug!.trim(),
         name: product.name!.trim(),
@@ -186,6 +299,7 @@ export async function POST(request: NextRequest) {
       total,
       orderPlaceTime: orderTime,
       orderTime,
+      status: "pending",
     });
 
     return NextResponse.json(
@@ -195,11 +309,24 @@ export async function POST(request: NextRequest) {
           id: order._id.toString(),
           name: order.name,
           email: order.email,
+          firstName: order.firstName,
+          lastName: order.lastName,
+          streetAddress: order.streetAddress,
+          country: order.country,
+          stateProvince: order.stateProvince,
+          city: order.city,
+          zipPostalCode: order.zipPostalCode,
+          phoneNumber: order.phoneNumber,
           address: order.address,
+          paymentMethod: order.paymentMethod,
+          price: order.price,
+          shippingFee: order.shippingFee,
+          itemNames: order.products.map((product) => product.name),
           products: order.products,
           total: order.total,
           orderPlaceTime: order.orderPlaceTime,
           orderTime: order.orderTime,
+          status: order.status,
         },
       },
       { status: 201 },

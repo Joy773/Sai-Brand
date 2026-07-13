@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMessages } from "@/app/i18n/LocaleProvider";
+import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
 import { KIT_SLUG } from "@/app/lib/products";
 import { handleSectionClick } from "@/app/lib/scrollToSection";
 
@@ -25,6 +25,7 @@ const badgeIconMap: Record<string, string> = {
 };
 
 export default function Hero() {
+  const { locale } = useLocale();
   const hero = useMessages().hero;
 
   return (
@@ -68,23 +69,33 @@ export default function Hero() {
         <ul className="flex max-w-xl flex-wrap justify-center gap-2 pt-2 md:justify-start">
           {hero.badges
             .filter((badge) => badgeIconMap[badge.id])
-            .map((badge) => (
-              <li
-                key={badge.id}
-                className={`group inline-flex cursor-default items-center gap-2 rounded-full border border-transparent bg-warm-white/90 px-3 py-2 text-xs font-bold text-dark-green shadow-sm sm:px-3.5 sm:py-2.5 sm:text-sm ${badgeHover} hover:border-dark-green/15`}
-              >
-                <Image
-                  src={badgeIconMap[badge.id]}
-                  alt=""
-                  width={28}
-                  height={28}
-                  className={`h-6 w-6 shrink-0 rounded-full object-contain sm:h-7 sm:w-7 ${badgeIconHover}`}
-                  unoptimized
-                  aria-hidden
-                />
-                <span className="whitespace-nowrap">{badge.label}</span>
-              </li>
-            ))}
+            .map((badge) => {
+              const hideLabel = locale === "ar" && badge.id === "halal";
+
+              return (
+                <li
+                  key={badge.id}
+                  className={`group inline-flex cursor-default items-center gap-2 rounded-full border border-transparent bg-warm-white/90 text-xs font-bold text-dark-green shadow-sm sm:text-sm ${badgeHover} hover:border-dark-green/15 ${
+                    hideLabel
+                      ? "p-2 sm:p-2.5"
+                      : "px-3 py-2 sm:px-3.5 sm:py-2.5"
+                  }`}
+                >
+                  <Image
+                    src={badgeIconMap[badge.id]}
+                    alt={hideLabel ? badge.label : ""}
+                    width={28}
+                    height={28}
+                    className={`h-6 w-6 shrink-0 rounded-full object-contain sm:h-7 sm:w-7 ${badgeIconHover}`}
+                    unoptimized
+                    aria-hidden={!hideLabel}
+                  />
+                  {!hideLabel ? (
+                    <span className="whitespace-nowrap">{badge.label}</span>
+                  ) : null}
+                </li>
+              );
+            })}
         </ul>
       </div>
 
