@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import { toast } from "sonner";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 import { formatPrice } from "@/app/lib/price";
 
 type OrderStatus = "pending" | "completed";
 type OrderFilter = "all" | "pending" | "completed";
+type PaymentMethod = "cod" | "online";
 
 type OrderProduct = {
   slug: string;
@@ -21,8 +23,20 @@ type AdminOrder = {
   orderId: string;
   customerName: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  streetAddress: string;
+  country: string;
+  stateProvince: string;
+  city: string;
+  zipPostalCode: string;
+  phoneNumber: string;
   address: string;
+  paymentMethod: PaymentMethod;
+  price: number;
+  shippingFee: number;
   itemsSummary: string;
+  itemNames: string[];
   products: OrderProduct[];
   total: number;
   date: string;
@@ -31,20 +45,28 @@ type AdminOrder = {
 
 type OrdersApiResponse = {
   ok: boolean;
-  orders?: Array<{
-    id: string;
-    orderId: string;
-    customerName: string;
-    email: string;
-    address: string;
-    itemsSummary: string;
-    products: OrderProduct[];
-    total: number;
-    date: string;
-    status: OrderStatus;
-  }>;
+  orders?: AdminOrder[];
   error?: string;
 };
+
+function DetailItem({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-dark-green/45">
+        {label}
+      </p>
+      <p className="mt-1 whitespace-pre-line text-sm text-dark-green">
+        {value || "—"}
+      </p>
+    </div>
+  );
+}
 
 export default function AdminOrdersPage() {
   const {
@@ -58,6 +80,7 @@ export default function AdminOrdersPage() {
 
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [activeFilter, setActiveFilter] = useState<OrderFilter>("all");
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,7 +94,23 @@ export default function AdminOrdersPage() {
           throw new Error(data.error ?? ordersTable.loadError);
         }
 
-        setOrders(data.orders);
+        setOrders(
+          data.orders.map((order) => ({
+            ...order,
+            firstName: order.firstName ?? "",
+            lastName: order.lastName ?? "",
+            streetAddress: order.streetAddress ?? "",
+            country: order.country ?? "",
+            stateProvince: order.stateProvince ?? "",
+            city: order.city ?? "",
+            zipPostalCode: order.zipPostalCode ?? "",
+            phoneNumber: order.phoneNumber ?? "",
+            paymentMethod: order.paymentMethod ?? "cod",
+            price: order.price ?? order.total,
+            shippingFee: order.shippingFee ?? 0,
+            itemNames: order.itemNames ?? order.products.map((p) => p.name),
+          })),
+        );
       } catch (loadError) {
         setError(
           loadError instanceof Error
@@ -103,6 +142,9 @@ export default function AdminOrdersPage() {
     toast.success(statusUpdated);
   };
 
+  const paymentLabel = (method: PaymentMethod) =>
+    method === "online" ? ordersTable.paymentOnline : ordersTable.paymentCod;
+
   return (
     <div>
       <h1 className="text-3xl font-bold text-dark-green">{ordersTitle}</h1>
@@ -131,103 +173,189 @@ export default function AdminOrdersPage() {
         })}
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-3xl border border-beige bg-beige/20">
+      <div className="mt-6 space-y-4">
         {isLoading ? (
-          <p className="px-6 py-12 text-center text-sm text-dark-green/70">
+          <div className="rounded-3xl border border-beige bg-beige/20 px-6 py-12 text-center text-sm text-dark-green/70">
             {ordersTable.loading}
-          </p>
-        ) : error ? (
-          <p className="px-6 py-12 text-center text-sm text-red-600">{error}</p>
-        ) : filteredOrders.length === 0 ? (
-          <p className="px-6 py-12 text-center text-sm text-dark-green/70">
-            {ordersEmpty}
-          </p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-sm">
-              <thead className="border-b border-beige bg-beige/40 text-dark-green/70">
-                <tr>
-                  <th className="px-4 py-3 font-semibold sm:px-6">
-                    {ordersTable.orderId}
-                  </th>
-                  <th className="px-4 py-3 font-semibold sm:px-6">
-                    {ordersTable.customer}
-                  </th>
-                  <th className="hidden px-4 py-3 font-semibold md:table-cell sm:px-6">
-                    {ordersTable.email}
-                  </th>
-                  <th className="hidden px-4 py-3 font-semibold lg:table-cell sm:px-6">
-                    {ordersTable.address}
-                  </th>
-                  <th className="hidden px-4 py-3 font-semibold xl:table-cell sm:px-6">
-                    {ordersTable.items}
-                  </th>
-                  <th className="px-4 py-3 font-semibold sm:px-6">
-                    {ordersTable.total}
-                  </th>
-                  <th className="hidden px-4 py-3 font-semibold sm:table-cell sm:px-6">
-                    {ordersTable.date}
-                  </th>
-                  <th className="px-4 py-3 font-semibold sm:px-6">
-                    {ordersTable.status}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredOrders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="border-b border-beige/70 bg-warm-white/60 last:border-b-0"
-                  >
-                    <td className="px-4 py-4 font-medium text-dark-green sm:px-6">
-                      {order.orderId}
-                    </td>
-                    <td className="px-4 py-4 text-dark-green sm:px-6">
-                      <p>{order.customerName}</p>
-                      <p className="mt-0.5 text-xs text-dark-green/60 md:hidden">
-                        {order.email}
-                      </p>
-                    </td>
-                    <td className="hidden px-4 py-4 text-dark-green/80 md:table-cell sm:px-6">
-                      {order.email}
-                    </td>
-                    <td className="hidden max-w-xs px-4 py-4 text-dark-green/80 lg:table-cell sm:px-6">
-                      {order.address}
-                    </td>
-                    <td className="hidden px-4 py-4 text-dark-green/80 xl:table-cell sm:px-6">
-                      {order.itemsSummary}
-                    </td>
-                    <td className="px-4 py-4 font-medium text-dark-green sm:px-6">
-                      {formatPrice(order.total, "€0.00")}
-                    </td>
-                    <td className="hidden px-4 py-4 text-dark-green/80 sm:table-cell sm:px-6">
-                      {order.date}
-                    </td>
-                    <td className="px-4 py-4 sm:px-6">
-                      <select
-                        value={order.status}
-                        onChange={(event) =>
-                          handleStatusChange(
-                            order.id,
-                            event.target.value as OrderStatus,
-                          )
-                        }
-                        className="rounded-xl border border-beige bg-warm-white px-3 py-2 text-sm font-medium text-dark-green outline-none transition-colors focus:border-gold"
-                        aria-label={`${ordersTable.status} ${order.orderId}`}
-                      >
-                        <option value="pending">
-                          {ordersTable.statusPending}
-                        </option>
-                        <option value="completed">
-                          {ordersTable.statusCompleted}
-                        </option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
+        ) : error ? (
+          <div className="rounded-3xl border border-beige bg-beige/20 px-6 py-12 text-center text-sm text-red-600">
+            {error}
+          </div>
+        ) : filteredOrders.length === 0 ? (
+          <div className="rounded-3xl border border-beige bg-beige/20 px-6 py-12 text-center text-sm text-dark-green/70">
+            {ordersEmpty}
+          </div>
+        ) : (
+          filteredOrders.map((order) => {
+            const isExpanded = expandedOrderId === order.id;
+
+            return (
+              <article
+                key={order.id}
+                className="overflow-hidden rounded-3xl border border-beige bg-warm-white/70 shadow-sm"
+              >
+                <div className="flex flex-col gap-4 px-5 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <h2 className="text-base font-bold text-dark-green">
+                        {order.orderId}
+                      </h2>
+                      <span className="text-sm text-dark-green/60">
+                        {order.date}
+                      </span>
+                    </div>
+                    <p className="text-sm font-medium text-dark-green">
+                      {order.firstName || order.lastName
+                        ? `${order.firstName} ${order.lastName}`.trim()
+                        : order.customerName}
+                    </p>
+                    <p className="text-sm text-dark-green/70">{order.email}</p>
+                    <p className="text-sm text-dark-green/70">
+                      {ordersTable.items}: {order.itemsSummary}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <p className="text-base font-bold text-dark-green">
+                      {formatPrice(order.total, "€0.00")}
+                    </p>
+                    <select
+                      value={order.status}
+                      onChange={(event) =>
+                        handleStatusChange(
+                          order.id,
+                          event.target.value as OrderStatus,
+                        )
+                      }
+                      className="rounded-xl border border-beige bg-warm-white px-3 py-2 text-sm font-medium text-dark-green outline-none transition-colors focus:border-gold"
+                      aria-label={`${ordersTable.status} ${order.orderId}`}
+                    >
+                      <option value="pending">
+                        {ordersTable.statusPending}
+                      </option>
+                      <option value="completed">
+                        {ordersTable.statusCompleted}
+                      </option>
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedOrderId(isExpanded ? null : order.id)
+                      }
+                      className="inline-flex items-center gap-1.5 rounded-full border border-beige bg-beige/40 px-3 py-2 text-sm font-semibold text-dark-green transition-colors hover:bg-beige/70"
+                    >
+                      {isExpanded
+                        ? ordersTable.hideDetails
+                        : ordersTable.viewDetails}
+                      {isExpanded ? (
+                        <LuChevronUp className="h-4 w-4" aria-hidden />
+                      ) : (
+                        <LuChevronDown className="h-4 w-4" aria-hidden />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {isExpanded ? (
+                  <div className="border-t border-beige bg-beige/20 px-5 py-5 sm:px-6">
+                    <div className="grid gap-6 lg:grid-cols-2">
+                      <section>
+                        <h3 className="text-sm font-bold uppercase tracking-[0.1em] text-dark-green/60">
+                          {ordersTable.deliveryDetails}
+                        </h3>
+                        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                          <DetailItem
+                            label={ordersTable.firstName}
+                            value={order.firstName}
+                          />
+                          <DetailItem
+                            label={ordersTable.lastName}
+                            value={order.lastName}
+                          />
+                          <DetailItem
+                            label={ordersTable.streetAddress}
+                            value={order.streetAddress}
+                          />
+                          <DetailItem
+                            label={ordersTable.country}
+                            value={order.country}
+                          />
+                          <DetailItem
+                            label={ordersTable.stateProvince}
+                            value={order.stateProvince}
+                          />
+                          <DetailItem
+                            label={ordersTable.city}
+                            value={order.city}
+                          />
+                          <DetailItem
+                            label={ordersTable.zipPostalCode}
+                            value={order.zipPostalCode}
+                          />
+                          <DetailItem
+                            label={ordersTable.phoneNumber}
+                            value={order.phoneNumber}
+                          />
+                          <DetailItem
+                            label={ordersTable.email}
+                            value={order.email}
+                          />
+                        </div>
+                      </section>
+
+                      <section>
+                        <h3 className="text-sm font-bold uppercase tracking-[0.1em] text-dark-green/60">
+                          {ordersTable.orderSummary}
+                        </h3>
+                        <div className="mt-4 space-y-4">
+                          <DetailItem
+                            label={ordersTable.paymentMethod}
+                            value={paymentLabel(order.paymentMethod)}
+                          />
+                          <DetailItem
+                            label={ordersTable.items}
+                            value={
+                              order.products.length > 0
+                                ? order.products
+                                    .map(
+                                      (product) =>
+                                        `${product.name} × ${product.quantity} (${product.price})`,
+                                    )
+                                    .join("\n")
+                                : order.itemsSummary
+                            }
+                          />
+                          <div className="rounded-2xl border border-beige bg-warm-white/80 p-4 text-sm text-dark-green">
+                            <div className="flex items-center justify-between">
+                              <span>{ordersTable.price}</span>
+                              <span>
+                                {formatPrice(order.price, "€0.00")}
+                              </span>
+                            </div>
+                            <div className="mt-2 flex items-center justify-between">
+                              <span>{ordersTable.shippingFee}</span>
+                              <span>
+                                {order.shippingFee === 0
+                                  ? ordersTable.shippingFree
+                                  : formatPrice(order.shippingFee, "€0.00")}
+                              </span>
+                            </div>
+                            <div className="mt-3 flex items-center justify-between border-t border-beige pt-3 font-bold">
+                              <span>{ordersTable.total}</span>
+                              <span>
+                                {formatPrice(order.total, "€0.00")}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                    </div>
+                  </div>
+                ) : null}
+              </article>
+            );
+          })
         )}
       </div>
     </div>
