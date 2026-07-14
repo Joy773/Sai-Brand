@@ -9,6 +9,7 @@ import {
   LuLogOut,
   LuPackage,
   LuShoppingBag,
+  LuTruck,
   LuUsers,
 } from "react-icons/lu";
 import { toast } from "sonner";
@@ -19,6 +20,7 @@ const navIcons = {
   products: LuPackage,
   orders: LuShoppingBag,
   users: LuUsers,
+  shipping: LuTruck,
 } as const;
 
 export default function Sidebar() {

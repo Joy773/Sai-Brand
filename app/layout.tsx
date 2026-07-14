@@ -17,8 +17,20 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Sai Brand",
-  description: "Sai Brand is a brand that sells products to the public",
+  title: "German Care",
+  description: "German Care is a brand that sells products to the public",
+  keywords: ["German Care", "German Care Products", "German Care Services"],
+  authors: [{ name: "German Care", url: "https://german-care.com" }],
+  creator: "German Care Team",
+  publisher: "German Care Team",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+  openGraph: {
+    title: "German Care",
+    description: "German Care is a brand that sells products to the public",
+  },
 };
 
 export default function RootLayout({

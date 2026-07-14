@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { LuArrowLeft, LuX } from "react-icons/lu";
 import { toast } from "sonner";
 import { CHECKOUT_ADDRESS_KEY } from "@/app/components/Checkout";
@@ -18,6 +18,12 @@ import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
 const MAX_QUANTITY = 20;
 
 type PaymentType = "cod" | "online";
+
+type ShippingCountry = {
+  id: string;
+  country: string;
+  price: number;
+};
 
 type AddressForm = {
   firstName: string;
@@ -36,7 +42,7 @@ const initialAddressForm: AddressForm = {
   firstName: "",
   lastName: "",
   streetAddress: "",
-  country: "DE",
+  country: "",
   stateProvince: "",
   city: "",
   zipPostalCode: "",
@@ -95,7 +101,6 @@ function CartContent() {
     zipPostalCode,
     phoneNumber,
     requiredField,
-    countries,
     paymentMethod,
     cashOnDelivery,
     onlinePayment,
@@ -127,6 +132,10 @@ function CartContent() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
+  const [shippingCountries, setShippingCountries] = useState<ShippingCountry[]>(
+    [],
+  );
+  const [isLoadingCountries, setIsLoadingCountries] = useState(true);
 
   const referencePrice = items[0]?.price ?? "€0.00";
   const subtotal = items.reduce(
@@ -139,10 +148,67 @@ function CartContent() {
     (_, index) => index + 1,
   );
 
-  const countryOptions = Object.entries(countries) as [string, string][];
-  const selectedCountryLabel =
-    countries[addressForm.country as keyof typeof countries] ??
-    addressForm.country;
+  const selectedShippingCountry = shippingCountries.find(
+    (rate) => rate.country === addressForm.country,
+  );
+  const shippingFeeAmount = selectedShippingCountry?.price ?? 0;
+  const orderTotal = subtotal + shippingFeeAmount;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadShippingCountries = async () => {
+      setIsLoadingCountries(true);
+
+      try {
+        const response = await fetch("/api/shipping");
+        const data = (await response.json()) as {
+          ok?: boolean;
+          rates?: ShippingCountry[];
+          error?: string;
+        };
+
+        if (!response.ok || !data.ok || !data.rates) {
+          throw new Error(data.error ?? "Failed to load shipping countries.");
+        }
+
+        if (cancelled) {
+          return;
+        }
+
+        setShippingCountries(data.rates);
+        setAddressForm((prev) => {
+          if (
+            prev.country &&
+            data.rates!.some((rate) => rate.country === prev.country)
+          ) {
+            return prev;
+          }
+
+          return {
+            ...prev,
+            country: data.rates![0]?.country ?? "",
+          };
+        });
+      } catch {
+        if (!cancelled) {
+          setShippingCountries([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingCountries(false);
+        }
+      }
+    };
+
+    void loadShippingCountries();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const selectedCountryLabel = addressForm.country;
 
   const updateAddressField = (field: AddressField, value: string) => {
     setAddressForm((prev) => ({ ...prev, [field]: value }));
@@ -197,6 +263,11 @@ function CartContent() {
       return;
     }
 
+    if (!selectedShippingCountry) {
+      setAddressError(completeDeliveryAddress);
+      return;
+    }
+
     setAddressError(null);
 
     if (items.length === 0 || isPlacingOrder) {
@@ -234,8 +305,8 @@ function CartContent() {
           address: formattedAddress,
           paymentMethod: paymentType,
           price: subtotal,
-          shippingFee: 0,
-          total: subtotal,
+          shippingFee: shippingFeeAmount,
+          total: orderTotal,
           products: items.map((item) => ({
             slug: item.slug,
             name: item.name,
@@ -503,12 +574,21 @@ function CartContent() {
                           }
                           className={fieldClassName("country")}
                           autoComplete="country"
+                          disabled={
+                            isLoadingCountries || shippingCountries.length === 0
+                          }
                         >
-                          {countryOptions.map(([code, label]) => (
-                            <option key={code} value={code}>
-                              {label}
-                            </option>
-                          ))}
+                          {isLoadingCountries ? (
+                            <option value="">Loading countries...</option>
+                          ) : shippingCountries.length === 0 ? (
+                            <option value="">No countries available</option>
+                          ) : (
+                            shippingCountries.map((rate) => (
+                              <option key={rate.id} value={rate.country}>
+                                {rate.country}
+                              </option>
+                            ))
+                          )}
                         </select>
                         {fieldErrors.country ? (
                           <span className="mt-1 block text-xs text-dark-green/80">
@@ -636,7 +716,11 @@ function CartContent() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span>{shippingFee}</span>
-                    <span className="font-medium text-dark-green">{free}</span>
+                    <span className="font-medium text-dark-green">
+                      {shippingFeeAmount === 0
+                        ? free
+                        : formatPrice(shippingFeeAmount, referencePrice)}
+                    </span>
                   </div>
                 </div>
 
@@ -645,14 +729,18 @@ function CartContent() {
                     {totalAmount}
                   </span>
                   <span className="text-lg font-bold text-dark-green">
-                    {formatPrice(subtotal, referencePrice)}
+                    {formatPrice(orderTotal, referencePrice)}
                   </span>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => void handlePlaceOrder()}
-                  disabled={isPlacingOrder}
+                  disabled={
+                    isPlacingOrder ||
+                    isLoadingCountries ||
+                    shippingCountries.length === 0
+                  }
                   className="mt-6 w-full rounded-md bg-dark-green px-4 py-3.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {placeOrder}

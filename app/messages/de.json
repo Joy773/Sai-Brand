@@ -1614,6 +1614,11 @@
         "id": "users",
         "label": "Benutzer",
         "href": "/admin/users"
+      },
+      {
+        "id": "shipping",
+        "label": "Versandkosten",
+        "href": "/admin/Shipping"
       }
     ]
   },

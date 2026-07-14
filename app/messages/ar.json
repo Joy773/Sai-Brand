@@ -1616,6 +1616,11 @@
         "id": "users",
         "label": "المستخدمون",
         "href": "/admin/users"
+      },
+      {
+        "id": "shipping",
+        "label": "أسعار الشحن",
+        "href": "/admin/Shipping"
       }
     ]
   },
