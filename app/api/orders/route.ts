@@ -22,6 +22,7 @@ type CreateOrderPayload = {
   phoneNumber?: string;
   address?: string;
   paymentMethod?: "cod" | "online";
+  paymentStatus?: "pending" | "paid";
   price?: number;
   shippingFee?: number;
   products?: OrderProductPayload[];
@@ -123,15 +124,17 @@ export async function GET() {
           phoneNumber: order.phoneNumber ?? "",
           address: order.address,
           paymentMethod: order.paymentMethod ?? "cod",
+          paymentStatus: order.paymentStatus ?? "pending",
           price: order.price ?? order.total,
           shippingFee: order.shippingFee ?? 0,
-          itemsSummary: formatItemsSummary(order.products),
-          itemNames: order.products.map((product) => product.name),
-          products: order.products,
+          itemsSummary: formatItemsSummary(order.products ?? []),
+          itemNames: (order.products ?? []).map((product) => product.name),
+          products: order.products ?? [],
           total: order.total,
           date: formatOrderDate(order.orderPlaceTime),
           orderPlaceTime: order.orderPlaceTime,
           orderTime: order.orderTime,
+          stripeSessionId: order.stripeSessionId ?? "",
           status,
         };
       }),
@@ -181,6 +184,12 @@ export async function POST(request: NextRequest) {
   const price = body.price;
   const shippingFee = body.shippingFee ?? 0;
   const total = body.total;
+  const paymentStatus =
+    body.paymentStatus === "paid"
+      ? "paid"
+      : paymentMethod === "cod"
+        ? "pending"
+        : "pending";
 
   if (
     !firstName ||
@@ -287,6 +296,7 @@ export async function POST(request: NextRequest) {
       phoneNumber,
       address,
       paymentMethod,
+      paymentStatus,
       price,
       shippingFee,
       products: products.map((product) => ({
@@ -319,6 +329,7 @@ export async function POST(request: NextRequest) {
           phoneNumber: order.phoneNumber,
           address: order.address,
           paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
           price: order.price,
           shippingFee: order.shippingFee,
           itemNames: order.products.map((product) => product.name),

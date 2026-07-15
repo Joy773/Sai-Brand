@@ -134,6 +134,18 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "completed"],
       default: "pending",
     },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid"],
+      default: "pending",
+    },
+    stripeSessionId: {
+      type: String,
+      trim: true,
+      unique: true,
+      sparse: true,
+      default: undefined,
+    },
   },
   {
     timestamps: true,

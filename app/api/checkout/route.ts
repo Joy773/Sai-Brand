@@ -12,7 +12,18 @@ type CheckoutProductPayload = {
 };
 
 type CheckoutPayload = {
+  firstName?: string;
+  lastName?: string;
+  streetAddress?: string;
+  country?: string;
+  stateProvince?: string;
+  city?: string;
+  zipPostalCode?: string;
+  phoneNumber?: string;
   address?: string;
+  price?: number;
+  shippingFee?: number;
+  total?: number;
   products?: CheckoutProductPayload[];
 };
 
@@ -44,7 +55,11 @@ function getOrigin(request: NextRequest) {
     return `${protocol}://${host}`;
   }
 
-  return process.env.NEXT_PUBLIC_APP_URL?.trim() || "http://localhost:3000";
+  return (
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.NEXT_PUBLIC_APP_URL?.trim() ||
+    "http://localhost:3000"
+  );
 }
 
 function toStripeUnitAmount(price: string) {
@@ -72,12 +87,35 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const firstName = body.firstName?.trim() ?? "";
+  const lastName = body.lastName?.trim() ?? "";
+  const streetAddress = body.streetAddress?.trim() ?? "";
+  const country = body.country?.trim() ?? "";
+  const stateProvince = body.stateProvince?.trim() ?? "";
+  const city = body.city?.trim() ?? "";
+  const zipPostalCode = body.zipPostalCode?.trim() ?? "";
+  const phoneNumber = body.phoneNumber?.trim() ?? "";
   const address = body.address?.trim() ?? "";
   const products = body.products;
+  const shippingFee =
+    typeof body.shippingFee === "number" &&
+    Number.isFinite(body.shippingFee) &&
+    body.shippingFee >= 0
+      ? body.shippingFee
+      : 0;
 
-  if (!address) {
+  if (
+    !firstName ||
+    !lastName ||
+    !streetAddress ||
+    !country ||
+    !city ||
+    !zipPostalCode ||
+    !phoneNumber ||
+    !address
+  ) {
     return NextResponse.json(
-      { ok: false, error: "Delivery address is required." },
+      { ok: false, error: "Complete delivery address is required." },
       { status: 400 },
     );
   }
@@ -96,7 +134,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const name = session.user.name?.trim() ?? "";
+  const name = session.user.name?.trim() ?? `${firstName} ${lastName}`.trim();
   const email = session.user.email?.trim().toLowerCase() ?? "";
 
   if (!name || !email) {
@@ -107,6 +145,7 @@ export async function POST(request: NextRequest) {
   }
 
   const lineItems = [];
+  let productsTotal = 0;
 
   for (const product of products) {
     const unitAmount = toStripeUnitAmount(product.price!);
@@ -120,6 +159,8 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
+
+    productsTotal += (unitAmount / 100) * product.quantity!;
 
     const image = product.image!.trim();
     const images = image.startsWith("https://") ? [image] : undefined;
@@ -140,6 +181,21 @@ export async function POST(request: NextRequest) {
     });
   }
 
+  if (shippingFee > 0) {
+    lineItems.push({
+      quantity: 1,
+      price_data: {
+        currency: "eur" as const,
+        unit_amount: Math.round(shippingFee * 100),
+        product_data: {
+          name: "Shipping",
+        },
+      },
+    });
+  }
+
+  const orderTotal = productsTotal + shippingFee;
+
   try {
     const stripe = getStripe();
     const origin = getOrigin(request);
@@ -155,16 +211,18 @@ export async function POST(request: NextRequest) {
         userId: session.user.id ?? "",
         userName: name,
         userEmail: email,
+        firstName,
+        lastName,
+        streetAddress,
+        country,
+        stateProvince,
+        city,
+        zipPostalCode,
+        phoneNumber,
         address,
-        products: JSON.stringify(
-          products.map((product) => ({
-            slug: product.slug!.trim(),
-            name: product.name!.trim(),
-            price: product.price!.trim(),
-            image: product.image!.trim(),
-            quantity: product.quantity!,
-          })),
-        ),
+        price: productsTotal.toFixed(2),
+        shippingFee: shippingFee.toFixed(2),
+        total: orderTotal.toFixed(2),
       },
     });
 

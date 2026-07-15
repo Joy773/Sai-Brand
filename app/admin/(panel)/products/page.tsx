@@ -239,8 +239,8 @@ export default function AdminProductsPage() {
     <div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-dark-green">{productsTitle}</h1>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-dark-green/70">
+          <h1 className="text-2xl font-bold text-dark-green sm:text-3xl">{productsTitle}</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-dark-green/70 sm:mt-3 sm:text-base">
             {productsDescription}
           </p>
         </div>
@@ -258,7 +258,7 @@ export default function AdminProductsPage() {
 
       <div className="mt-8 overflow-hidden rounded-3xl border border-beige bg-beige/20">
         <div className="overflow-x-auto">
-          <table className="min-w-full text-left text-sm">
+          <table className="min-w-[40rem] w-full text-left text-sm md:min-w-full">
             <thead className="border-b border-beige bg-beige/40 text-dark-green/70">
               <tr>
                 <th className="px-4 py-3 font-semibold sm:px-6">
@@ -346,14 +346,14 @@ export default function AdminProductsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-4 sm:px-6">
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
                         <button
                           type="button"
                           onClick={() => {
                             setEditingProduct(product);
                             setIsModalOpen(true);
                           }}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-dark-green/20 px-3 py-1.5 text-xs font-semibold text-dark-green transition-colors hover:bg-dark-green/5"
+                          className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-dark-green/20 px-3 py-1.5 text-xs font-semibold text-dark-green transition-colors hover:bg-dark-green/5 sm:w-auto"
                           aria-label={`${productsTable.update} ${product.name}`}
                         >
                           <LuPencil className="h-3.5 w-3.5" aria-hidden />
@@ -363,7 +363,7 @@ export default function AdminProductsPage() {
                           type="button"
                           onClick={() => void handleDeleteProduct(product.id)}
                           disabled={deletingId === product.id}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                           aria-label={`${productsTable.delete} ${product.name}`}
                         >
                           <LuTrash2 className="h-3.5 w-3.5" aria-hidden />

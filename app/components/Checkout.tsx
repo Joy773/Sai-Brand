@@ -15,6 +15,82 @@ import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
 
 export const CHECKOUT_ADDRESS_KEY = "sai-checkout-address";
 
+type CheckoutDraft = {
+  firstName: string;
+  lastName: string;
+  streetAddress: string;
+  country: string;
+  stateProvince: string;
+  city: string;
+  zipPostalCode: string;
+  phoneNumber: string;
+  address: string;
+  price: number;
+  shippingFee: number;
+  total: number;
+};
+
+function parseCheckoutDraft(raw: string | null): CheckoutDraft | null {
+  if (!raw?.trim()) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as Partial<CheckoutDraft>;
+
+    if (
+      typeof parsed.firstName !== "string" ||
+      typeof parsed.lastName !== "string" ||
+      typeof parsed.streetAddress !== "string" ||
+      typeof parsed.country !== "string" ||
+      typeof parsed.city !== "string" ||
+      typeof parsed.zipPostalCode !== "string" ||
+      typeof parsed.phoneNumber !== "string" ||
+      typeof parsed.address !== "string" ||
+      !parsed.firstName.trim() ||
+      !parsed.lastName.trim() ||
+      !parsed.streetAddress.trim() ||
+      !parsed.country.trim() ||
+      !parsed.city.trim() ||
+      !parsed.zipPostalCode.trim() ||
+      !parsed.phoneNumber.trim() ||
+      !parsed.address.trim()
+    ) {
+      return null;
+    }
+
+    return {
+      firstName: parsed.firstName.trim(),
+      lastName: parsed.lastName.trim(),
+      streetAddress: parsed.streetAddress.trim(),
+      country: parsed.country.trim(),
+      stateProvince:
+        typeof parsed.stateProvince === "string"
+          ? parsed.stateProvince.trim()
+          : "",
+      city: parsed.city.trim(),
+      zipPostalCode: parsed.zipPostalCode.trim(),
+      phoneNumber: parsed.phoneNumber.trim(),
+      address: parsed.address.trim(),
+      price:
+        typeof parsed.price === "number" && Number.isFinite(parsed.price)
+          ? parsed.price
+          : 0,
+      shippingFee:
+        typeof parsed.shippingFee === "number" &&
+        Number.isFinite(parsed.shippingFee)
+          ? parsed.shippingFee
+          : 0,
+      total:
+        typeof parsed.total === "number" && Number.isFinite(parsed.total)
+          ? parsed.total
+          : 0,
+    };
+  } catch {
+    return null;
+  }
+}
+
 function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -43,7 +119,7 @@ function CheckoutContent() {
   const items = useCartStore((state) => state.items);
   const itemCount = useCartStore(selectCartItemCount);
   const clearCart = useCartStore((state) => state.clearCart);
-  const [address, setAddress] = useState("");
+  const [draft, setDraft] = useState<CheckoutDraft | null>(null);
   const [isStartingCheckout, setIsStartingCheckout] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
@@ -65,11 +141,12 @@ function CheckoutContent() {
       return;
     }
 
-    const savedAddress =
-      sessionStorage.getItem(CHECKOUT_ADDRESS_KEY)?.trim() ?? "";
-    setAddress(savedAddress);
+    const savedDraft = parseCheckoutDraft(
+      sessionStorage.getItem(CHECKOUT_ADDRESS_KEY),
+    );
+    setDraft(savedDraft);
 
-    if (!savedAddress) {
+    if (!savedDraft) {
       toast.error(missingAddress);
       router.replace("/cart");
     }
@@ -83,10 +160,13 @@ function CheckoutContent() {
   ]);
 
   const referencePrice = items[0]?.price ?? "€0.00";
-  const subtotal = items.reduce(
+  const cartSubtotal = items.reduce(
     (sum, item) => sum + parsePrice(item.price) * item.quantity,
     0,
   );
+  const subtotal = draft?.price || cartSubtotal;
+  const shippingFeeAmount = draft?.shippingFee ?? 0;
+  const orderTotal = draft?.total || subtotal + shippingFeeAmount;
 
   const openSignIn = () => {
     setSignupOpen(false);
@@ -108,7 +188,7 @@ function CheckoutContent() {
       return;
     }
 
-    if (!address.trim()) {
+    if (!draft) {
       toast.error(missingAddress);
       router.replace("/cart");
       return;
@@ -123,7 +203,18 @@ function CheckoutContent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          address: address.trim(),
+          firstName: draft.firstName,
+          lastName: draft.lastName,
+          streetAddress: draft.streetAddress,
+          country: draft.country,
+          stateProvince: draft.stateProvince,
+          city: draft.city,
+          zipPostalCode: draft.zipPostalCode,
+          phoneNumber: draft.phoneNumber,
+          address: draft.address,
+          price: subtotal,
+          shippingFee: shippingFeeAmount,
+          total: orderTotal,
           products: items.map((item) => ({
             slug: item.slug,
             name: item.name,
@@ -243,7 +334,7 @@ function CheckoutContent() {
                   {deliveryAddress}
                 </p>
                 <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-dark-green/80">
-                  {address}
+                  {draft?.address}
                 </p>
               </div>
 
@@ -263,7 +354,11 @@ function CheckoutContent() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span>{shippingFee}</span>
-                  <span className="font-medium text-dark-green">{free}</span>
+                  <span className="font-medium text-dark-green">
+                    {shippingFeeAmount === 0
+                      ? free
+                      : formatPrice(shippingFeeAmount, referencePrice)}
+                  </span>
                 </div>
               </div>
 
@@ -272,14 +367,14 @@ function CheckoutContent() {
                   {totalAmount}
                 </span>
                 <span className="text-lg font-bold text-dark-green">
-                  {formatPrice(subtotal, referencePrice)}
+                  {formatPrice(orderTotal, referencePrice)}
                 </span>
               </div>
 
               <button
                 type="button"
                 onClick={() => void handlePayNow()}
-                disabled={isStartingCheckout || !address}
+                disabled={isStartingCheckout || !draft}
                 className="mt-6 w-full rounded-md bg-dark-green px-4 py-3.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isStartingCheckout ? redirecting : payNow}

@@ -109,6 +109,7 @@ function CartContent() {
     free,
     totalAmount,
     placeOrder,
+    continueToPayment,
     orderPlaced,
     completeDeliveryAddress,
     orderFailed,
@@ -279,8 +280,25 @@ function CartContent() {
       selectedCountryLabel,
     );
 
+    // Online: only prepare checkout draft. Order is saved after Stripe payment.
     if (paymentType === "online") {
-      sessionStorage.setItem(CHECKOUT_ADDRESS_KEY, formattedAddress);
+      sessionStorage.setItem(
+        CHECKOUT_ADDRESS_KEY,
+        JSON.stringify({
+          firstName: addressForm.firstName.trim(),
+          lastName: addressForm.lastName.trim(),
+          streetAddress: addressForm.streetAddress.trim(),
+          country: selectedCountryLabel,
+          stateProvince: addressForm.stateProvince.trim(),
+          city: addressForm.city.trim(),
+          zipPostalCode: addressForm.zipPostalCode.trim(),
+          phoneNumber: addressForm.phoneNumber.trim(),
+          address: formattedAddress,
+          price: subtotal,
+          shippingFee: shippingFeeAmount,
+          total: orderTotal,
+        }),
+      );
       router.push("/checkout");
       return;
     }
@@ -303,7 +321,8 @@ function CartContent() {
           zipPostalCode: addressForm.zipPostalCode.trim(),
           phoneNumber: addressForm.phoneNumber.trim(),
           address: formattedAddress,
-          paymentMethod: paymentType,
+          paymentMethod: "cod",
+          paymentStatus: "pending",
           price: subtotal,
           shippingFee: shippingFeeAmount,
           total: orderTotal,
@@ -743,7 +762,11 @@ function CartContent() {
                   }
                   className="mt-6 w-full rounded-md bg-dark-green px-4 py-3.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {placeOrder}
+                  {isPlacingOrder
+                    ? placeOrder
+                    : paymentType === "online"
+                      ? continueToPayment
+                      : placeOrder}
                 </button>
                 {addressError ? (
                   <p

@@ -9,6 +9,7 @@ import { formatPrice } from "@/app/lib/price";
 type OrderStatus = "pending" | "completed";
 type OrderFilter = "all" | "pending" | "completed";
 type PaymentMethod = "cod" | "online";
+type PaymentStatus = "pending" | "paid";
 
 type OrderProduct = {
   slug: string;
@@ -33,6 +34,7 @@ type AdminOrder = {
   phoneNumber: string;
   address: string;
   paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
   price: number;
   shippingFee: number;
   itemsSummary: string;
@@ -106,6 +108,7 @@ export default function AdminOrdersPage() {
             zipPostalCode: order.zipPostalCode ?? "",
             phoneNumber: order.phoneNumber ?? "",
             paymentMethod: order.paymentMethod ?? "cod",
+            paymentStatus: order.paymentStatus ?? "pending",
             price: order.price ?? order.total,
             shippingFee: order.shippingFee ?? 0,
             itemNames: order.itemNames ?? order.products.map((p) => p.name),
@@ -145,10 +148,13 @@ export default function AdminOrdersPage() {
   const paymentLabel = (method: PaymentMethod) =>
     method === "online" ? ordersTable.paymentOnline : ordersTable.paymentCod;
 
+  const paymentStatusLabel = (status: PaymentStatus) =>
+    status === "paid" ? ordersTable.paymentPaid : ordersTable.paymentPending;
+
   return (
     <div>
-      <h1 className="text-3xl font-bold text-dark-green">{ordersTitle}</h1>
-      <p className="mt-3 max-w-2xl text-base leading-relaxed text-dark-green/70">
+      <h1 className="text-2xl font-bold text-dark-green sm:text-3xl">{ordersTitle}</h1>
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-dark-green/70 sm:mt-3 sm:text-base">
         {ordersDescription}
       </p>
 
@@ -216,7 +222,7 @@ export default function AdminOrdersPage() {
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
                     <p className="text-base font-bold text-dark-green">
                       {formatPrice(order.total, "€0.00")}
                     </p>
@@ -228,7 +234,7 @@ export default function AdminOrdersPage() {
                           event.target.value as OrderStatus,
                         )
                       }
-                      className="rounded-xl border border-beige bg-warm-white px-3 py-2 text-sm font-medium text-dark-green outline-none transition-colors focus:border-gold"
+                      className="w-full rounded-xl border border-beige bg-warm-white px-3 py-2 text-sm font-medium text-dark-green outline-none transition-colors focus:border-gold sm:w-auto"
                       aria-label={`${ordersTable.status} ${order.orderId}`}
                     >
                       <option value="pending">
@@ -243,7 +249,7 @@ export default function AdminOrdersPage() {
                       onClick={() =>
                         setExpandedOrderId(isExpanded ? null : order.id)
                       }
-                      className="inline-flex items-center gap-1.5 rounded-full border border-beige bg-beige/40 px-3 py-2 text-sm font-semibold text-dark-green transition-colors hover:bg-beige/70"
+                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-beige bg-beige/40 px-3 py-2 text-sm font-semibold text-dark-green transition-colors hover:bg-beige/70 sm:w-auto"
                     >
                       {isExpanded
                         ? ordersTable.hideDetails
@@ -312,6 +318,10 @@ export default function AdminOrdersPage() {
                           <DetailItem
                             label={ordersTable.paymentMethod}
                             value={paymentLabel(order.paymentMethod)}
+                          />
+                          <DetailItem
+                            label={ordersTable.paymentStatus}
+                            value={paymentStatusLabel(order.paymentStatus)}
                           />
                           <DetailItem
                             label={ordersTable.items}

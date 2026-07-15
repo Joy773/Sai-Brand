@@ -198,11 +198,12 @@
       "description": "Alles, was Sie fuer Hadsch und Umra brauchen, in einem Set. Anti-Chafing-Creme fuer lange Fussmaersche im Ihram, ein parfuemfreies Deodorant fuer taegliche Frische, Sonnenschutz mit LSF 50+ gegen die starke Sonne und ein mildes Shampoo zur Erfrischung nach heissen, anstrengenden Reisetagen.",
       "price": "€53,99",
       "size": "4-teiliges Reise-Set",
+      "whatsIncluded": "Was ist enthalten",
       "includes": [
-        "Shampoo",
+        "Anti-Chafing",
         "Deodorant",
-        "Sonnenschutz",
-        "Anti-Chafing Creme"
+        "Shampoo",
+        "Sonnenschutz"
       ],
       "imageAlt": "Hajj & Umrah Pflege-Set Ansicht {index}",
       "showImageLabel": "Kit-Bild {index} anzeigen",
@@ -411,6 +412,7 @@
     "free": "Kostenlos",
     "totalAmount": "Gesamtbetrag:",
     "placeOrder": "Bestellung aufgeben",
+    "continueToPayment": "Zur Zahlung fortfahren",
     "orderPlaced": "Bestellung erfolgreich aufgegeben.",
     "completeDeliveryAddress": "Bitte fuellen Sie alle Pflichtfelder der Lieferadresse aus.",
     "orderFailed": "Bestellung konnte nicht aufgegeben werden. Bitte versuchen Sie es erneut.",
@@ -1592,6 +1594,8 @@
   "adminSidebar": {
     "_comment": "Admin-Seitenleiste — verwendet in app/components/Sidebar.tsx",
     "brandLabel": "Admin-Bereich",
+    "openMenu": "Navigationsmenü öffnen",
+    "closeMenu": "Navigationsmenü schließen",
     "logout": "Abmelden",
     "logoutSuccess": "Abgemeldet",
     "navLinks": [
@@ -1665,6 +1669,9 @@
       "paymentMethod": "Zahlungsmethode",
       "paymentCod": "Nachnahme (COD)",
       "paymentOnline": "Online-Zahlung",
+      "paymentStatus": "Zahlungsstatus",
+      "paymentPending": "Ausstehend",
+      "paymentPaid": "Bezahlt",
       "price": "Preis",
       "shippingFee": "Versandkosten",
       "shippingFree": "Kostenlos",

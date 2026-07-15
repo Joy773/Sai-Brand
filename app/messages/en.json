@@ -198,11 +198,12 @@
       "description": "Everything you need for Hajj and Umrah in one kit. Anti-chafing cream for long walks in Ihram, a fragrance-free deodorant for daily freshness, SPF 50+ sunblock for the intense sun, and a gentle shampoo to refresh after hot, tiring days of travel.",
       "price": "€53.99",
       "size": "4-piece travel kit",
+      "whatsIncluded": "What's Included",
       "includes": [
-        "Shampoo",
+        "Anti-Chafing",
         "Deodorant",
-        "Sunblock",
-        "Anti-Chafing Cream"
+        "Shampoo",
+        "Sunblock"
       ],
       "imageAlt": "Hajj & Umrah Personal Care Kit view {index}",
       "showImageLabel": "Show kit image {index}",
@@ -411,6 +412,7 @@
     "free": "Free",
     "totalAmount": "Total Amount:",
     "placeOrder": "Place Order",
+    "continueToPayment": "Continue to Payment",
     "orderPlaced": "Order placed successfully.",
     "completeDeliveryAddress": "Please complete all required delivery fields to place your order.",
     "orderFailed": "Failed to place order. Please try again.",
@@ -1592,6 +1594,8 @@
   "adminSidebar": {
     "_comment": "Admin sidebar used in app/components/Sidebar.tsx",
     "brandLabel": "Admin Panel",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
     "logout": "Log Out",
     "logoutSuccess": "Logged out",
     "navLinks": [
@@ -1665,6 +1669,9 @@
       "paymentMethod": "Payment Method",
       "paymentCod": "Cash On Delivery (COD)",
       "paymentOnline": "Online Payment",
+      "paymentStatus": "Payment Status",
+      "paymentPending": "Pending",
+      "paymentPaid": "Paid",
       "price": "Price",
       "shippingFee": "Shipping Fee",
       "shippingFree": "Free",

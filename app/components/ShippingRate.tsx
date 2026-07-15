@@ -232,14 +232,16 @@ export default function ShippingRate() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-dark-green">Shipping Rates</h1>
-      <p className="mt-3 max-w-2xl text-base leading-relaxed text-dark-green/70">
+      <h1 className="text-2xl font-bold text-dark-green sm:text-3xl">
+        Shipping Rates
+      </h1>
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-dark-green/70 sm:mt-3 sm:text-base">
         Manage shipping countries, prices, and availability.
       </p>
 
       <form
         onSubmit={(event) => void handleAddCountry(event)}
-        className="mt-8 rounded-3xl border border-beige bg-beige/20 p-5 sm:p-6"
+        className="mt-8 rounded-3xl border border-beige bg-beige/20 p-4 sm:p-6"
       >
         <h2 className="text-lg font-bold text-dark-green">Add Country</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,1fr)_180px_auto] sm:items-end">
@@ -274,7 +276,7 @@ export default function ShippingRate() {
           <button
             type="submit"
             disabled={isAdding}
-            className="rounded-full bg-dark-green px-5 py-2.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-full bg-dark-green px-5 py-2.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           >
             {isAdding ? "Adding..." : "Add Country"}
           </button>
@@ -283,16 +285,16 @@ export default function ShippingRate() {
 
       <div className="mt-6 overflow-hidden rounded-3xl border border-beige bg-beige/20">
         {isLoading ? (
-          <p className="px-6 py-12 text-center text-sm text-dark-green/70">
+          <p className="px-4 py-12 text-center text-sm text-dark-green/70 sm:px-6">
             Loading shipping rates...
           </p>
         ) : rates.length === 0 ? (
-          <p className="px-6 py-12 text-center text-sm text-dark-green/70">
+          <p className="px-4 py-12 text-center text-sm text-dark-green/70 sm:px-6">
             No shipping countries added yet.
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-sm">
+            <table className="min-w-[36rem] w-full text-left text-sm sm:min-w-full">
               <thead className="border-b border-beige bg-beige/40 text-dark-green/70">
                 <tr>
                   <th className="px-4 py-3 font-semibold sm:px-6">Country</th>

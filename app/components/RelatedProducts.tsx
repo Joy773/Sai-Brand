@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { LuCheck, LuShoppingCart } from "react-icons/lu";
+import { LuShoppingCart } from "react-icons/lu";
 import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
 import ProductTags from "@/app/components/ProductTags";
 import { showAddedToCartToast } from "@/app/lib/showAddedToCartToast";
@@ -63,7 +63,7 @@ type RelatedProductsProps = {
 export default function RelatedProducts({ slug }: RelatedProductsProps) {
   const { locale } = useLocale();
   const { title, subtitle } = useMessages().relatedProducts;
-  const { addToCartShort, addToCart, moreInfo, loading, loadError, inStock, lowStock } =
+  const { addToCartShort, addToCart, moreInfo, loading, loadError, inStock, lowStock, kit } =
     useMessages().products;
   const { addedToCart } = useMessages().cart;
   const addItem = useCartStore((state) => state.addItem);
@@ -186,47 +186,46 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                   <p className="mt-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
                     {product.description}
                   </p>
+                  {product.size ? (
+                    <p className="mt-3 text-sm font-bold text-dark-green sm:text-base">
+                      {product.size}
+                    </p>
+                  ) : null}
+                  <p className="mt-2 text-sm font-bold text-dark-green sm:text-base">
+                    {kit.whatsIncluded}
+                  </p>
+                  <ProductTags tags={kit.includes} />
                 </div>
 
-                {product.size ? (
-                  <ul className="space-y-2">
-                    <li className="flex items-center gap-2 text-sm text-dark-green sm:text-base">
-                      <LuCheck
-                        className="h-4 w-4 shrink-0 text-gold"
-                        aria-hidden
-                      />
-                      {product.size}
-                    </li>
-                  </ul>
-                ) : null}
+                <div className="space-y-6">
+                  <StockStatus
+                    status={product.status ?? "in_stock"}
+                    inStockLabel={inStock}
+                    lowStockLabel={lowStock}
+                  />
 
-                <StockStatus
-                  status={product.status ?? "in_stock"}
-                  inStockLabel={inStock}
-                  lowStockLabel={lowStock}
-                />
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                    <p className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl">
+                      {product.price}
+                    </p>
 
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                  <p className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl">
-                    {product.price}
-                  </p>
-
-                  <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-                    <Link href={`/${product.slug}`} className={moreInfoButton}>
-                      {moreInfo}
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => handleAddToCart(product)}
-                      className={addToCartButton}
-                    >
-                      <LuShoppingCart
-                        className="h-3.5 w-3.5 sm:h-4 sm:w-4"
-                        aria-hidden
-                      />
-                      <span className="sm:hidden">{addToCartShort}</span>
-                      <span className="hidden sm:inline">{addToCart}</span>
-                    </button>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                      <Link href={`/${product.slug}`} className={moreInfoButton}>
+                        {moreInfo}
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => handleAddToCart(product)}
+                        className={addToCartButton}
+                      >
+                        <LuShoppingCart
+                          className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                          aria-hidden
+                        />
+                        <span className="sm:hidden">{addToCartShort}</span>
+                        <span className="hidden sm:inline">{addToCart}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

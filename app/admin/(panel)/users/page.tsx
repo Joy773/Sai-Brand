@@ -73,8 +73,8 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-dark-green">{usersTitle}</h1>
-      <p className="mt-3 max-w-2xl text-base leading-relaxed text-dark-green/70">
+      <h1 className="text-2xl font-bold text-dark-green sm:text-3xl">{usersTitle}</h1>
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-dark-green/70 sm:mt-3 sm:text-base">
         {usersDescription}
       </p>
 

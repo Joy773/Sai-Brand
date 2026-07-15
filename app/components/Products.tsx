@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { LuCheck, LuShoppingCart } from "react-icons/lu";
+import { LuShoppingCart } from "react-icons/lu";
 import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
 import ProductTags from "@/app/components/ProductTags";
 import { showAddedToCartToast } from "@/app/lib/showAddedToCartToast";
@@ -76,6 +76,8 @@ function KitCard({
     showImageLabel: string;
     inStock: string;
     lowStock: string;
+    whatsIncluded: string;
+    includes: string[];
   };
   onAddToCart: (product: StoreProduct, image: string) => void;
 }) {
@@ -129,48 +131,54 @@ function KitCard({
       </div>
 
       <div className="flex flex-1 flex-col justify-between gap-6 p-4 sm:p-6 lg:p-8">
-        <Link href={`/${product.slug}`} className="group/link block">
-          <h3 className="text-xl font-semibold text-dark-green transition-colors group-hover/link:text-dark-green/80 sm:text-2xl lg:text-3xl">
-            {product.name}
-          </h3>
-          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
-            {product.description}
-          </p>
-        </Link>
-
-        {product.size ? (
-          <ul className="space-y-2">
-            <li className="flex items-center gap-2 text-sm text-dark-green sm:text-base">
-              <LuCheck className="h-4 w-4 shrink-0 text-gold" aria-hidden />
+        <div>
+          <Link href={`/${product.slug}`} className="group/link block">
+            <h3 className="text-xl font-semibold text-dark-green transition-colors group-hover/link:text-dark-green/80 sm:text-2xl lg:text-3xl">
+              {product.name}
+            </h3>
+            <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
+              {product.description}
+            </p>
+          </Link>
+          {product.size ? (
+            <p className="mt-3 text-sm font-bold text-dark-green sm:text-base">
               {product.size}
-            </li>
-          </ul>
-        ) : null}
-
-        <StockStatus
-          status={product.status ?? "in_stock"}
-          inStockLabel={labels.inStock}
-          lowStockLabel={labels.lowStock}
-        />
-
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <p className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl">
-            {product.price}
+            </p>
+          ) : null}
+          <p className="mt-2 text-sm font-bold text-dark-green sm:text-base">
+            {labels.whatsIncluded}
           </p>
+          <ProductTags tags={labels.includes} />
+        </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-            <Link href={`/${product.slug}`} className={moreInfoButton}>
-              {labels.moreInfo}
-            </Link>
-            <button
-              type="button"
-              onClick={() => onAddToCart(product, images[activeImage] ?? product.image)}
-              className={addToCartButton}
-            >
-              <LuShoppingCart className="h-4 w-4" aria-hidden />
-              <span className="sm:hidden">{labels.addToCartShort}</span>
-              <span className="hidden sm:inline">{labels.addToCart}</span>
-            </button>
+        <div className="space-y-6">
+          <StockStatus
+            status={product.status ?? "in_stock"}
+            inStockLabel={labels.inStock}
+            lowStockLabel={labels.lowStock}
+          />
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <p className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl">
+              {product.price}
+            </p>
+
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+              <Link href={`/${product.slug}`} className={moreInfoButton}>
+                {labels.moreInfo}
+              </Link>
+              <button
+                type="button"
+                onClick={() =>
+                  onAddToCart(product, images[activeImage] ?? product.image)
+                }
+                className={addToCartButton}
+              >
+                <LuShoppingCart className="h-4 w-4" aria-hidden />
+                <span className="sm:hidden">{labels.addToCartShort}</span>
+                <span className="hidden sm:inline">{labels.addToCart}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -297,6 +305,8 @@ export default function Products() {
                   showImageLabel: kit.showImageLabel,
                   inStock,
                   lowStock,
+                  whatsIncluded: kit.whatsIncluded,
+                  includes: kit.includes,
                 }}
                 onAddToCart={handleAddToCart}
               />

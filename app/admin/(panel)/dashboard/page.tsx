@@ -29,7 +29,11 @@ type UsersApiResponse = {
 
 type OrdersApiResponse = {
   ok: boolean;
-  orders?: Array<{ total: number }>;
+  orders?: Array<{
+    total: number;
+    paymentMethod?: "cod" | "online";
+    paymentStatus?: "pending" | "paid";
+  }>;
   error?: string;
 };
 
@@ -65,10 +69,17 @@ export default function AdminDashboardPage() {
           throw new Error(ordersData.error ?? dashboardLoadError);
         }
 
-        const totalRevenue = ordersData.orders.reduce(
-          (sum, order) => sum + order.total,
-          0,
-        );
+        const totalRevenue = ordersData.orders.reduce((sum, order) => {
+          const isPaidOnline =
+            order.paymentMethod === "online" && order.paymentStatus === "paid";
+          const isCod = order.paymentMethod !== "online";
+
+          if (!isPaidOnline && !isCod) {
+            return sum;
+          }
+
+          return sum + order.total;
+        }, 0);
 
         setStats({
           users: String(usersData.users.length),
@@ -91,8 +102,8 @@ export default function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-dark-green">{dashboardTitle}</h1>
-      <p className="mt-3 max-w-2xl text-base leading-relaxed text-dark-green/70">
+      <h1 className="text-2xl font-bold text-dark-green sm:text-3xl">{dashboardTitle}</h1>
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-dark-green/70 sm:mt-3 sm:text-base">
         {dashboardDescription}
       </p>
 
