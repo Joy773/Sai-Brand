@@ -149,9 +149,9 @@ export default function LegalNotice() {
               aria-label={quickNavigation}
               className="rounded-2xl border border-beige bg-warm-white p-5 shadow-lg shadow-dark-green/5 sm:p-6"
             >
-              <h2 className="text-lg font-bold text-dark-green">
+              <p className="text-lg font-bold text-dark-green">
                 {quickNavigation}
-              </h2>
+              </p>
 
               <ul className="mt-4 max-h-[70vh] space-y-1 overflow-y-auto">
                 {sections.map((section, index) => {
@@ -194,9 +194,9 @@ export default function LegalNotice() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-dark-green/10">
                       <Icon className="h-5 w-5 text-dark-green" aria-hidden />
                     </div>
-                    <h3 className="text-xl font-bold text-dark-green sm:text-2xl">
+                    <h2 className="text-xl font-bold text-dark-green sm:text-2xl">
                       {section.label}
-                    </h3>
+                    </h2>
                   </div>
 
                   <div className="mt-4 text-sm leading-relaxed text-dark-green/80 sm:text-base">

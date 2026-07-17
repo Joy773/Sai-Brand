@@ -9,12 +9,20 @@ import {
 } from "react";
 import {
   isLocale,
+  LOCALE_COOKIE_KEY,
   LOCALE_STORAGE_KEY,
   localeToCode,
   messagesByLocale,
   type Locale,
   type Messages,
 } from "@/app/i18n/locales";
+
+function persistLocale(locale: Locale) {
+  localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+  document.cookie = `${LOCALE_COOKIE_KEY}=${locale}; path=/; max-age=31536000; samesite=lax`;
+  document.documentElement.lang = locale;
+  document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+}
 
 type LocaleContextValue = {
   locale: Locale;
@@ -31,13 +39,14 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem(LOCALE_STORAGE_KEY);
     if (saved && isLocale(saved)) {
       setLocaleState(saved);
+      persistLocale(saved);
+    } else {
+      persistLocale("en");
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(LOCALE_STORAGE_KEY, locale);
-    document.documentElement.lang = locale;
-    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+    persistLocale(locale);
   }, [locale]);
 
   const setLocale = (next: Locale) => {

@@ -17,19 +17,33 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "German Care",
-  description: "German Care is a brand that sells products to the public",
-  keywords: ["German Care", "German Care Products", "German Care Services"],
-  authors: [{ name: "German Care", url: "https://german-care.com" }],
-  creator: "German Care Team",
-  publisher: "German Care Team",
+  title: "sa’i Hajj & Umrah Kit | Ihram-Safe Personal Care by German Care",
+  description:
+    "Discover sa’i Hajj and Umrah Kit by German Care. Complete Hajj pack and Umrah travel kit with fragrance-free, alcohol-free personal care essentials for pilgrims.",
+  keywords: [
+    "sa’i",
+    "German Care",
+    "Hajj kit",
+    "Umrah kit",
+    "Hajj pack",
+    "Umrah travel kit",
+    "Ihram-safe personal care",
+    "fragrance-free personal care",
+    "alcohol-free personal care",
+    "pilgrim essentials",
+  ],
+  authors: [{ name: "sa’i", url: "https://german-care.com" }],
+  creator: "sa’i",
+  publisher: "German Care",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
   },
   openGraph: {
-    title: "German Care",
-    description: "German Care is a brand that sells products to the public",
+    title: "sa’i Hajj & Umrah Kit | Ihram-Safe Personal Care by German Care",
+    description:
+      "Discover sa’i Hajj and Umrah Kit by German Care. Complete Hajj pack and Umrah travel kit with fragrance-free, alcohol-free personal care essentials for pilgrims.",
+    images: ["/logo.png"],
   },
 };
 

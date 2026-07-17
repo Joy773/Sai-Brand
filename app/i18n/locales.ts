@@ -28,3 +28,4 @@ export function isLocale(value: string): value is Locale {
 }
 
 export const LOCALE_STORAGE_KEY = "sai-brand-locale";
+export const LOCALE_COOKIE_KEY = "sai-brand-locale";

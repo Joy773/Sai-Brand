@@ -166,6 +166,7 @@ function KitCard({
             <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
               <Link href={`/${product.slug}`} className={moreInfoButton}>
                 {labels.moreInfo}
+                <span className="sr-only"> – {product.name}</span>
               </Link>
               <button
                 type="button"
@@ -365,6 +366,7 @@ export default function Products() {
                         className={productMoreInfoButton}
                       >
                         {moreInfo}
+                        <span className="sr-only"> – {product.name}</span>
                       </Link>
                       <button
                         type="button"

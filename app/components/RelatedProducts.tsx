@@ -212,6 +212,7 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                     <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                       <Link href={`/${product.slug}`} className={moreInfoButton}>
                         {moreInfo}
+                        <span className="sr-only"> – {product.name}</span>
                       </Link>
                       <button
                         type="button"
@@ -277,6 +278,7 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                   <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                     <Link href={`/${product.slug}`} className={moreInfoButton}>
                       {moreInfo}
+                      <span className="sr-only"> – {product.name}</span>
                     </Link>
                     <button
                       type="button"
