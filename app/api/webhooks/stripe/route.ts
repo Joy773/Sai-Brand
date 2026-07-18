@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { connectDB } from "@/app/lib/mongodb";
+import { saveUserAddress } from "@/app/lib/saveUserAddress";
 import getStripe from "@/app/lib/stripe";
 import Order from "@/app/models/Orders";
 
@@ -144,7 +145,7 @@ async function createOrderFromCheckoutSession(
   const orderTime = new Date();
 
   try {
-    return await Order.create({
+    const order = await Order.create({
       name: customerName,
       email,
       firstName,
@@ -167,6 +168,25 @@ async function createOrderFromCheckoutSession(
       status: "pending",
       stripeSessionId,
     });
+
+    await saveUserAddress(
+      email,
+      {
+        firstName,
+        lastName,
+        streetAddress,
+        country,
+        stateProvince,
+        city,
+        zipPostalCode,
+        phoneNumber,
+      },
+      {
+        userId: metadata.userId?.trim() || "",
+      },
+    );
+
+    return order;
   } catch (error) {
     if (
       error &&

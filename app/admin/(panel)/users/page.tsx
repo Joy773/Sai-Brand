@@ -43,7 +43,7 @@ export default function AdminUsersPage() {
   useEffect(() => {
     async function loadUsers() {
       try {
-        const response = await fetch("/api/signup");
+        const response = await fetch("/api/users");
         const data = (await response.json()) as UsersApiResponse;
 
         if (!response.ok || !data.ok || !data.users) {
@@ -100,7 +100,7 @@ export default function AdminUsersPage() {
                   <th className="hidden px-4 py-3 font-semibold md:table-cell sm:px-6">
                     {usersTable.email}
                   </th>
-                  <th className="hidden px-4 py-3 font-semibold lg:table-cell sm:px-6">
+                  <th className="px-4 py-3 font-semibold sm:px-6">
                     {usersTable.address}
                   </th>
                   <th className="px-4 py-3 font-semibold sm:px-6">
@@ -114,19 +114,21 @@ export default function AdminUsersPage() {
                     key={user.id}
                     className="border-b border-beige/70 bg-warm-white/60 last:border-b-0"
                   >
-                    <td className="px-4 py-4 sm:px-6">
+                    <td className="px-4 py-4 align-top sm:px-6">
                       <p className="font-medium text-dark-green">{user.name}</p>
                       <p className="mt-0.5 text-xs text-dark-green/60 md:hidden">
                         {user.email}
                       </p>
                     </td>
-                    <td className="hidden px-4 py-4 text-dark-green/80 md:table-cell sm:px-6">
+                    <td className="hidden px-4 py-4 align-top text-dark-green/80 md:table-cell sm:px-6">
                       {user.email}
                     </td>
-                    <td className="hidden max-w-xs px-4 py-4 text-dark-green/80 lg:table-cell sm:px-6">
-                      {user.address}
+                    <td className="max-w-xs px-4 py-4 align-top text-dark-green/80 sm:px-6">
+                      <p className="whitespace-pre-line break-words">
+                        {user.address}
+                      </p>
                     </td>
-                    <td className="px-4 py-4 text-dark-green/80 sm:px-6">
+                    <td className="px-4 py-4 align-top text-dark-green/80 sm:px-6">
                       {user.createdAt}
                     </td>
                   </tr>

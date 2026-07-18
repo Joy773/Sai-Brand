@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "sa’i Hajj & Umrah Kit | Ihram-Safe Personal Care by German Care",
+  title: "Sai Hajj & Umrah Kit | Ihram-Safe Personal Care by German Care",
   description:
-    "Discover sa’i Hajj and Umrah Kit by German Care. Complete Hajj pack and Umrah travel kit with fragrance-free, alcohol-free personal care essentials for pilgrims.",
+    "Discover sai Hajj and Umrah Kit by German Care. Complete Hajj pack and Umrah travel kit with fragrance-free, alcohol-free personal care essentials for pilgrims.",
   keywords: [
     "sa’i",
     "German Care",

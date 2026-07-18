@@ -95,6 +95,10 @@ function CartContent() {
     firstName,
     lastName,
     streetAddress,
+    change,
+    save: saveAddressLabel,
+    addressSaved,
+    addressSaveFailed,
     country,
     stateProvince,
     city,
@@ -137,6 +141,12 @@ function CartContent() {
     [],
   );
   const [isLoadingCountries, setIsLoadingCountries] = useState(true);
+  const [hasSavedAddress, setHasSavedAddress] = useState(false);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
+  const [isSavingAddress, setIsSavingAddress] = useState(false);
+
+  const isAddressLocked = hasSavedAddress && !isEditingAddress;
 
   const referencePrice = items[0]?.price ?? "€0.00";
   const subtotal = items.reduce(
@@ -186,6 +196,10 @@ function CartContent() {
             return prev;
           }
 
+          if (prev.country) {
+            return prev;
+          }
+
           return {
             ...prev,
             country: data.rates![0]?.country ?? "",
@@ -209,9 +223,85 @@ function CartContent() {
     };
   }, []);
 
+  useEffect(() => {
+    if (status !== "authenticated") {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadSavedAddress = async () => {
+      setIsLoadingAddress(true);
+
+      try {
+        const response = await fetch("/api/user/address");
+        const data = (await response.json()) as {
+          ok?: boolean;
+          address?: AddressForm | null;
+        };
+
+        if (cancelled) {
+          return;
+        }
+
+        if (!response.ok || !data.ok || !data.address) {
+          setHasSavedAddress(false);
+          setIsEditingAddress(true);
+          return;
+        }
+
+        const saved = data.address;
+        const hasContent = Boolean(
+          saved.streetAddress?.trim() ||
+            saved.city?.trim() ||
+            saved.phoneNumber?.trim() ||
+            saved.firstName?.trim(),
+        );
+
+        if (!hasContent) {
+          setHasSavedAddress(false);
+          setIsEditingAddress(true);
+          return;
+        }
+
+        setAddressForm({
+          firstName: saved.firstName ?? "",
+          lastName: saved.lastName ?? "",
+          streetAddress: saved.streetAddress ?? "",
+          country: saved.country ?? "",
+          stateProvince: saved.stateProvince ?? "",
+          city: saved.city ?? "",
+          zipPostalCode: saved.zipPostalCode ?? "",
+          phoneNumber: saved.phoneNumber ?? "",
+        });
+        setHasSavedAddress(true);
+        setIsEditingAddress(false);
+      } catch {
+        if (!cancelled) {
+          setHasSavedAddress(false);
+          setIsEditingAddress(true);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingAddress(false);
+        }
+      }
+    };
+
+    void loadSavedAddress();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [status]);
+
   const selectedCountryLabel = addressForm.country;
 
   const updateAddressField = (field: AddressField, value: string) => {
+    if (isAddressLocked) {
+      return;
+    }
+
     setAddressForm((prev) => ({ ...prev, [field]: value }));
     if (fieldErrors[field]) {
       setFieldErrors((prev) => {
@@ -236,6 +326,70 @@ function CartContent() {
 
     setFieldErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleSaveAddress = async () => {
+    if (status !== "authenticated") {
+      setSignInOpen(true);
+      return;
+    }
+
+    if (!validateAddressForm()) {
+      setAddressError(completeDeliveryAddress);
+      return;
+    }
+
+    if (isSavingAddress) {
+      return;
+    }
+
+    setIsSavingAddress(true);
+    setAddressError(null);
+
+    try {
+      const response = await fetch("/api/user/address", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: addressForm.firstName.trim(),
+          lastName: addressForm.lastName.trim(),
+          streetAddress: addressForm.streetAddress.trim(),
+          country: addressForm.country.trim(),
+          stateProvince: addressForm.stateProvince.trim(),
+          city: addressForm.city.trim(),
+          zipPostalCode: addressForm.zipPostalCode.trim(),
+          phoneNumber: addressForm.phoneNumber.trim(),
+        }),
+      });
+
+      const data = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error ?? addressSaveFailed);
+      }
+
+      setHasSavedAddress(true);
+      setIsEditingAddress(false);
+      toast.success(addressSaved);
+    } catch (saveError) {
+      toast.error(
+        saveError instanceof Error ? saveError.message : addressSaveFailed,
+      );
+    } finally {
+      setIsSavingAddress(false);
+    }
+  };
+
+  const handleAddressAction = () => {
+    if (isAddressLocked) {
+      setIsEditingAddress(true);
+      return;
+    }
+
+    void handleSaveAddress();
   };
 
   const handleRemoveItem = (slug: (typeof items)[number]["slug"]) => {
@@ -346,6 +500,8 @@ function CartContent() {
       }
 
       clearCart();
+      setHasSavedAddress(true);
+      setIsEditingAddress(false);
       toast.success(orderPlaced);
     } catch (placeOrderError) {
       toast.error(
@@ -361,7 +517,16 @@ function CartContent() {
   const fieldClassName = (field: AddressField) =>
     `${inputClassName} ${
       fieldErrors[field] ? "border-red-500" : "border-beige"
+    } ${
+      isAddressLocked
+        ? "cursor-default bg-beige/40 text-dark-green/80"
+        : ""
     }`;
+
+  const addressInputProps = {
+    readOnly: isAddressLocked,
+    disabled: isAddressLocked || isLoadingAddress,
+  };
 
   return (
     <>
@@ -520,6 +685,7 @@ function CartContent() {
                           }
                           className={fieldClassName("firstName")}
                           autoComplete="given-name"
+                          {...addressInputProps}
                         />
                         {fieldErrors.firstName ? (
                           <span className="mt-1 block text-xs text-dark-green/80">
@@ -543,6 +709,7 @@ function CartContent() {
                           }
                           className={fieldClassName("lastName")}
                           autoComplete="family-name"
+                          {...addressInputProps}
                         />
                         {fieldErrors.lastName ? (
                           <span className="mt-1 block text-xs text-dark-green/80">
@@ -553,11 +720,25 @@ function CartContent() {
                     </div>
 
                     <label className="block">
-                      <span className="mb-1 block text-sm text-dark-green">
-                        {streetAddress}{" "}
-                        <span className="text-red-600" aria-hidden>
-                          *
+                      <span className="mb-1 flex items-center justify-between gap-2 text-sm text-dark-green">
+                        <span>
+                          {streetAddress}{" "}
+                          <span className="text-red-600" aria-hidden>
+                            *
+                          </span>
                         </span>
+                        <button
+                          type="button"
+                          onClick={handleAddressAction}
+                          disabled={isSavingAddress || isLoadingAddress}
+                          className={`cursor-pointer text-sm font-medium text-dark-green disabled:cursor-not-allowed disabled:opacity-60 ${
+                            !hasSavedAddress && !isEditingAddress
+                              ? "invisible pointer-events-none"
+                              : ""
+                          }`}
+                        >
+                          {isAddressLocked ? change : saveAddressLabel}
+                        </button>
                       </span>
                       <input
                         type="text"
@@ -570,6 +751,7 @@ function CartContent() {
                         }
                         className={fieldClassName("streetAddress")}
                         autoComplete="street-address"
+                        {...addressInputProps}
                       />
                       {fieldErrors.streetAddress ? (
                         <span className="mt-1 block text-xs text-dark-green/80">
@@ -594,7 +776,10 @@ function CartContent() {
                           className={fieldClassName("country")}
                           autoComplete="country"
                           disabled={
-                            isLoadingCountries || shippingCountries.length === 0
+                            isAddressLocked ||
+                            isLoadingAddress ||
+                            isLoadingCountries ||
+                            shippingCountries.length === 0
                           }
                         >
                           {isLoadingCountries ? (
@@ -629,8 +814,13 @@ function CartContent() {
                               event.target.value,
                             )
                           }
-                          className={`${inputClassName} border-beige`}
+                          className={`${inputClassName} border-beige ${
+                            isAddressLocked
+                              ? "cursor-default bg-beige/40 text-dark-green/80"
+                              : ""
+                          }`}
                           autoComplete="address-level1"
+                          {...addressInputProps}
                         />
                       </label>
                     </div>
@@ -651,6 +841,7 @@ function CartContent() {
                           }
                           className={fieldClassName("city")}
                           autoComplete="address-level2"
+                          {...addressInputProps}
                         />
                         {fieldErrors.city ? (
                           <span className="mt-1 block text-xs text-dark-green/80">
@@ -677,6 +868,7 @@ function CartContent() {
                           }
                           className={fieldClassName("zipPostalCode")}
                           autoComplete="postal-code"
+                          {...addressInputProps}
                         />
                         {fieldErrors.zipPostalCode ? (
                           <span className="mt-1 block text-xs text-dark-green/80">
@@ -701,6 +893,7 @@ function CartContent() {
                         }
                         className={fieldClassName("phoneNumber")}
                         autoComplete="tel"
+                        {...addressInputProps}
                       />
                       {fieldErrors.phoneNumber ? (
                         <span className="mt-1 block text-xs text-dark-green/80">

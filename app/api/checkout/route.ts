@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/auth";
+import { connectDB } from "@/app/lib/mongodb";
 import { parsePrice } from "@/app/lib/price";
+import { saveUserAddress } from "@/app/lib/saveUserAddress";
 import getStripe from "@/app/lib/stripe";
 
 type CheckoutProductPayload = {
@@ -197,6 +199,8 @@ export async function POST(request: NextRequest) {
   const orderTotal = productsTotal + shippingFee;
 
   try {
+    await connectDB();
+
     const stripe = getStripe();
     const origin = getOrigin(request);
 
@@ -232,6 +236,24 @@ export async function POST(request: NextRequest) {
         { status: 500 },
       );
     }
+
+    await saveUserAddress(
+      email,
+      {
+        firstName,
+        lastName,
+        streetAddress,
+        country,
+        stateProvince,
+        city,
+        zipPostalCode,
+        phoneNumber,
+      },
+      {
+        userId: session.user.id,
+        role: session.user.role,
+      },
+    );
 
     return NextResponse.json({
       ok: true,

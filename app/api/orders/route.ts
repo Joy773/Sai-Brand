@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
+import { saveUserAddress } from "@/app/lib/saveUserAddress";
 import Order from "@/app/models/Orders";
 
 type OrderProductPayload = {
@@ -311,6 +312,24 @@ export async function POST(request: NextRequest) {
       orderTime,
       status: "pending",
     });
+
+    await saveUserAddress(
+      email,
+      {
+        firstName,
+        lastName,
+        streetAddress,
+        country,
+        stateProvince,
+        city,
+        zipPostalCode,
+        phoneNumber,
+      },
+      {
+        userId: session.user.id,
+        role: session.user.role,
+      },
+    );
 
     return NextResponse.json(
       {

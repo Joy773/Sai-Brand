@@ -54,7 +54,7 @@ export default function AdminDashboardPage() {
     async function loadDashboardStats() {
       try {
         const [usersResponse, ordersResponse] = await Promise.all([
-          fetch("/api/signup"),
+          fetch("/api/users"),
           fetch("/api/orders"),
         ]);
 

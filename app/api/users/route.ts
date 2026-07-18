@@ -3,7 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
-import User from "@/app/models/User";
+import {
+  hasAddressContent,
+  saveUserAddress,
+  toUserAddress,
+} from "@/app/lib/saveUserAddress";
+import Order from "@/app/models/Orders";
+import User, { type UserAddress } from "@/app/models/User";
 
 type SignupPayload = {
   name?: string;
@@ -12,6 +18,23 @@ type SignupPayload = {
 };
 
 const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+function formatAddress(address?: UserAddress | null): string {
+  if (!address || !hasAddressContent(address)) {
+    return "";
+  }
+
+  return [
+    address.streetAddress,
+    [address.zipPostalCode, address.city].filter(Boolean).join(" "),
+    address.stateProvince,
+    address.country,
+    address.phoneNumber ? `Phone: ${address.phoneNumber}` : "",
+  ]
+    .map((part) => part?.trim())
+    .filter(Boolean)
+    .join("\n");
+}
 
 export async function GET() {
   const session = await auth();
@@ -27,23 +50,80 @@ export async function GET() {
     await connectDB();
 
     const users = await User.find()
-      .select("name email createdAt")
+      .select("name email address createdAt")
       .sort({ createdAt: -1 })
       .lean();
 
+    const usersMissingAddress = users.filter(
+      (user) => !hasAddressContent(user.address),
+    );
+
+    const latestOrderByEmail = new Map<string, UserAddress>();
+
+    if (usersMissingAddress.length > 0) {
+      const emails = usersMissingAddress.map((user) => user.email);
+      const latestOrders = await Order.aggregate<{
+        _id: string;
+        streetAddress?: string;
+        country?: string;
+        stateProvince?: string;
+        city?: string;
+        zipPostalCode?: string;
+        phoneNumber?: string;
+      }>([
+        { $match: { email: { $in: emails } } },
+        { $sort: { orderPlaceTime: -1 } },
+        {
+          $group: {
+            _id: "$email",
+            streetAddress: { $first: "$streetAddress" },
+            country: { $first: "$country" },
+            stateProvince: { $first: "$stateProvince" },
+            city: { $first: "$city" },
+            zipPostalCode: { $first: "$zipPostalCode" },
+            phoneNumber: { $first: "$phoneNumber" },
+          },
+        },
+      ]);
+
+      for (const order of latestOrders) {
+        const address = toUserAddress({
+          streetAddress: order.streetAddress ?? "",
+          country: order.country ?? "",
+          stateProvince: order.stateProvince ?? "",
+          city: order.city ?? "",
+          zipPostalCode: order.zipPostalCode ?? "",
+          phoneNumber: order.phoneNumber ?? "",
+        });
+
+        if (!hasAddressContent(address)) {
+          continue;
+        }
+
+        latestOrderByEmail.set(order._id, address);
+        await saveUserAddress(order._id, address);
+      }
+    }
+
     return NextResponse.json({
       ok: true,
-      users: users.map((user) => ({
-        id: user._id.toString(),
-        name: user.name,
-        email: user.email,
-        address: "",
-        createdAt: user.createdAt,
-      })),
+      users: users.map((user) => {
+        const address =
+          (hasAddressContent(user.address) ? user.address : null) ??
+          latestOrderByEmail.get(user.email) ??
+          null;
+
+        return {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+          address: formatAddress(address),
+          createdAt: user.createdAt,
+        };
+      }),
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("[signup api] Failed to fetch users", error);
+    console.error("[users api] Failed to fetch users", error);
 
     return NextResponse.json(
       { ok: false, error: "Failed to load users. Please try again." },
@@ -103,6 +183,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 12);
     const verificationToken = uuidv4();
 
+    // Address is intentionally not set at signup. It is saved when the user places an order.
     const user = await User.create({
       name,
       email,
@@ -135,8 +216,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // eslint-disable-next-line no-console
-    console.error("[signup api] Failed to create user", error);
+    console.error("[users api] Failed to create user", error);
 
     return NextResponse.json(
       { ok: false, error: "Failed to create account. Please try again." },
