@@ -40,7 +40,7 @@
       "close": "Close menu"
     },
     "cart": "View cart",
-    "signup": "Signup",
+    "signIn": "Sign In",
     "logout": "Logout",
     "logoutSuccess": "Logged out"
   },

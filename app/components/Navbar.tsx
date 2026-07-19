@@ -64,7 +64,7 @@ function NavbarContent() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
-  const { navLinks, menu, cart: cartLabel, signup, logout, logoutSuccess } =
+  const { navLinks, menu, cart: cartLabel, signIn, logout, logoutSuccess } =
     useMessages().navbar;
   const { status } = useSession();
   const searchParams = useSearchParams();
@@ -83,6 +83,7 @@ function NavbarContent() {
     setSignupOpen(true);
   };
   const openSignIn = () => {
+    closeMenu();
     setSignupOpen(false);
     setSignInOpen(true);
   };
@@ -164,10 +165,10 @@ function NavbarContent() {
           ) : (
             <button
               type="button"
-              onClick={openSignup}
+              onClick={openSignIn}
               className={`hidden md:inline-flex ${authButtonClassName}`}
             >
-              {signup}
+              {signIn}
             </button>
           )}
 
@@ -244,10 +245,10 @@ function NavbarContent() {
               ) : (
                 <button
                   type="button"
-                  onClick={openSignup}
+                  onClick={openSignIn}
                   className={`inline-flex ${authButtonClassName}`}
                 >
-                  {signup}
+                  {signIn}
                 </button>
               )}
             </li>
