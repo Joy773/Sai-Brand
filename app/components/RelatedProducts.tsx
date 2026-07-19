@@ -21,6 +21,12 @@ const moreInfoButton =
 const addToCartButton =
   "inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-dark-green px-3 py-2 text-xs font-medium text-warm-white transition-all duration-300 hover:scale-[1.02] hover:bg-dark-green/90 motion-reduce:hover:scale-100 sm:w-auto sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm";
 
+const productMoreInfoButton =
+  "inline-flex w-fit shrink-0 items-center justify-center rounded-full border border-dark-green px-3 py-1.5 text-[11px] font-medium text-dark-green transition-all duration-300 hover:bg-dark-green/5 motion-reduce:transition-none sm:px-4 sm:py-2 sm:text-xs";
+
+const productAddToCartButton =
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 rounded-full bg-dark-green px-3 py-1.5 text-[11px] font-medium text-warm-white transition-all duration-300 hover:bg-dark-green/90 motion-reduce:transition-none sm:gap-1.5 sm:px-4 sm:py-2 sm:text-xs";
+
 type StoreProduct = {
   id: string;
   name: string;
@@ -160,11 +166,11 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
           {kits.map((product) => (
             <article
               key={product.id}
-              className={`group col-span-2 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row ${cardHover} hover:shadow-dark-green/10`}
+              className={`group col-span-2 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row lg:items-stretch ${cardHover} hover:shadow-dark-green/10`}
             >
               <Link
                 href={`/${product.slug}`}
-                className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 p-4 sm:p-6 lg:w-1/2"
+                className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 sm:self-stretch lg:aspect-auto lg:w-1/2"
               >
                 <Image
                   src={product.image}
@@ -236,33 +242,35 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
           {singles.map((product) => (
             <article
               key={product.id}
-              className={`group flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row ${cardHover} hover:shadow-dark-green/10`}
+              className={`group flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:flex-row sm:items-stretch sm:rounded-3xl ${cardHover} hover:shadow-dark-green/10`}
             >
               <Link
                 href={`/${product.slug}`}
-                className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-beige/40 p-3 sm:p-4 lg:w-56"
+                className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-warm-white sm:aspect-auto sm:w-52 sm:max-w-[48%] sm:self-stretch lg:w-64 lg:max-w-[17rem]"
               >
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
                   className={`object-contain object-center ${imageHover}`}
-                  sizes="(max-width: 1024px) 50vw, 224px"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 208px, 256px"
                   unoptimized
                 />
               </Link>
 
-              <div className="flex flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:p-6 lg:p-8">
-                <div>
+              <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:py-4 sm:pe-4 sm:ps-0 lg:py-6 lg:pe-6">
+                <div className="min-w-0">
                   <Link href={`/${product.slug}`}>
-                    <h3 className="text-sm font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-xl lg:text-2xl">
+                    <h3 className="line-clamp-2 text-sm font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-base lg:text-xl">
                       {product.name}
                     </h3>
                   </Link>
-                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm lg:text-base">
+                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm">
                     {product.description}
                   </p>
-                  {product.size ? <ProductTags tags={[product.size]} /> : null}
+                  {product.size ? (
+                    <ProductTags tags={[product.size]} />
+                  ) : null}
                   <StockStatus
                     status={product.status ?? "in_stock"}
                     inStockLabel={inStock}
@@ -270,23 +278,26 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
                   />
                 </div>
 
-                <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
-                  <p className="text-sm font-bold text-dark-green sm:text-lg lg:text-xl">
+                <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
+                  <p className="text-sm font-bold text-dark-green sm:text-base lg:text-lg">
                     {product.price}
                   </p>
 
-                  <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-                    <Link href={`/${product.slug}`} className={moreInfoButton}>
+                  <div className="flex flex-wrap gap-2">
+                    <Link
+                      href={`/${product.slug}`}
+                      className={productMoreInfoButton}
+                    >
                       {moreInfo}
                       <span className="sr-only"> – {product.name}</span>
                     </Link>
                     <button
                       type="button"
                       onClick={() => handleAddToCart(product)}
-                      className={addToCartButton}
+                      className={productAddToCartButton}
                     >
                       <LuShoppingCart
-                        className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                        className="h-3 w-3 sm:h-3.5 sm:w-3.5"
                         aria-hidden
                       />
                       <span className="sm:hidden">{addToCartShort}</span>

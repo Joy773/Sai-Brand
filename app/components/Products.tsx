@@ -87,9 +87,9 @@ function KitCard({
 
   return (
     <article
-      className={`group mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row ${cardHover} hover:shadow-dark-green/10`}
+      className={`group mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row lg:items-stretch ${cardHover} hover:shadow-dark-green/10`}
     >
-      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden lg:w-1/2">
+      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 lg:aspect-auto lg:min-h-full lg:w-1/2 lg:self-stretch">
         {images.map((image, index) => (
           <Image
             key={`${product.id}-${image}-${index}`}
@@ -323,19 +323,19 @@ export default function Products() {
               >
                 <Link
                   href={`/${product.slug}`}
-                  className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-beige/40 p-3 sm:w-36 sm:max-w-[38%] sm:p-4 lg:w-44 lg:max-w-[11rem]"
+                  className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-warm-white sm:aspect-auto sm:w-52 sm:max-w-[48%] sm:self-stretch lg:w-64 lg:max-w-[17rem]"
                 >
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
                     className={`object-contain object-center ${imageHover}`}
-                    sizes="(max-width: 1024px) 50vw, 224px"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 208px, 256px"
                     unoptimized
                   />
                 </Link>
 
-                <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:p-4 lg:p-6">
+                <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:py-4 sm:pe-4 sm:ps-0 lg:py-6 lg:pe-6">
                   <div className="min-w-0">
                     <Link href={`/${product.slug}`}>
                       <h3 className="line-clamp-2 text-sm font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-base lg:text-xl">
