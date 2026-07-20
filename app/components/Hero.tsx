@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
-import { KIT_SLUG } from "@/app/lib/products";
 import { handleSectionClick } from "@/app/lib/scrollToSection";
 
 const productsHref = "#products";
@@ -59,7 +58,8 @@ export default function Hero() {
             {hero.shopNow.label}
           </Link>
           <Link
-            href={`/${KIT_SLUG}`}
+            href={productsHref}
+            onClick={(event) => handleSectionClick(event, productsHref)}
             className="inline-flex items-center justify-center rounded-full border border-dark-green/30 bg-transparent px-7 py-3 text-sm font-medium text-dark-green transition-colors hover:border-gold hover:text-gold sm:w-auto"
           >
             {hero.exploreProducts.label}
