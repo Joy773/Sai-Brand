@@ -62,6 +62,136 @@ function StockStatus({
   );
 }
 
+function RelatedKitCard({
+  product,
+  labels,
+  onAddToCart,
+}: {
+  product: StoreProduct;
+  labels: {
+    moreInfo: string;
+    addToCart: string;
+    addToCartShort: string;
+    imageAlt: string;
+    showImageLabel: string;
+    inStock: string;
+    lowStock: string;
+    whatsIncluded: string;
+    includes: string[];
+  };
+  onAddToCart: (product: StoreProduct, image: string) => void;
+}) {
+  const [activeImage, setActiveImage] = useState(0);
+  const images =
+    product.images.length > 0
+      ? product.images
+      : [product.image || "/hero-img.png"];
+
+  return (
+    <article
+      className={`group col-span-2 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row lg:items-stretch ${cardHover} hover:shadow-dark-green/10`}
+    >
+      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 lg:aspect-auto lg:w-1/2 lg:self-stretch">
+        {images.map((image, index) => (
+          <Image
+            key={`${product.id}-${image}-${index}`}
+            src={image}
+            alt={labels.imageAlt.replace("{index}", String(index + 1))}
+            fill
+            className={`object-cover object-center ${imageHover} transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
+              activeImage === index
+                ? "opacity-100"
+                : "pointer-events-none opacity-0"
+            }`}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            unoptimized
+            aria-hidden={activeImage !== index}
+          />
+        ))}
+
+        {images.length > 1 ? (
+          <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-2 sm:bottom-4">
+            {images.map((image, index) => (
+              <button
+                key={`${product.id}-dot-${image}-${index}`}
+                type="button"
+                onClick={() => setActiveImage(index)}
+                aria-label={labels.showImageLabel.replace(
+                  "{index}",
+                  String(index + 1),
+                )}
+                aria-current={activeImage === index ? "true" : undefined}
+                className={`h-2.5 w-2.5 rounded-full transition-colors duration-300 sm:h-3 sm:w-3 ${
+                  activeImage === index
+                    ? "bg-dark-green"
+                    : "bg-dark-green/30 hover:bg-dark-green/50"
+                }`}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="flex flex-1 flex-col justify-between gap-6 p-4 sm:p-6 lg:p-8">
+        <div>
+          <Link href={`/${product.slug}`}>
+            <h3 className="text-xl font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-2xl lg:text-3xl">
+              {product.name}
+            </h3>
+          </Link>
+          <p className="mt-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
+            {product.description}
+          </p>
+          {product.size ? (
+            <p className="mt-3 text-sm font-bold text-dark-green sm:text-base">
+              {product.size}
+            </p>
+          ) : null}
+          <p className="mt-2 text-sm font-bold text-dark-green sm:text-base">
+            {labels.whatsIncluded}
+          </p>
+          <ProductTags tags={labels.includes} />
+        </div>
+
+        <div className="space-y-6">
+          <StockStatus
+            status={product.status ?? "in_stock"}
+            inStockLabel={labels.inStock}
+            lowStockLabel={labels.lowStock}
+          />
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <p className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl">
+              {product.price}
+            </p>
+
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+              <Link href={`/${product.slug}`} className={moreInfoButton}>
+                {labels.moreInfo}
+                <span className="sr-only"> – {product.name}</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() =>
+                  onAddToCart(product, images[activeImage] ?? product.image)
+                }
+                className={addToCartButton}
+              >
+                <LuShoppingCart
+                  className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                  aria-hidden
+                />
+                <span className="sm:hidden">{labels.addToCartShort}</span>
+                <span className="hidden sm:inline">{labels.addToCart}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 type RelatedProductsProps = {
   slug: string;
 };
@@ -69,8 +199,16 @@ type RelatedProductsProps = {
 export default function RelatedProducts({ slug }: RelatedProductsProps) {
   const { locale } = useLocale();
   const { title, subtitle } = useMessages().relatedProducts;
-  const { addToCartShort, addToCart, moreInfo, loading, loadError, inStock, lowStock, kit } =
-    useMessages().products;
+  const {
+    addToCartShort,
+    addToCart,
+    moreInfo,
+    loading,
+    loadError,
+    inStock,
+    lowStock,
+    kit,
+  } = useMessages().products;
   const { addedToCart } = useMessages().cart;
   const addItem = useCartStore((state) => state.addItem);
 
@@ -123,12 +261,12 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
     };
   }, [locale, slug, loadError]);
 
-  const handleAddToCart = (product: StoreProduct) => {
+  const handleAddToCart = (product: StoreProduct, image?: string) => {
     addItem({
       slug: product.slug,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: image ?? product.image,
     });
     showAddedToCartToast(addedToCart);
   };
@@ -164,79 +302,22 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {kits.map((product) => (
-            <article
+            <RelatedKitCard
               key={product.id}
-              className={`group col-span-2 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:flex-row lg:items-stretch ${cardHover} hover:shadow-dark-green/10`}
-            >
-              <Link
-                href={`/${product.slug}`}
-                className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 sm:self-stretch lg:aspect-auto lg:w-1/2"
-              >
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className={`object-contain object-center ${imageHover}`}
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  unoptimized
-                />
-              </Link>
-
-              <div className="flex flex-1 flex-col justify-between gap-6 p-4 sm:p-6 lg:p-8">
-                <div>
-                  <Link href={`/${product.slug}`}>
-                    <h3 className="text-xl font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-2xl lg:text-3xl">
-                      {product.name}
-                    </h3>
-                  </Link>
-                  <p className="mt-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
-                    {product.description}
-                  </p>
-                  {product.size ? (
-                    <p className="mt-3 text-sm font-bold text-dark-green sm:text-base">
-                      {product.size}
-                    </p>
-                  ) : null}
-                  <p className="mt-2 text-sm font-bold text-dark-green sm:text-base">
-                    {kit.whatsIncluded}
-                  </p>
-                  <ProductTags tags={kit.includes} />
-                </div>
-
-                <div className="space-y-6">
-                  <StockStatus
-                    status={product.status ?? "in_stock"}
-                    inStockLabel={inStock}
-                    lowStockLabel={lowStock}
-                  />
-
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                    <p className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl">
-                      {product.price}
-                    </p>
-
-                    <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-                      <Link href={`/${product.slug}`} className={moreInfoButton}>
-                        {moreInfo}
-                        <span className="sr-only"> – {product.name}</span>
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleAddToCart(product)}
-                        className={addToCartButton}
-                      >
-                        <LuShoppingCart
-                          className="h-3.5 w-3.5 sm:h-4 sm:w-4"
-                          aria-hidden
-                        />
-                        <span className="sm:hidden">{addToCartShort}</span>
-                        <span className="hidden sm:inline">{addToCart}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
+              product={product}
+              labels={{
+                moreInfo,
+                addToCart,
+                addToCartShort,
+                imageAlt: kit.imageAlt,
+                showImageLabel: kit.showImageLabel,
+                inStock,
+                lowStock,
+                whatsIncluded: kit.whatsIncluded,
+                includes: kit.includes,
+              }}
+              onAddToCart={handleAddToCart}
+            />
           ))}
 
           {singles.map((product) => (

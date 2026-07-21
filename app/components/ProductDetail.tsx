@@ -181,7 +181,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
         </Link>
 
         <article className="mt-8 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:mt-10 lg:flex-row lg:items-start lg:overflow-visible">
-          <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-beige/40 p-6 sm:p-8 lg:sticky lg:top-8 lg:aspect-auto lg:h-[32rem] lg:w-1/2 lg:rounded-l-3xl">
+          <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-[#F3E8DF] lg:sticky lg:top-8 lg:aspect-auto lg:h-[34rem] lg:w-1/2 lg:rounded-l-3xl">
             {images.map((image, index) => (
               <Image
                 key={`${product.id}-${image}-${index}`}

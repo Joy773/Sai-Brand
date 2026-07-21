@@ -87,16 +87,16 @@ function KitCard({
 
   return (
     <article
-      className={`group mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row lg:items-stretch ${cardHover} hover:shadow-dark-green/10`}
+      className={`group mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row lg:items-center ${cardHover} hover:shadow-dark-green/10`}
     >
-      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 lg:aspect-auto lg:min-h-full lg:w-1/2 lg:self-stretch">
+      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 lg:w-1/2">
         {images.map((image, index) => (
           <Image
             key={`${product.id}-${image}-${index}`}
             src={image}
             alt={labels.imageAlt.replace("{index}", String(index + 1))}
             fill
-            className={`object-contain object-center ${imageHover} transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
+            className={`object-cover object-center ${imageHover} transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
               activeImage === index
                 ? "opacity-100"
                 : "pointer-events-none opacity-0"

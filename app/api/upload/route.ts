@@ -4,7 +4,9 @@ import { getCloudinary } from "@/app/lib/cloudinary";
 
 export const runtime = "nodejs";
 
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+// Keep under Vercel's ~4.5MB serverless request body limit so oversized
+// uploads fail with a clear JSON error instead of an HTML 413 page.
+const MAX_IMAGE_SIZE_BYTES = 4 * 1024 * 1024;
 const MAX_FILES = 10;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -62,7 +64,17 @@ async function uploadToCloudinary(file: File): Promise<CloudinaryUploadResult> {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
+  let session;
+
+  try {
+    session = await auth();
+  } catch (error) {
+    console.error("Upload auth error:", error);
+    return NextResponse.json(
+      { ok: false, error: "Authentication failed. Please sign in again." },
+      { status: 401 },
+    );
+  }
 
   if (session?.user?.role !== "admin") {
     return NextResponse.json(
@@ -116,7 +128,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           ok: false,
-          error: `File "${file.name}" exceeds the 5MB size limit.`,
+          error: `File "${file.name}" exceeds the 4MB size limit.`,
         },
         { status: 400 },
       );

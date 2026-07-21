@@ -86,7 +86,59 @@ const inputClassName =
 
 const textareaClassName = `${inputClassName} min-h-[88px] resize-y`;
 
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+
+async function readUploadResponse(response: Response): Promise<{
+  ok?: boolean;
+  url?: string;
+  error?: string;
+}> {
+  const contentType = response.headers.get("content-type") ?? "";
+  const raw = await response.text();
+
+  if (contentType.includes("application/json")) {
+    try {
+      return JSON.parse(raw) as {
+        ok?: boolean;
+        url?: string;
+        error?: string;
+      };
+    } catch {
+      throw new Error("Upload failed: server returned invalid JSON.");
+    }
+  }
+
+  // Platform / Next.js error pages often come back as HTML (413, 500, etc.).
+  if (raw.trimStart().startsWith("<") || contentType.includes("text/html")) {
+    if (response.status === 413) {
+      throw new Error(
+        "Image is too large for upload. Please use a file under 4MB.",
+      );
+    }
+
+    throw new Error(
+      `Upload failed (HTTP ${response.status}). The server returned an error page instead of JSON. Check Cloudinary env vars and try a smaller image.`,
+    );
+  }
+
+  try {
+    return JSON.parse(raw) as {
+      ok?: boolean;
+      url?: string;
+      error?: string;
+    };
+  } catch {
+    throw new Error(
+      `Upload failed (HTTP ${response.status}). Unexpected server response.`,
+    );
+  }
+}
+
 async function uploadImageFile(file: File): Promise<string> {
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new Error("Image is too large. Please use a file under 4MB.");
+  }
+
   const formData = new FormData();
   formData.append("file", file);
 
@@ -100,11 +152,7 @@ async function uploadImageFile(file: File): Promise<string> {
       signal: controller.signal,
     });
 
-    const data = (await response.json()) as {
-      ok?: boolean;
-      url?: string;
-      error?: string;
-    };
+    const data = await readUploadResponse(response);
 
     if (!response.ok || !data.ok || !data.url) {
       throw new Error(data.error ?? "Failed to upload image.");
