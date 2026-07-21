@@ -59,6 +59,27 @@ function getErrorMessage(error: unknown, fallback: string) {
   return fallback;
 }
 
+async function readApiError(response: Response, fallback: string) {
+  const contentType = response.headers.get("content-type") ?? "";
+
+  if (contentType.includes("application/json")) {
+    const data = (await response.json()) as { error?: string; ok?: boolean };
+    return data.error?.trim() || fallback;
+  }
+
+  const text = await response.text();
+
+  if (response.status === 503 || text.includes("503 Response Code")) {
+    return "PayPal is temporarily unavailable (503). Please try again in a few minutes.";
+  }
+
+  if (response.status === 401) {
+    return "Please sign in again to continue with PayPal.";
+  }
+
+  return fallback;
+}
+
 export default function PayPalCheckoutButtons({
   disabled = false,
   refreshKey,
@@ -108,13 +129,17 @@ export default function PayPalCheckoutButtons({
               body: JSON.stringify(payload),
             });
 
+            if (!response.ok) {
+              throw new Error(await readApiError(response, orderFailedMessage));
+            }
+
             const data = (await response.json()) as {
               ok?: boolean;
               orderId?: string;
               error?: string;
             };
 
-            if (!response.ok || !data.ok || !data.orderId) {
+            if (!data.ok || !data.orderId) {
               throw new Error(data.error ?? orderFailedMessage);
             }
 
@@ -136,12 +161,18 @@ export default function PayPalCheckoutButtons({
                 }),
               });
 
+              if (!response.ok) {
+                throw new Error(
+                  await readApiError(response, orderFailedMessage),
+                );
+              }
+
               const result = (await response.json()) as {
                 ok?: boolean;
                 error?: string;
               };
 
-              if (!response.ok || !result.ok) {
+              if (!result.ok) {
                 throw new Error(result.error ?? orderFailedMessage);
               }
 
