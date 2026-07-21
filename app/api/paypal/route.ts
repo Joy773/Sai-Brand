@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
+import { resolveOrderPricing } from "@/app/lib/orderPricing";
 import { getPayPalClient, paypal } from "@/app/lib/paypal";
-import { parsePrice } from "@/app/lib/price";
 import { saveUserAddress } from "@/app/lib/saveUserAddress";
 
 type PayPalProductPayload = {
@@ -34,22 +34,6 @@ type PayPalOrderResult = {
 };
 
 const CURRENCY = "EUR";
-
-function isValidProduct(product: PayPalProductPayload) {
-  return (
-    typeof product.slug === "string" &&
-    product.slug.trim().length > 0 &&
-    typeof product.name === "string" &&
-    product.name.trim().length > 0 &&
-    typeof product.price === "string" &&
-    product.price.trim().length > 0 &&
-    typeof product.image === "string" &&
-    product.image.trim().length > 0 &&
-    typeof product.quantity === "number" &&
-    product.quantity >= 1 &&
-    Number.isFinite(product.quantity)
-  );
-}
 
 function toCents(value: number) {
   return Math.round(value * 100);
@@ -143,12 +127,6 @@ export async function POST(request: NextRequest) {
   const phoneNumber = body.phoneNumber?.trim() ?? "";
   const address = body.address?.trim() ?? "";
   const products = body.products;
-  const shippingFee =
-    typeof body.shippingFee === "number" &&
-    Number.isFinite(body.shippingFee) &&
-    body.shippingFee >= 0
-      ? body.shippingFee
-      : 0;
 
   if (
     !firstName ||
@@ -166,20 +144,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (!Array.isArray(products) || products.length === 0) {
-    return NextResponse.json(
-      { ok: false, error: "At least one product is required." },
-      { status: 400 },
-    );
-  }
-
-  if (!products.every(isValidProduct)) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid product data." },
-      { status: 400 },
-    );
-  }
-
   const email = session.user.email?.trim().toLowerCase() ?? "";
 
   if (!email) {
@@ -189,38 +153,35 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const items = [];
+  // Prices and shipping are resolved from the database, never trusted from the
+  // client, to prevent amount tampering.
+  const pricing = await resolveOrderPricing({ products, country });
+
+  if (!pricing.ok) {
+    return NextResponse.json(
+      { ok: false, error: pricing.error },
+      { status: pricing.status },
+    );
+  }
+
   let productsTotalCents = 0;
+  const items = pricing.products.map((product) => {
+    const unitCents = toCents(product.unitPrice);
+    productsTotalCents += unitCents * product.quantity;
 
-  for (const product of products) {
-    const unitPrice = parsePrice(product.price!);
-    const unitCents = toCents(unitPrice);
-
-    if (unitCents < 1) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: `Invalid price for product "${product.name}".`,
-        },
-        { status: 400 },
-      );
-    }
-
-    productsTotalCents += unitCents * product.quantity!;
-
-    items.push({
-      name: product.name!.trim().slice(0, 127),
-      sku: product.slug!.trim().slice(0, 127),
+    return {
+      name: product.name.slice(0, 127),
+      sku: product.slug.slice(0, 127),
       unit_amount: {
         currency_code: CURRENCY,
         value: centsToPayPalAmount(unitCents),
       },
-      quantity: String(Math.floor(product.quantity!)),
+      quantity: String(product.quantity),
       category: "PHYSICAL_GOODS" as const,
-    });
-  }
+    };
+  });
 
-  const shippingCents = toCents(shippingFee);
+  const shippingCents = toCents(pricing.shippingFee);
   const orderTotalCents = productsTotalCents + shippingCents;
   const origin = getOrigin(request);
 

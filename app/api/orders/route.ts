@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
+import { resolveOrderPricing } from "@/app/lib/orderPricing";
+import { getClientIp, rateLimit } from "@/app/lib/rateLimit";
 import { saveUserAddress } from "@/app/lib/saveUserAddress";
 import Order from "@/app/models/Orders";
 
@@ -23,27 +25,8 @@ type CreateOrderPayload = {
   phoneNumber?: string;
   address?: string;
   paymentMethod?: "cod" | "online" | "paypal";
-  paymentStatus?: "pending" | "paid";
-  price?: number;
-  shippingFee?: number;
   products?: OrderProductPayload[];
-  total?: number;
 };
-
-function isValidProduct(product: OrderProductPayload) {
-  return (
-    typeof product.slug === "string" &&
-    product.slug.trim().length > 0 &&
-    typeof product.name === "string" &&
-    product.name.trim().length > 0 &&
-    typeof product.price === "string" &&
-    product.price.trim().length > 0 &&
-    typeof product.image === "string" &&
-    product.image.trim().length > 0 &&
-    typeof product.quantity === "number" &&
-    product.quantity >= 1
-  );
-}
 
 function formatOrderId(id: string) {
   return `ORD-${id.slice(-6).toUpperCase()}`;
@@ -163,6 +146,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const rateLimitKey = `orders:${session.user.id || session.user.email || getClientIp(request)}`;
+  const limit = rateLimit(rateLimitKey, { limit: 10, windowMs: 60_000 });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests. Please slow down." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } },
+    );
+  }
+
   let body: CreateOrderPayload;
 
   try {
@@ -184,15 +176,19 @@ export async function POST(request: NextRequest) {
   const phoneNumber = body.phoneNumber?.trim() ?? "";
   const paymentMethod = body.paymentMethod;
   const products = body.products;
-  const price = body.price;
-  const shippingFee = body.shippingFee ?? 0;
-  const total = body.total;
-  const paymentStatus =
-    body.paymentStatus === "paid"
-      ? "paid"
-      : paymentMethod === "cod"
-        ? "pending"
-        : "pending";
+
+  // This endpoint only creates Cash-on-Delivery orders. Online (Stripe) and
+  // PayPal orders are created by their payment webhook / capture handlers, so a
+  // client can never mark those as paid here.
+  if (paymentMethod !== "cod") {
+    return NextResponse.json(
+      { ok: false, error: "Invalid payment method." },
+      { status: 400 },
+    );
+  }
+
+  // Cash on delivery is always unpaid until the courier collects payment.
+  const paymentStatus = "pending" as const;
 
   if (
     !firstName ||
@@ -209,56 +205,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (
-    paymentMethod !== "cod" &&
-    paymentMethod !== "online" &&
-    paymentMethod !== "paypal"
-  ) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid payment method." },
-      { status: 400 },
-    );
-  }
-
-  if (!Array.isArray(products) || products.length === 0) {
-    return NextResponse.json(
-      { ok: false, error: "At least one product is required." },
-      { status: 400 },
-    );
-  }
-
-  if (!products.every(isValidProduct)) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid product data." },
-      { status: 400 },
-    );
-  }
-
-  if (typeof price !== "number" || Number.isNaN(price) || price < 0) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid order price." },
-      { status: 400 },
-    );
-  }
-
-  if (
-    typeof shippingFee !== "number" ||
-    Number.isNaN(shippingFee) ||
-    shippingFee < 0
-  ) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid shipping fee." },
-      { status: 400 },
-    );
-  }
-
-  if (typeof total !== "number" || Number.isNaN(total) || total < 0) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid order total." },
-      { status: 400 },
-    );
-  }
-
   const email = session.user.email?.trim().toLowerCase();
   if (!email) {
     return NextResponse.json(
@@ -266,6 +212,20 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
+
+  // Prices and shipping are resolved from the database, never trusted from the
+  // client, to prevent amount tampering.
+  const pricing = await resolveOrderPricing({ products, country });
+  if (!pricing.ok) {
+    return NextResponse.json(
+      { ok: false, error: pricing.error },
+      { status: pricing.status },
+    );
+  }
+
+  const price = pricing.productsTotal;
+  const shippingFee = pricing.shippingFee;
+  const total = pricing.total;
 
   const customerName =
     `${firstName} ${lastName}`.trim() ||
@@ -306,12 +266,12 @@ export async function POST(request: NextRequest) {
       paymentStatus,
       price,
       shippingFee,
-      products: products.map((product) => ({
-        slug: product.slug!.trim(),
-        name: product.name!.trim(),
-        price: product.price!.trim(),
-        image: product.image!.trim(),
-        quantity: product.quantity!,
+      products: pricing.products.map((product) => ({
+        slug: product.slug,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: product.quantity,
       })),
       total,
       orderPlaceTime: orderTime,

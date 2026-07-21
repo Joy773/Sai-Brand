@@ -9,6 +9,19 @@ class EmailNotVerifiedError extends CredentialsSignin {
   code = "email_not_verified";
 }
 
+// Constant-time string comparison to avoid leaking the admin password length or
+// content through response-timing differences.
+function constantTimeEqual(a: string, b: string): boolean {
+  let mismatch = a.length === b.length ? 0 : 1;
+  const length = Math.max(a.length, b.length);
+
+  for (let i = 0; i < length; i += 1) {
+    mismatch |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+  }
+
+  return mismatch === 0;
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [
@@ -34,7 +47,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           adminEmail &&
           adminPassword &&
           email === adminEmail &&
-          password === adminPassword
+          typeof password === "string" &&
+          constantTimeEqual(password, adminPassword)
         ) {
           return {
             id: "admin",

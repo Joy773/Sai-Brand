@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
+import { getClientIp, rateLimit } from "@/app/lib/rateLimit";
 import {
   hasAddressContent,
   saveUserAddress,
@@ -133,6 +134,20 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const limit = rateLimit(`signup:${getClientIp(request)}`, {
+    limit: 5,
+    windowMs: 60_000,
+  });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { ok: false, error: "Too many attempts. Please try again shortly." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limit.retryAfterSeconds) },
+      },
+    );
+  }
+
   let body: SignupPayload;
 
   try {

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
+import { resolveOrderPricing } from "@/app/lib/orderPricing";
 import { getPayPalClient, paypal } from "@/app/lib/paypal";
-import { parsePrice } from "@/app/lib/price";
 import { saveUserAddress } from "@/app/lib/saveUserAddress";
 import Order from "@/app/models/Orders";
 
@@ -44,22 +44,6 @@ type PayPalCaptureResult = {
     };
   }>;
 };
-
-function isValidProduct(product: CaptureProductPayload) {
-  return (
-    typeof product.slug === "string" &&
-    product.slug.trim().length > 0 &&
-    typeof product.name === "string" &&
-    product.name.trim().length > 0 &&
-    typeof product.price === "string" &&
-    product.price.trim().length > 0 &&
-    typeof product.image === "string" &&
-    product.image.trim().length > 0 &&
-    typeof product.quantity === "number" &&
-    product.quantity >= 1 &&
-    Number.isFinite(product.quantity)
-  );
-}
 
 function formatDeliveryAddress(input: {
   firstName: string;
@@ -115,12 +99,6 @@ export async function POST(request: NextRequest) {
   const zipPostalCode = body.zipPostalCode?.trim() ?? "";
   const phoneNumber = body.phoneNumber?.trim() ?? "";
   const products = body.products;
-  const shippingFee =
-    typeof body.shippingFee === "number" &&
-    Number.isFinite(body.shippingFee) &&
-    body.shippingFee >= 0
-      ? body.shippingFee
-      : 0;
 
   if (!paypalOrderId) {
     return NextResponse.json(
@@ -140,20 +118,6 @@ export async function POST(request: NextRequest) {
   ) {
     return NextResponse.json(
       { ok: false, error: "Complete delivery address is required." },
-      { status: 400 },
-    );
-  }
-
-  if (!Array.isArray(products) || products.length === 0) {
-    return NextResponse.json(
-      { ok: false, error: "At least one product is required." },
-      { status: 400 },
-    );
-  }
-
-  if (!products.every(isValidProduct)) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid product data." },
       { status: 400 },
     );
   }
@@ -182,20 +146,6 @@ export async function POST(request: NextRequest) {
       phoneNumber,
     });
 
-  const normalizedProducts = products.map((product) => ({
-    slug: product.slug!.trim(),
-    name: product.name!.trim(),
-    price: product.price!.trim(),
-    image: product.image!.trim(),
-    quantity: product.quantity!,
-  }));
-
-  const productsTotal = normalizedProducts.reduce(
-    (sum, product) => sum + parsePrice(product.price) * product.quantity,
-    0,
-  );
-  const orderTotal = productsTotal + shippingFee;
-
   try {
     await connectDB();
 
@@ -215,6 +165,28 @@ export async function POST(request: NextRequest) {
         dbOrderId: String(existingByPayPal._id),
       });
     }
+
+    // Prices and shipping are resolved from the database, never trusted from
+    // the client, to prevent amount tampering. Done before capture so a stale
+    // cart is rejected without taking money.
+    const pricing = await resolveOrderPricing({ products, country });
+    if (!pricing.ok) {
+      return NextResponse.json(
+        { ok: false, error: pricing.error },
+        { status: pricing.status },
+      );
+    }
+
+    const normalizedProducts = pricing.products.map((product) => ({
+      slug: product.slug,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: product.quantity,
+    }));
+    const productsTotal = pricing.productsTotal;
+    const shippingFee = pricing.shippingFee;
+    const orderTotal = pricing.total;
 
     const client = getPayPalClient();
     const captureRequest = new paypal.orders.OrdersCaptureRequest(paypalOrderId);
@@ -237,6 +209,29 @@ export async function POST(request: NextRequest) {
           captureId,
         },
         { status: 402 },
+      );
+    }
+
+    // Verify the amount PayPal actually captured matches the server total.
+    const capturedValue = Number.parseFloat(capture?.amount?.value ?? "");
+    if (
+      Number.isFinite(capturedValue) &&
+      Math.abs(capturedValue - orderTotal) > 0.01
+    ) {
+      // eslint-disable-next-line no-console
+      console.error(
+        "[paypal capture] Captured amount does not match server total",
+        { paypalOrderId, captureId, capturedValue, orderTotal },
+      );
+
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Captured amount does not match the order total.",
+          orderId: paypalOrderId,
+          captureId,
+        },
+        { status: 400 },
       );
     }
 
@@ -324,11 +319,9 @@ export async function POST(request: NextRequest) {
     // eslint-disable-next-line no-console
     console.error("[paypal capture] Failed to capture PayPal order", error);
 
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Failed to capture PayPal payment. Please try again.";
-
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "Failed to capture PayPal payment. Please try again." },
+      { status: 500 },
+    );
   }
 }

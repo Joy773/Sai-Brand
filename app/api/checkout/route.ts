@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
-import { parsePrice } from "@/app/lib/price";
+import { resolveOrderPricing } from "@/app/lib/orderPricing";
 import { saveUserAddress } from "@/app/lib/saveUserAddress";
 import getStripe from "@/app/lib/stripe";
 
@@ -64,8 +64,8 @@ function getOrigin(request: NextRequest) {
   );
 }
 
-function toStripeUnitAmount(price: string) {
-  return Math.round(parsePrice(price) * 100);
+function toStripeUnitAmount(price: number) {
+  return Math.round(price * 100);
 }
 
 export async function POST(request: NextRequest) {
@@ -99,12 +99,6 @@ export async function POST(request: NextRequest) {
   const phoneNumber = body.phoneNumber?.trim() ?? "";
   const address = body.address?.trim() ?? "";
   const products = body.products;
-  const shippingFee =
-    typeof body.shippingFee === "number" &&
-    Number.isFinite(body.shippingFee) &&
-    body.shippingFee >= 0
-      ? body.shippingFee
-      : 0;
 
   if (
     !firstName ||
@@ -146,57 +140,58 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const lineItems = [];
-  let productsTotal = 0;
+  // Prices and shipping are resolved from the database, never trusted from the
+  // client, to prevent amount tampering.
+  const pricing = await resolveOrderPricing({ products, country });
 
-  for (const product of products) {
-    const unitAmount = toStripeUnitAmount(product.price!);
+  if (!pricing.ok) {
+    return NextResponse.json(
+      { ok: false, error: pricing.error },
+      { status: pricing.status },
+    );
+  }
 
-    if (unitAmount < 1) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: `Invalid price for product "${product.name}".`,
-        },
-        { status: 400 },
-      );
-    }
+  const productsTotal = pricing.productsTotal;
+  const resolvedShippingFee = pricing.shippingFee;
+  const orderTotal = pricing.total;
 
-    productsTotal += (unitAmount / 100) * product.quantity!;
+  const lineItems = pricing.products.map((product) => {
+    const images = product.image.startsWith("https://")
+      ? [product.image]
+      : undefined;
 
-    const image = product.image!.trim();
-    const images = image.startsWith("https://") ? [image] : undefined;
-
-    lineItems.push({
-      quantity: product.quantity!,
+    return {
+      quantity: product.quantity,
       price_data: {
         currency: "eur" as const,
-        unit_amount: unitAmount,
+        unit_amount: toStripeUnitAmount(product.unitPrice),
         product_data: {
-          name: product.name!.trim(),
+          name: product.name,
           images,
           metadata: {
-            slug: product.slug!.trim(),
+            slug: product.slug,
+          },
+        },
+      },
+    };
+  });
+
+  if (resolvedShippingFee > 0) {
+    lineItems.push({
+      quantity: 1,
+      price_data: {
+        currency: "eur" as const,
+        unit_amount: Math.round(resolvedShippingFee * 100),
+        product_data: {
+          name: "Shipping",
+          images: undefined,
+          metadata: {
+            slug: "shipping",
           },
         },
       },
     });
   }
-
-  if (shippingFee > 0) {
-    lineItems.push({
-      quantity: 1,
-      price_data: {
-        currency: "eur" as const,
-        unit_amount: Math.round(shippingFee * 100),
-        product_data: {
-          name: "Shipping",
-        },
-      },
-    });
-  }
-
-  const orderTotal = productsTotal + shippingFee;
 
   try {
     await connectDB();
@@ -225,7 +220,7 @@ export async function POST(request: NextRequest) {
         phoneNumber,
         address,
         price: productsTotal.toFixed(2),
-        shippingFee: shippingFee.toFixed(2),
+        shippingFee: resolvedShippingFee.toFixed(2),
         total: orderTotal.toFixed(2),
       },
     });
@@ -264,11 +259,9 @@ export async function POST(request: NextRequest) {
     // eslint-disable-next-line no-console
     console.error("[checkout api] Failed to create Stripe session", error);
 
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Failed to start checkout. Please try again.";
-
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "Failed to start checkout. Please try again." },
+      { status: 500 },
+    );
   }
 }

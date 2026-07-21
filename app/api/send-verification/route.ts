@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { connectDB } from "@/app/lib/mongodb";
+import { getClientIp, rateLimit } from "@/app/lib/rateLimit";
 import { SITE_URL } from "@/app/lib/site";
 import User from "@/app/models/User";
 
@@ -17,6 +18,20 @@ const TEMPLATE_ID =
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
 export async function POST(request: NextRequest) {
+  const limit = rateLimit(`send-verification:${getClientIp(request)}`, {
+    limit: 5,
+    windowMs: 60_000,
+  });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { ok: false, error: "Too many attempts. Please try again shortly." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limit.retryAfterSeconds) },
+      },
+    );
+  }
+
   let body: Payload;
 
   try {
