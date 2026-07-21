@@ -47,6 +47,18 @@ const scriptOptions: ReactPayPalScriptOptions = {
   components: "buttons",
 };
 
+function getErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+
+  if (typeof error === "string" && error.trim()) {
+    return error;
+  }
+
+  return fallback;
+}
+
 export default function PayPalCheckoutButtons({
   disabled = false,
   refreshKey,
@@ -76,11 +88,15 @@ export default function PayPalCheckoutButtons({
           }}
           disabled={disabled}
           forceReRender={[disabled, refreshKey]}
-          createOrder={async () => {
+          onClick={(_data, actions) => {
             if (onBeforePay && !onBeforePay()) {
-              throw new Error(orderFailedMessage);
+              // Parent already shows address/auth feedback.
+              return actions.reject();
             }
 
+            return actions.resolve();
+          }}
+          createOrder={async () => {
             const payload = getOrderPayload();
             if (!payload) {
               throw new Error(orderFailedMessage);
@@ -105,33 +121,40 @@ export default function PayPalCheckoutButtons({
             return data.orderId;
           }}
           onApprove={async (data) => {
-            const payload = getOrderPayload();
-            if (!payload || !data.orderID) {
-              throw new Error(orderFailedMessage);
+            try {
+              const payload = getOrderPayload();
+              if (!payload || !data.orderID) {
+                throw new Error(orderFailedMessage);
+              }
+
+              const response = await fetch("/api/paypal/capture-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  orderId: data.orderID,
+                  ...payload,
+                }),
+              });
+
+              const result = (await response.json()) as {
+                ok?: boolean;
+                error?: string;
+              };
+
+              if (!response.ok || !result.ok) {
+                throw new Error(result.error ?? orderFailedMessage);
+              }
+
+              onPaid();
+            } catch (error) {
+              toast.error(getErrorMessage(error, orderFailedMessage));
+              throw error;
             }
-
-            const response = await fetch("/api/paypal/capture-order", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                orderId: data.orderID,
-                ...payload,
-              }),
-            });
-
-            const result = (await response.json()) as {
-              ok?: boolean;
-              error?: string;
-            };
-
-            if (!response.ok || !result.ok) {
-              throw new Error(result.error ?? orderFailedMessage);
-            }
-
-            onPaid();
           }}
-          onError={() => {
-            toast.error(orderFailedMessage);
+          onError={(error) => {
+            // eslint-disable-next-line no-console
+            console.error("[PayPalButtons]", error);
+            toast.error(getErrorMessage(error, orderFailedMessage));
           }}
           onCancel={() => {
             // User closed the PayPal window — no toast needed.

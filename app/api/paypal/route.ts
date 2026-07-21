@@ -51,8 +51,12 @@ function isValidProduct(product: PayPalProductPayload) {
   );
 }
 
-function toPayPalAmount(value: number) {
-  return value.toFixed(2);
+function toCents(value: number) {
+  return Math.round(value * 100);
+}
+
+function centsToPayPalAmount(cents: number) {
+  return (cents / 100).toFixed(2);
 }
 
 function getOrigin(request: NextRequest) {
@@ -74,12 +78,46 @@ function getOrigin(request: NextRequest) {
   );
 }
 
+function getPayPalErrorMessage(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return "Failed to create PayPal order. Please try again.";
+  }
+
+  const maybeResult = "result" in error ? error.result : null;
+  if (maybeResult && typeof maybeResult === "object") {
+    const details = "details" in maybeResult ? maybeResult.details : null;
+    if (Array.isArray(details) && details[0]) {
+      const first = details[0] as { description?: string; issue?: string };
+      if (first.description) {
+        return first.description;
+      }
+      if (first.issue) {
+        return first.issue;
+      }
+    }
+
+    if (
+      "message" in maybeResult &&
+      typeof maybeResult.message === "string" &&
+      maybeResult.message.trim()
+    ) {
+      return maybeResult.message;
+    }
+  }
+
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+
+  return "Failed to create PayPal order. Please try again.";
+}
+
 export async function POST(request: NextRequest) {
   const session = await auth();
 
   if (!session?.user) {
     return NextResponse.json(
-      { ok: false, error: "Unauthorized." },
+      { ok: false, error: "Unauthorized. Please sign in again." },
       { status: 401 },
     );
   }
@@ -142,10 +180,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const name = session.user.name?.trim() ?? `${firstName} ${lastName}`.trim();
   const email = session.user.email?.trim().toLowerCase() ?? "";
 
-  if (!name || !email) {
+  if (!email) {
     return NextResponse.json(
       { ok: false, error: "User profile is incomplete." },
       { status: 400 },
@@ -153,12 +190,13 @@ export async function POST(request: NextRequest) {
   }
 
   const items = [];
-  let productsTotal = 0;
+  let productsTotalCents = 0;
 
   for (const product of products) {
     const unitPrice = parsePrice(product.price!);
+    const unitCents = toCents(unitPrice);
 
-    if (unitPrice <= 0) {
+    if (unitCents < 1) {
       return NextResponse.json(
         {
           ok: false,
@@ -168,53 +206,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    productsTotal += unitPrice * product.quantity!;
+    productsTotalCents += unitCents * product.quantity!;
 
     items.push({
       name: product.name!.trim().slice(0, 127),
       sku: product.slug!.trim().slice(0, 127),
       unit_amount: {
         currency_code: CURRENCY,
-        value: toPayPalAmount(unitPrice),
+        value: centsToPayPalAmount(unitCents),
       },
-      quantity: String(product.quantity!),
+      quantity: String(Math.floor(product.quantity!)),
       category: "PHYSICAL_GOODS" as const,
     });
   }
 
-  const orderTotal = productsTotal + shippingFee;
+  const shippingCents = toCents(shippingFee);
+  const orderTotalCents = productsTotalCents + shippingCents;
   const origin = getOrigin(request);
 
   const amountBreakdown: Record<string, { currency_code: string; value: string }> =
     {
       item_total: {
         currency_code: CURRENCY,
-        value: toPayPalAmount(productsTotal),
+        value: centsToPayPalAmount(productsTotalCents),
       },
     };
 
-  if (shippingFee > 0) {
+  if (shippingCents > 0) {
     amountBreakdown.shipping = {
       currency_code: CURRENCY,
-      value: toPayPalAmount(shippingFee),
+      value: centsToPayPalAmount(shippingCents),
     };
   }
 
   try {
-    await connectDB();
-
+    // Create the PayPal order first so the popup is not blocked by DB latency.
     const client = getPayPalClient();
     const createRequest = new paypal.orders.OrdersCreateRequest();
     createRequest.prefer("return=representation");
     createRequest.requestBody({
       intent: "CAPTURE",
-      payer: {
-        name: {
-          given_name: firstName,
-          surname: lastName,
-        },
-        email_address: email,
-      },
       purchase_units: [
         {
           reference_id: "sai-cart",
@@ -222,7 +253,7 @@ export async function POST(request: NextRequest) {
           custom_id: (session.user.id ?? email).slice(0, 127),
           amount: {
             currency_code: CURRENCY,
-            value: toPayPalAmount(orderTotal),
+            value: centsToPayPalAmount(orderTotalCents),
             breakdown: amountBreakdown,
           },
           items,
@@ -230,11 +261,11 @@ export async function POST(request: NextRequest) {
       ],
       application_context: {
         brand_name: "German Care",
-        landing_page: "LOGIN",
+        landing_page: "NO_PREFERENCE",
         user_action: "PAY_NOW",
         shipping_preference: "NO_SHIPPING",
-        return_url: `${origin}/checkout?checkout=success&provider=paypal`,
-        cancel_url: `${origin}/checkout?checkout=cancel&provider=paypal`,
+        return_url: `${origin}/cart?paypal=success`,
+        cancel_url: `${origin}/cart?paypal=cancel`,
       },
     });
 
@@ -248,23 +279,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await saveUserAddress(
-      email,
-      {
-        firstName,
-        lastName,
-        streetAddress,
-        country,
-        stateProvince,
-        city,
-        zipPostalCode,
-        phoneNumber,
-      },
-      {
-        userId: session.user.id,
-        role: session.user.role,
-      },
-    );
+    try {
+      await connectDB();
+      await saveUserAddress(
+        email,
+        {
+          firstName,
+          lastName,
+          streetAddress,
+          country,
+          stateProvince,
+          city,
+          zipPostalCode,
+          phoneNumber,
+        },
+        {
+          userId: session.user.id,
+          role: session.user.role,
+        },
+      );
+    } catch (addressError) {
+      // Address save must not block checkout once PayPal order exists.
+      // eslint-disable-next-line no-console
+      console.error(
+        "[paypal api] PayPal order created but address save failed",
+        addressError,
+      );
+    }
 
     const approveUrl = response.result.links?.find(
       (link) => link.rel === "approve",
@@ -280,11 +321,9 @@ export async function POST(request: NextRequest) {
     // eslint-disable-next-line no-console
     console.error("[paypal api] Failed to create PayPal order", error);
 
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Failed to create PayPal order. Please try again.";
-
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: getPayPalErrorMessage(error) },
+      { status: 500 },
+    );
   }
 }
