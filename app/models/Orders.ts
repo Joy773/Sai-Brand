@@ -91,7 +91,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["cod", "online"],
+      enum: ["cod", "online", "paypal"],
       required: [true, "Payment method is required"],
     },
     price: {
@@ -140,6 +140,20 @@ const orderSchema = new mongoose.Schema(
       default: "pending",
     },
     stripeSessionId: {
+      type: String,
+      trim: true,
+      unique: true,
+      sparse: true,
+      default: undefined,
+    },
+    paypalOrderId: {
+      type: String,
+      trim: true,
+      unique: true,
+      sparse: true,
+      default: undefined,
+    },
+    paypalCaptureId: {
       type: String,
       trim: true,
       unique: true,

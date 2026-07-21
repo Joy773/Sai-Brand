@@ -8,6 +8,7 @@ import { Suspense, useEffect, useState } from "react";
 import { LuArrowLeft, LuX } from "react-icons/lu";
 import { toast } from "sonner";
 import { CHECKOUT_ADDRESS_KEY } from "@/app/components/Checkout";
+import PayPalCheckoutButtons from "@/app/components/PayPalCheckoutButtons";
 import SignInModal from "@/app/components/SignInModal";
 import SignupModal from "@/app/components/SignupModal";
 import { useMessages } from "@/app/i18n/LocaleProvider";
@@ -17,7 +18,7 @@ import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
 
 const MAX_QUANTITY = 20;
 
-type PaymentType = "cod" | "online";
+type PaymentType = "cod" | "online" | "paypal";
 
 type ShippingCountry = {
   id: string;
@@ -108,6 +109,7 @@ function CartContent() {
     paymentMethod,
     cashOnDelivery,
     onlinePayment,
+    onlinePaymentPaypal,
     price: priceLabel,
     shippingFee,
     free,
@@ -918,6 +920,7 @@ function CartContent() {
                   >
                     <option value="cod">{cashOnDelivery}</option>
                     <option value="online">{onlinePayment}</option>
+                    <option value="paypal">{onlinePaymentPaypal}</option>
                   </select>
                 </div>
 
@@ -945,22 +948,84 @@ function CartContent() {
                   </span>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => void handlePlaceOrder()}
-                  disabled={
-                    isPlacingOrder ||
-                    isLoadingCountries ||
-                    shippingCountries.length === 0
-                  }
-                  className="mt-6 w-full rounded-md bg-dark-green px-4 py-3.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isPlacingOrder
-                    ? placeOrder
-                    : paymentType === "online"
-                      ? continueToPayment
-                      : placeOrder}
-                </button>
+                {paymentType === "paypal" ? (
+                  <PayPalCheckoutButtons
+                    disabled={
+                      isLoadingCountries ||
+                      shippingCountries.length === 0 ||
+                      items.length === 0
+                    }
+                    refreshKey={`${orderTotal}-${itemCount}`}
+                    orderFailedMessage={orderFailed}
+                    onBeforePay={() => {
+                      if (status !== "authenticated") {
+                        setSignInOpen(true);
+                        return false;
+                      }
+
+                      if (!validateAddressForm() || !selectedShippingCountry) {
+                        setAddressError(completeDeliveryAddress);
+                        return false;
+                      }
+
+                      setAddressError(null);
+                      return true;
+                    }}
+                    getOrderPayload={() => {
+                      if (!selectedShippingCountry) {
+                        return null;
+                      }
+
+                      const formattedAddress = formatDeliveryAddress(
+                        addressForm,
+                        selectedCountryLabel,
+                      );
+
+                      return {
+                        firstName: addressForm.firstName.trim(),
+                        lastName: addressForm.lastName.trim(),
+                        streetAddress: addressForm.streetAddress.trim(),
+                        country: selectedCountryLabel,
+                        stateProvince: addressForm.stateProvince.trim(),
+                        city: addressForm.city.trim(),
+                        zipPostalCode: addressForm.zipPostalCode.trim(),
+                        phoneNumber: addressForm.phoneNumber.trim(),
+                        address: formattedAddress,
+                        shippingFee: shippingFeeAmount,
+                        products: items.map((item) => ({
+                          slug: item.slug,
+                          name: item.name,
+                          price: item.price,
+                          image: item.image,
+                          quantity: item.quantity,
+                        })),
+                      };
+                    }}
+                    onPaid={() => {
+                      clearCart();
+                      setHasSavedAddress(true);
+                      setIsEditingAddress(false);
+                      toast.success(orderPlaced);
+                    }}
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => void handlePlaceOrder()}
+                    disabled={
+                      isPlacingOrder ||
+                      isLoadingCountries ||
+                      shippingCountries.length === 0
+                    }
+                    className="mt-6 w-full rounded-md bg-dark-green px-4 py-3.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isPlacingOrder
+                      ? placeOrder
+                      : paymentType === "online"
+                        ? continueToPayment
+                        : placeOrder}
+                  </button>
+                )}
                 {addressError ? (
                   <p
                     role="alert"

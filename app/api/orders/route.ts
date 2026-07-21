@@ -22,7 +22,7 @@ type CreateOrderPayload = {
   zipPostalCode?: string;
   phoneNumber?: string;
   address?: string;
-  paymentMethod?: "cod" | "online";
+  paymentMethod?: "cod" | "online" | "paypal";
   paymentStatus?: "pending" | "paid";
   price?: number;
   shippingFee?: number;
@@ -136,6 +136,8 @@ export async function GET() {
           orderPlaceTime: order.orderPlaceTime,
           orderTime: order.orderTime,
           stripeSessionId: order.stripeSessionId ?? "",
+          paypalOrderId: order.paypalOrderId ?? "",
+          paypalCaptureId: order.paypalCaptureId ?? "",
           status,
         };
       }),
@@ -207,7 +209,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (paymentMethod !== "cod" && paymentMethod !== "online") {
+  if (
+    paymentMethod !== "cod" &&
+    paymentMethod !== "online" &&
+    paymentMethod !== "paypal"
+  ) {
     return NextResponse.json(
       { ok: false, error: "Invalid payment method." },
       { status: 400 },

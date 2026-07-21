@@ -8,7 +8,7 @@ import { formatPrice } from "@/app/lib/price";
 
 type OrderStatus = "pending" | "completed";
 type OrderFilter = "all" | "pending" | "completed";
-type PaymentMethod = "cod" | "online";
+type PaymentMethod = "cod" | "online" | "paypal";
 type PaymentStatus = "pending" | "paid";
 
 type OrderProduct = {
@@ -145,8 +145,15 @@ export default function AdminOrdersPage() {
     toast.success(statusUpdated);
   };
 
-  const paymentLabel = (method: PaymentMethod) =>
-    method === "online" ? ordersTable.paymentOnline : ordersTable.paymentCod;
+  const paymentLabel = (method: PaymentMethod) => {
+    if (method === "paypal") {
+      return ordersTable.paymentPaypal;
+    }
+    if (method === "online") {
+      return ordersTable.paymentOnline;
+    }
+    return ordersTable.paymentCod;
+  };
 
   const paymentStatusLabel = (status: PaymentStatus) =>
     status === "paid" ? ordersTable.paymentPaid : ordersTable.paymentPending;

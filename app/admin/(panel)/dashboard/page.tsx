@@ -31,7 +31,7 @@ type OrdersApiResponse = {
   ok: boolean;
   orders?: Array<{
     total: number;
-    paymentMethod?: "cod" | "online";
+    paymentMethod?: "cod" | "online" | "paypal";
     paymentStatus?: "pending" | "paid";
   }>;
   error?: string;
@@ -71,8 +71,10 @@ export default function AdminDashboardPage() {
 
         const totalRevenue = ordersData.orders.reduce((sum, order) => {
           const isPaidOnline =
-            order.paymentMethod === "online" && order.paymentStatus === "paid";
-          const isCod = order.paymentMethod !== "online";
+            (order.paymentMethod === "online" ||
+              order.paymentMethod === "paypal") &&
+            order.paymentStatus === "paid";
+          const isCod = order.paymentMethod === "cod";
 
           if (!isPaidOnline && !isCod) {
             return sum;
