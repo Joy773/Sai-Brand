@@ -23,6 +23,7 @@ type CreateProductPayload = {
   kitSize?: string;
   status?: "in_stock" | "low_stock";
   images?: string[];
+  videos?: string[];
 };
 
 const localeFields = [
@@ -82,6 +83,7 @@ function serializeProduct(
     Array.isArray(product.images) && product.images.length > 0
       ? product.images
       : ["/hero-img.png"];
+  const videos = Array.isArray(product.videos) ? product.videos : [];
 
   return {
     id: product._id.toString(),
@@ -98,6 +100,7 @@ function serializeProduct(
     kitSize: product.kitSize ?? "",
     image: images[0],
     images,
+    videos,
     status: product.status,
     details: {
       keyBenefits: toDetailLines(content.keyBenefits),
@@ -200,6 +203,32 @@ function parseProductPayload(body: CreateProductPayload) {
     };
   }
 
+  const rawVideos = Array.isArray(body.videos) ? body.videos : [];
+  const videos = rawVideos
+    .map((video) => (typeof video === "string" ? video.trim() : ""))
+    .filter((video) => video.length > 0);
+
+  if (videos.some((video) => video.startsWith("data:"))) {
+    return {
+      ok: false as const,
+      error: "Product videos must be uploaded URLs, not base64 data.",
+      status: 400,
+    };
+  }
+
+  if (
+    videos.some(
+      (video) =>
+        !video.startsWith("http://") && !video.startsWith("https://"),
+    )
+  ) {
+    return {
+      ok: false as const,
+      error: "Invalid product video URL.",
+      status: 400,
+    };
+  }
+
   return {
     ok: true as const,
     data: {
@@ -212,6 +241,7 @@ function parseProductPayload(body: CreateProductPayload) {
       kitSize,
       status: status as "in_stock" | "low_stock",
       productImages: images.length > 0 ? images : ["/hero-img.png"],
+      productVideos: videos,
     },
   };
 }
@@ -295,6 +325,7 @@ export async function POST(request: NextRequest) {
     kitSize,
     status,
     productImages,
+    productVideos,
   } = parsed.data;
 
   const slug = slugify(en.name) || `product-${Date.now()}`;
@@ -318,8 +349,16 @@ export async function POST(request: NextRequest) {
       kitSize: productType === "kit" ? kitSize : "",
       status,
       images: productImages,
+      videos: productVideos,
       translations: { en, de, ar },
     });
+
+    // Bypass any stale mongoose schema cache so videos are always stored.
+    await Product.collection.updateOne(
+      { _id: product._id },
+      { $set: { videos: productVideos } },
+    );
+    product.videos = productVideos;
 
     return NextResponse.json(
       {
@@ -402,6 +441,7 @@ export async function PUT(request: NextRequest) {
     kitSize,
     status,
     productImages,
+    productVideos,
   } = parsed.data;
 
   const slug = slugify(en.name) || `product-${Date.now()}`;
@@ -439,10 +479,20 @@ export async function PUT(request: NextRequest) {
       existingProduct.kitSize = kitSize;
     }
     existingProduct.status = status;
-    existingProduct.images = productImages;
+    existingProduct.set("images", productImages);
+    existingProduct.set("videos", productVideos);
+    existingProduct.markModified("images");
+    existingProduct.markModified("videos");
     existingProduct.translations = { en, de, ar };
 
     await existingProduct.save();
+
+    // Bypass any stale mongoose schema cache so videos are always stored.
+    await Product.collection.updateOne(
+      { _id: existingProduct._id },
+      { $set: { videos: productVideos } },
+    );
+    existingProduct.videos = productVideos;
 
     return NextResponse.json({
       ok: true,

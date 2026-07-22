@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 // Keep under Vercel's ~4.5MB serverless request body limit so oversized
 // uploads fail with a clear JSON error instead of an HTML 413 page.
 const MAX_IMAGE_SIZE_BYTES = 4 * 1024 * 1024;
+const MAX_VIDEO_SIZE_BYTES = 4 * 1024 * 1024;
 const MAX_FILES = 10;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -14,6 +15,12 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/png",
   "image/webp",
   "image/gif",
+];
+const ACCEPTED_VIDEO_TYPES = [
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+  "video/x-msvideo",
 ];
 
 type CloudinaryUploadResult = {
@@ -23,22 +30,32 @@ type CloudinaryUploadResult = {
   height: number;
   format: string;
   bytes: number;
+  resource_type: "image" | "video";
 };
 
 function isFile(value: FormDataEntryValue): value is File {
   return typeof value === "object" && value !== null && "arrayBuffer" in value;
 }
 
+function isVideoFile(file: File) {
+  return ACCEPTED_VIDEO_TYPES.includes(file.type);
+}
+
+function isImageFile(file: File) {
+  return ACCEPTED_IMAGE_TYPES.includes(file.type);
+}
+
 async function uploadToCloudinary(file: File): Promise<CloudinaryUploadResult> {
   const cloudinary = getCloudinary();
   const buffer = Buffer.from(await file.arrayBuffer());
+  const resourceType = isVideoFile(file) ? "video" : "image";
 
   const result = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         folder: "sai-brand/products",
-        resource_type: "image",
-        format: "webp",
+        resource_type: resourceType,
+        ...(resourceType === "image" ? { format: "webp" } : {}),
       },
       (error, uploaded) => {
         if (error || !uploaded) {
@@ -49,10 +66,11 @@ async function uploadToCloudinary(file: File): Promise<CloudinaryUploadResult> {
         resolve({
           secure_url: uploaded.secure_url,
           public_id: uploaded.public_id,
-          width: uploaded.width,
-          height: uploaded.height,
-          format: uploaded.format,
-          bytes: uploaded.bytes,
+          width: uploaded.width ?? 0,
+          height: uploaded.height ?? 0,
+          format: uploaded.format ?? "",
+          bytes: uploaded.bytes ?? 0,
+          resource_type: resourceType,
         });
       },
     );
@@ -101,34 +119,40 @@ export async function POST(request: NextRequest) {
 
   if (entries.length === 0) {
     return NextResponse.json(
-      { ok: false, error: "No image file provided." },
+      { ok: false, error: "No media file provided." },
       { status: 400 },
     );
   }
 
   if (entries.length > MAX_FILES) {
     return NextResponse.json(
-      { ok: false, error: `You can upload at most ${MAX_FILES} images.` },
+      { ok: false, error: `You can upload at most ${MAX_FILES} files.` },
       { status: 400 },
     );
   }
 
   for (const file of entries) {
-    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+    const isImage = isImageFile(file);
+    const isVideo = isVideoFile(file);
+
+    if (!isImage && !isVideo) {
       return NextResponse.json(
         {
           ok: false,
-          error: `Invalid file type: ${file.type || file.name}. Use JPEG, PNG, WebP, or GIF.`,
+          error: `Invalid file type: ${file.type || file.name}. Use JPEG, PNG, WebP, GIF, MP4, WebM, or MOV.`,
         },
         { status: 400 },
       );
     }
 
-    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+    const maxBytes = isVideo ? MAX_VIDEO_SIZE_BYTES : MAX_IMAGE_SIZE_BYTES;
+    if (file.size > maxBytes) {
       return NextResponse.json(
         {
           ok: false,
-          error: `File "${file.name}" exceeds the 4MB size limit.`,
+          error: isVideo
+            ? `Video "${file.name}" exceeds the 4MB server upload limit. Larger videos are uploaded directly to Cloudinary from the admin form.`
+            : `File "${file.name}" exceeds the 4MB size limit.`,
         },
         { status: 400 },
       );
@@ -138,12 +162,23 @@ export async function POST(request: NextRequest) {
   try {
     const uploads = await Promise.all(entries.map(uploadToCloudinary));
     const urls = uploads.map((upload) => upload.secure_url);
+    const images = uploads.filter((upload) => upload.resource_type === "image");
+    const videos = uploads.filter((upload) => upload.resource_type === "video");
 
     return NextResponse.json({
       ok: true,
       url: urls[0],
       urls,
-      images: uploads.map((upload) => ({
+      resourceType: uploads[0]?.resource_type ?? "image",
+      images: images.map((upload) => ({
+        url: upload.secure_url,
+        publicId: upload.public_id,
+        width: upload.width,
+        height: upload.height,
+        format: upload.format,
+        bytes: upload.bytes,
+      })),
+      videos: videos.map((upload) => ({
         url: upload.secure_url,
         publicId: upload.public_id,
         width: upload.width,
@@ -187,7 +222,7 @@ export async function POST(request: NextRequest) {
         ok: false,
         error: isPermissionError
           ? "Cloudinary API key is missing upload (create) permission. In Cloudinary Console → Settings → API Keys, use your Master/Root API key (or grant Upload/Create on this key), update .env.local, and restart the server."
-          : cloudinaryMessage || "Failed to upload image.",
+          : cloudinaryMessage || "Failed to upload media.",
       },
       { status: 500 },
     );

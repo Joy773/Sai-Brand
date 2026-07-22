@@ -11,6 +11,10 @@ import {
   LuShoppingCart,
 } from "react-icons/lu";
 import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
+import {
+  buildProductMedia,
+  getCartImageFromMedia,
+} from "@/app/lib/productMedia";
 import { showAddedToCartToast } from "@/app/lib/showAddedToCartToast";
 import { useCartStore } from "@/app/store/cart-store";
 
@@ -40,6 +44,7 @@ type StoreProduct = {
   size: string;
   image: string;
   images: string[];
+  videos?: string[];
   status: "in_stock" | "low_stock";
   details: StoreProductDetails;
 };
@@ -58,7 +63,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("keyBenefits");
-  const [activeImage, setActiveImage] = useState(0);
+  const [activeMedia, setActiveMedia] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -84,7 +89,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
 
         if (!cancelled) {
           setProduct(data.product);
-          setActiveImage(0);
+          setActiveMedia(0);
           setQuantity(1);
           setActiveTab("keyBenefits");
         }
@@ -120,14 +125,16 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
       return;
     }
 
-    const images =
-      product.images.length > 0 ? product.images : [product.image];
+    const media = buildProductMedia(
+      product.images.length > 0 ? product.images : [product.image],
+      product.videos ?? [],
+    );
 
     addItem({
       slug: product.slug,
       name: product.name,
       price: product.price,
-      image: images[activeImage] ?? product.image,
+      image: getCartImageFromMedia(media, activeMedia, product.image),
       quantity,
     });
     showAddedToCartToast(addedToCart);
@@ -162,8 +169,10 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
     );
   }
 
-  const images =
-    product.images.length > 0 ? product.images : [product.image || "/hero-img.png"];
+  const media = buildProductMedia(
+    product.images.length > 0 ? product.images : [product.image || "/hero-img.png"],
+    product.videos ?? [],
+  );
   const activeContent =
     activeTab === "keyBenefits"
       ? product.details.keyBenefits
@@ -182,35 +191,52 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
 
         <article className="mt-8 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:mt-10 lg:flex-row lg:items-start lg:overflow-visible">
           <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-[#F3E8DF] lg:sticky lg:top-8 lg:aspect-auto lg:h-[34rem] lg:w-1/2 lg:rounded-l-3xl">
-            {images.map((image, index) => (
-              <Image
-                key={`${product.id}-${image}-${index}`}
-                src={image}
-                alt={product.name}
-                fill
-                className={`object-contain object-center transition-opacity duration-500 ${
-                  activeImage === index
-                    ? "opacity-100"
-                    : "pointer-events-none opacity-0"
-                }`}
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                priority={index === 0}
-                unoptimized
-                aria-hidden={activeImage !== index}
-              />
-            ))}
+            {media.map((item, index) =>
+              item.type === "video" ? (
+                <video
+                  key={`${product.id}-video-${item.url}-${index}`}
+                  src={item.url}
+                  className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ${
+                    activeMedia === index
+                      ? "opacity-100"
+                      : "pointer-events-none opacity-0"
+                  }`}
+                  controls={activeMedia === index}
+                  playsInline
+                  muted
+                  loop
+                  aria-hidden={activeMedia !== index}
+                />
+              ) : (
+                <Image
+                  key={`${product.id}-image-${item.url}-${index}`}
+                  src={item.url}
+                  alt={product.name}
+                  fill
+                  className={`object-contain object-center transition-opacity duration-500 ${
+                    activeMedia === index
+                      ? "opacity-100"
+                      : "pointer-events-none opacity-0"
+                  }`}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority={index === 0}
+                  unoptimized
+                  aria-hidden={activeMedia !== index}
+                />
+              ),
+            )}
 
-            {images.length > 1 ? (
+            {media.length > 1 ? (
               <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center gap-2">
-                {images.map((image, index) => (
+                {media.map((item, index) => (
                   <button
-                    key={`${product.id}-dot-${image}-${index}`}
+                    key={`${product.id}-dot-${item.type}-${item.url}-${index}`}
                     type="button"
-                    onClick={() => setActiveImage(index)}
-                    aria-label={`Show image ${index + 1}`}
-                    aria-current={activeImage === index ? "true" : undefined}
+                    onClick={() => setActiveMedia(index)}
+                    aria-label={`Show media ${index + 1}`}
+                    aria-current={activeMedia === index ? "true" : undefined}
                     className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                      activeImage === index
+                      activeMedia === index
                         ? "bg-dark-green"
                         : "bg-dark-green/30 hover:bg-dark-green/50"
                     }`}

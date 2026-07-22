@@ -22,6 +22,7 @@ type AdminProduct = {
   sizeMl?: number | null;
   kitSize?: string;
   images: string[];
+  videos: string[];
   status: ProductStatus;
   translations: {
     en: ProductLocaleContent;
@@ -62,6 +63,7 @@ function toFormValues(product: AdminProduct): NewProductInput {
       (product.productType === "kit" ? product.size : ""),
     status: product.status,
     images: product.images ?? [],
+    videos: product.videos ?? [],
   };
 }
 

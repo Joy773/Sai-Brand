@@ -6,6 +6,10 @@ import { useEffect, useState } from "react";
 import { LuShoppingCart } from "react-icons/lu";
 import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
 import ProductTags from "@/app/components/ProductTags";
+import {
+  buildProductMedia,
+  getCartImageFromMedia,
+} from "@/app/lib/productMedia";
 import { showAddedToCartToast } from "@/app/lib/showAddedToCartToast";
 import { useCartStore } from "@/app/store/cart-store";
 
@@ -19,6 +23,7 @@ type StoreProduct = {
   size: string;
   image: string;
   images: string[];
+  videos?: string[];
   status: "in_stock" | "low_stock";
 };
 
@@ -81,46 +86,65 @@ function KitCard({
   };
   onAddToCart: (product: StoreProduct, image: string) => void;
 }) {
-  const [activeImage, setActiveImage] = useState(0);
-  const images =
-    product.images.length > 0 ? product.images : [product.image || "/hero-img.png"];
+  const [activeMedia, setActiveMedia] = useState(0);
+  const media = buildProductMedia(
+    product.images.length > 0 ? product.images : [product.image || "/hero-img.png"],
+    product.videos ?? [],
+  );
 
   return (
     <article
       className={`group mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row lg:items-center ${cardHover} hover:shadow-dark-green/10`}
     >
       <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 lg:w-1/2">
-        {images.map((image, index) => (
-          <Image
-            key={`${product.id}-${image}-${index}`}
-            src={image}
-            alt={labels.imageAlt.replace("{index}", String(index + 1))}
-            fill
-            className={`object-cover object-center ${imageHover} transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
-              activeImage === index
-                ? "opacity-100"
-                : "pointer-events-none opacity-0"
-            }`}
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            unoptimized
-            aria-hidden={activeImage !== index}
-          />
-        ))}
+        {media.map((item, index) =>
+          item.type === "video" ? (
+            <video
+              key={`${product.id}-video-${item.url}-${index}`}
+              src={item.url}
+              className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
+                activeMedia === index
+                  ? "opacity-100"
+                  : "pointer-events-none opacity-0"
+              }`}
+              controls={activeMedia === index}
+              muted
+              playsInline
+              loop
+              aria-hidden={activeMedia !== index}
+            />
+          ) : (
+            <Image
+              key={`${product.id}-image-${item.url}-${index}`}
+              src={item.url}
+              alt={labels.imageAlt.replace("{index}", String(index + 1))}
+              fill
+              className={`object-cover object-center ${imageHover} transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
+                activeMedia === index
+                  ? "opacity-100"
+                  : "pointer-events-none opacity-0"
+              }`}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              unoptimized
+              aria-hidden={activeMedia !== index}
+            />
+          ),
+        )}
 
-        {images.length > 1 ? (
+        {media.length > 1 ? (
           <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-2 sm:bottom-4">
-            {images.map((image, index) => (
+            {media.map((item, index) => (
               <button
-                key={`${product.id}-dot-${image}-${index}`}
+                key={`${product.id}-dot-${item.type}-${item.url}-${index}`}
                 type="button"
-                onClick={() => setActiveImage(index)}
+                onClick={() => setActiveMedia(index)}
                 aria-label={labels.showImageLabel.replace(
                   "{index}",
                   String(index + 1),
                 )}
-                aria-current={activeImage === index ? "true" : undefined}
+                aria-current={activeMedia === index ? "true" : undefined}
                 className={`h-2.5 w-2.5 rounded-full transition-colors duration-300 sm:h-3 sm:w-3 ${
-                  activeImage === index
+                  activeMedia === index
                     ? "bg-dark-green"
                     : "bg-dark-green/30 hover:bg-dark-green/50"
                 }`}
@@ -171,7 +195,10 @@ function KitCard({
               <button
                 type="button"
                 onClick={() =>
-                  onAddToCart(product, images[activeImage] ?? product.image)
+                  onAddToCart(
+                    product,
+                    getCartImageFromMedia(media, activeMedia, product.image),
+                  )
                 }
                 className={addToCartButton}
               >
@@ -180,6 +207,144 @@ function KitCard({
                 <span className="hidden sm:inline">{labels.addToCart}</span>
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function SingleProductCard({
+  product,
+  labels,
+  onAddToCart,
+}: {
+  product: StoreProduct;
+  labels: {
+    moreInfo: string;
+    addToCart: string;
+    addToCartShort: string;
+    showImageLabel: string;
+    inStock: string;
+    lowStock: string;
+  };
+  onAddToCart: (product: StoreProduct, image: string) => void;
+}) {
+  const [activeMedia, setActiveMedia] = useState(0);
+  const media = buildProductMedia(
+    product.images.length > 0
+      ? product.images
+      : [product.image || "/hero-img.png"],
+    product.videos ?? [],
+  );
+
+  return (
+    <article
+      className={`group flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:flex-row sm:items-start sm:rounded-3xl ${cardHover} hover:shadow-dark-green/10`}
+    >
+      <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-white sm:w-52 sm:max-w-[48%] lg:w-64 lg:max-w-[17rem]">
+        {media.map((item, index) =>
+          item.type === "video" ? (
+            <video
+              key={`${product.id}-video-${item.url}-${index}`}
+              src={item.url}
+              className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
+                activeMedia === index
+                  ? "opacity-100"
+                  : "pointer-events-none opacity-0"
+              }`}
+              controls={activeMedia === index}
+              muted
+              playsInline
+              loop
+              aria-hidden={activeMedia !== index}
+            />
+          ) : (
+            <Image
+              key={`${product.id}-image-${item.url}-${index}`}
+              src={item.url}
+              alt={product.name}
+              fill
+              className={`object-contain object-center ${imageHover} transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
+                activeMedia === index
+                  ? "opacity-100"
+                  : "pointer-events-none opacity-0"
+              }`}
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 208px, 256px"
+              unoptimized
+              aria-hidden={activeMedia !== index}
+            />
+          ),
+        )}
+
+        {media.length > 1 ? (
+          <div className="absolute inset-x-0 bottom-2 z-10 flex justify-center gap-1.5 sm:bottom-3">
+            {media.map((item, index) => (
+              <button
+                key={`${product.id}-dot-${item.type}-${item.url}-${index}`}
+                type="button"
+                onClick={() => setActiveMedia(index)}
+                aria-label={labels.showImageLabel.replace(
+                  "{index}",
+                  String(index + 1),
+                )}
+                aria-current={activeMedia === index ? "true" : undefined}
+                className={`h-2 w-2 rounded-full transition-colors duration-300 sm:h-2.5 sm:w-2.5 ${
+                  activeMedia === index
+                    ? "bg-dark-green"
+                    : "bg-dark-green/30 hover:bg-dark-green/50"
+                }`}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:p-4 lg:gap-5 lg:p-6">
+        <div className="min-w-0">
+          <Link href={`/${product.slug}`}>
+            <h3 className="line-clamp-2 text-sm font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-base lg:text-xl">
+              {product.name}
+            </h3>
+          </Link>
+          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm">
+            {product.description}
+          </p>
+          {product.size ? <ProductTags tags={[product.size]} /> : null}
+          <StockStatus
+            status={product.status ?? "in_stock"}
+            inStockLabel={labels.inStock}
+            lowStockLabel={labels.lowStock}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
+          <p className="text-sm font-bold text-dark-green sm:text-base lg:text-lg">
+            {product.price}
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            <Link href={`/${product.slug}`} className={productMoreInfoButton}>
+              {labels.moreInfo}
+              <span className="sr-only"> – {product.name}</span>
+            </Link>
+            <button
+              type="button"
+              onClick={() =>
+                onAddToCart(
+                  product,
+                  getCartImageFromMedia(media, activeMedia, product.image),
+                )
+              }
+              className={productAddToCartButton}
+            >
+              <LuShoppingCart
+                className="h-3 w-3 sm:h-3.5 sm:w-3.5"
+                aria-hidden
+              />
+              <span className="sm:hidden">{labels.addToCartShort}</span>
+              <span className="hidden sm:inline">{labels.addToCart}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -317,73 +482,19 @@ export default function Products() {
         {!isLoading && !error && singles.length > 0 ? (
           <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
             {singles.map((product) => (
-              <article
+              <SingleProductCard
                 key={product.id}
-                className={`group flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:flex-row sm:items-stretch sm:rounded-3xl ${cardHover} hover:shadow-dark-green/10`}
-              >
-                <Link
-                  href={`/${product.slug}`}
-                  className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-warm-white sm:aspect-auto sm:w-52 sm:max-w-[48%] sm:self-stretch lg:w-64 lg:max-w-[17rem]"
-                >
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className={`object-contain object-center ${imageHover}`}
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 208px, 256px"
-                    unoptimized
-                  />
-                </Link>
-
-                <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:py-4 sm:pe-4 sm:ps-0 lg:py-6 lg:pe-6">
-                  <div className="min-w-0">
-                    <Link href={`/${product.slug}`}>
-                      <h3 className="line-clamp-2 text-sm font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-base lg:text-xl">
-                        {product.name}
-                      </h3>
-                    </Link>
-                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm">
-                      {product.description}
-                    </p>
-                    {product.size ? (
-                      <ProductTags tags={[product.size]} />
-                    ) : null}
-                    <StockStatus
-                      status={product.status ?? "in_stock"}
-                      inStockLabel={inStock}
-                      lowStockLabel={lowStock}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
-                    <p className="text-sm font-bold text-dark-green sm:text-base lg:text-lg">
-                      {product.price}
-                    </p>
-
-                    <div className="flex flex-wrap gap-2">
-                      <Link
-                        href={`/${product.slug}`}
-                        className={productMoreInfoButton}
-                      >
-                        {moreInfo}
-                        <span className="sr-only"> – {product.name}</span>
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleAddToCart(product)}
-                        className={productAddToCartButton}
-                      >
-                        <LuShoppingCart
-                          className="h-3 w-3 sm:h-3.5 sm:w-3.5"
-                          aria-hidden
-                        />
-                        <span className="sm:hidden">{addToCartShort}</span>
-                        <span className="hidden sm:inline">{addToCart}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </article>
+                product={product}
+                labels={{
+                  moreInfo,
+                  addToCart,
+                  addToCartShort,
+                  showImageLabel: kit.showImageLabel,
+                  inStock,
+                  lowStock,
+                }}
+                onAddToCart={handleAddToCart}
+              />
             ))}
           </div>
         ) : null}

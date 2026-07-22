@@ -2,7 +2,7 @@
 
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { LuImagePlus, LuX } from "react-icons/lu";
+import { LuImagePlus, LuVideo, LuX } from "react-icons/lu";
 import { toast } from "sonner";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 
@@ -31,6 +31,7 @@ export type NewProductInput = {
   kitSize: string;
   status: ProductStatus;
   images: string[];
+  videos: string[];
 };
 
 type AddProductModalProps = {
@@ -62,15 +63,24 @@ const initialFormState: FormState = {
   kitSize: "",
   status: "in_stock",
   images: [],
+  videos: [],
 };
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_VIDEO_SIZE_BYTES = 100 * 1024 * 1024;
 const MAX_IMAGES = 10;
+const MAX_VIDEOS = 5;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/gif",
+];
+const ACCEPTED_VIDEO_TYPES = [
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+  "video/x-msvideo",
 ];
 
 type LocaleFieldKey =
@@ -162,6 +172,75 @@ async function uploadImageFile(file: File): Promise<string> {
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
       throw new Error("Image upload timed out. Please try again.");
+    }
+
+    throw error;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
+async function uploadVideoFile(file: File): Promise<string> {
+  if (file.size > MAX_VIDEO_SIZE_BYTES) {
+    throw new Error("Video is too large. Please use a file under 100MB.");
+  }
+
+  const signResponse = await fetch("/api/upload/sign", { method: "POST" });
+  const signData = (await signResponse.json()) as {
+    ok?: boolean;
+    error?: string;
+    cloudName?: string;
+    apiKey?: string;
+    timestamp?: number;
+    folder?: string;
+    signature?: string;
+    uploadUrl?: string;
+  };
+
+  if (
+    !signResponse.ok ||
+    !signData.ok ||
+    !signData.uploadUrl ||
+    !signData.apiKey ||
+    !signData.timestamp ||
+    !signData.folder ||
+    !signData.signature
+  ) {
+    throw new Error(signData.error ?? "Failed to prepare video upload.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("api_key", signData.apiKey);
+  formData.append("timestamp", String(signData.timestamp));
+  formData.append("folder", signData.folder);
+  formData.append("signature", signData.signature);
+
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 300_000);
+
+  try {
+    const response = await fetch(signData.uploadUrl, {
+      method: "POST",
+      body: formData,
+      signal: controller.signal,
+    });
+
+    const data = (await response.json()) as {
+      secure_url?: string;
+      error?: { message?: string };
+    };
+
+    if (!response.ok || !data.secure_url) {
+      throw new Error(
+        data.error?.message ?? "Failed to upload video to Cloudinary.",
+      );
+    }
+
+    return data.secure_url;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("Video upload timed out. Please try again.");
     }
 
     throw error;
@@ -298,10 +377,13 @@ export default function AddProductModal({
 }: AddProductModalProps) {
   const modal = useMessages().adminPanel.addProductModal;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const uploadRequestIdRef = useRef(0);
+  const videoUploadRequestIdRef = useRef(0);
   const [form, setForm] = useState<FormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [isUploadingVideos, setIsUploadingVideos] = useState(false);
   const isEditMode = mode === "edit";
 
   useEffect(() => {
@@ -319,19 +401,32 @@ export default function AddProductModal({
   useEffect(() => {
     if (!isOpen) {
       uploadRequestIdRef.current += 1;
+      videoUploadRequestIdRef.current += 1;
       setForm(initialFormState);
       setIsSubmitting(false);
       setIsUploadingImages(false);
+      setIsUploadingVideos(false);
 
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
+      if (videoInputRef.current) {
+        videoInputRef.current.value = "";
+      }
       return;
     }
 
-    setForm(initialValues ?? initialFormState);
+    setForm(
+      initialValues
+        ? {
+            ...initialValues,
+            videos: initialValues.videos ?? [],
+          }
+        : initialFormState,
+    );
     setIsSubmitting(false);
     setIsUploadingImages(false);
+    setIsUploadingVideos(false);
   }, [isOpen, initialValues]);
 
   if (!isOpen) {
@@ -455,6 +550,94 @@ export default function AddProductModal({
     setForm((prev) => ({
       ...prev,
       images: prev.images.filter((_, imageIndex) => imageIndex !== index),
+    }));
+  };
+
+  const handleChooseVideo = () => {
+    videoInputRef.current?.click();
+  };
+
+  const handleVideoChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+    event.target.value = "";
+
+    if (files.length === 0 || isUploadingVideos) {
+      return;
+    }
+
+    const remainingSlots = MAX_VIDEOS - form.videos.length;
+    if (remainingSlots <= 0) {
+      toast.error(modal.videoMaxCount.replace("{count}", String(MAX_VIDEOS)));
+      return;
+    }
+
+    const filesToProcess = files.slice(0, remainingSlots);
+    if (files.length > remainingSlots) {
+      toast.error(modal.videoMaxCount.replace("{count}", String(MAX_VIDEOS)));
+    }
+
+    const validFiles: File[] = [];
+
+    for (const file of filesToProcess) {
+      if (!ACCEPTED_VIDEO_TYPES.includes(file.type)) {
+        toast.error(modal.videoInvalidType);
+        continue;
+      }
+
+      if (file.size > MAX_VIDEO_SIZE_BYTES) {
+        toast.error(modal.videoTooLarge);
+        continue;
+      }
+
+      validFiles.push(file);
+    }
+
+    if (validFiles.length === 0) {
+      return;
+    }
+
+    const requestId = ++videoUploadRequestIdRef.current;
+    setIsUploadingVideos(true);
+
+    const newVideos: string[] = [];
+
+    try {
+      for (const file of validFiles) {
+        if (videoUploadRequestIdRef.current !== requestId) {
+          return;
+        }
+
+        try {
+          const videoUrl = await uploadVideoFile(file);
+          newVideos.push(videoUrl);
+        } catch (error) {
+          toast.error(
+            error instanceof Error ? error.message : modal.videoUploadError,
+          );
+        }
+      }
+
+      if (videoUploadRequestIdRef.current !== requestId) {
+        return;
+      }
+
+      if (newVideos.length > 0) {
+        setForm((prev) => ({
+          ...prev,
+          videos: [...prev.videos, ...newVideos],
+        }));
+      }
+    } finally {
+      if (videoUploadRequestIdRef.current === requestId) {
+        setIsUploadingVideos(false);
+      }
+    }
+  };
+
+  const handleRemoveVideo = (index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      videos: prev.videos.filter((_, videoIndex) => videoIndex !== index),
     }));
   };
 
@@ -694,6 +877,88 @@ export default function AddProductModal({
             </div>
           </div>
 
+          <div className="block">
+            <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+              {modal.videoLabel}
+            </span>
+            <div className="rounded-xl border border-dashed border-beige bg-warm-white/60 p-4">
+              {form.videos.length > 0 ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {form.videos.map((video, index) => (
+                      <div
+                        key={`${video.slice(0, 32)}-${index}`}
+                        className="group relative aspect-video overflow-hidden rounded-xl border border-beige bg-beige/30"
+                      >
+                        <video
+                          src={video}
+                          className="h-full w-full object-cover"
+                          muted
+                          playsInline
+                          preload="metadata"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveVideo(index)}
+                          className="absolute end-1.5 top-1.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-warm-white/95 text-dark-green/80 shadow-sm transition-colors hover:bg-red-50 hover:text-red-600"
+                          aria-label={`${modal.removeVideo} ${index + 1}`}
+                        >
+                          <LuX className="h-4 w-4" aria-hidden />
+                        </button>
+                      </div>
+                    ))}
+                    {form.videos.length < MAX_VIDEOS ? (
+                      <button
+                        type="button"
+                        onClick={handleChooseVideo}
+                        disabled={isUploadingVideos}
+                        className="flex aspect-video flex-col items-center justify-center gap-1 rounded-xl border border-beige bg-warm-white text-dark-green/70 transition-colors hover:border-gold hover:bg-beige/20 hover:text-dark-green disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <LuVideo className="h-6 w-6" aria-hidden />
+                        <span className="px-1 text-center text-[10px] font-semibold leading-tight text-dark-green sm:text-xs">
+                          {isUploadingVideos
+                            ? modal.videoUploading
+                            : modal.addMoreVideos}
+                        </span>
+                      </button>
+                    ) : null}
+                  </div>
+                  <p className="text-xs text-dark-green/60">
+                    {modal.videoCount
+                      .replace("{current}", String(form.videos.length))
+                      .replace("{max}", String(MAX_VIDEOS))}
+                  </p>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleChooseVideo}
+                  disabled={isUploadingVideos}
+                  className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-beige bg-warm-white px-4 py-8 text-dark-green/70 transition-colors hover:border-gold hover:bg-beige/20 hover:text-dark-green disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <LuVideo className="h-8 w-8" aria-hidden />
+                  <span className="text-sm font-semibold text-dark-green">
+                    {isUploadingVideos
+                      ? modal.videoUploading
+                      : modal.chooseVideo}
+                  </span>
+                </button>
+              )}
+              <p className="mt-3 text-xs leading-relaxed text-dark-green/60">
+                {modal.videoHint}
+              </p>
+              <input
+                ref={videoInputRef}
+                type="file"
+                accept="video/mp4,video/webm,video/quicktime,video/x-msvideo"
+                multiple
+                onChange={(event) => void handleVideoChange(event)}
+                disabled={isUploadingVideos}
+                className="hidden"
+              />
+            </div>
+          </div>
+
           <div
             className={`grid gap-4 ${form.productType === "single" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
           >
@@ -772,7 +1037,7 @@ export default function AddProductModal({
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploadingImages || isUploadingVideos}
             className="mt-2 w-full rounded-full bg-dark-green px-5 py-2.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isEditMode ? modal.updateLabel : modal.submitLabel}

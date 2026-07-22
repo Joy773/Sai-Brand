@@ -74,6 +74,10 @@ const productSchema = new mongoose.Schema(
       type: [String],
       default: ["/hero-img.png"],
     },
+    videos: {
+      type: [String],
+      default: [],
+    },
     translations: {
       en: {
         type: productLocaleSchema,
@@ -98,6 +102,18 @@ export type ProductLocaleDocument = InferSchemaType<typeof productLocaleSchema>;
 export type ProductDocument = InferSchemaType<typeof productSchema> & {
   _id: mongoose.Types.ObjectId;
 };
+
+const existingProductModel = mongoose.models.Product as
+  | Model<ProductDocument>
+  | undefined;
+
+// Next.js HMR can keep a Product model compiled before `videos` existed.
+// Without this, saves silently drop videos under mongoose strict mode,
+// and GET responses omit videos even when they exist in MongoDB.
+if (existingProductModel && !existingProductModel.schema.path("videos")) {
+  delete mongoose.models.Product;
+  delete mongoose.connection.models.Product;
+}
 
 const Product =
   (mongoose.models.Product as Model<ProductDocument> | undefined) ??
