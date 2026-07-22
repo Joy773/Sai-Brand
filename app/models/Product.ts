@@ -112,7 +112,6 @@ const existingProductModel = mongoose.models.Product as
 // and GET responses omit videos even when they exist in MongoDB.
 if (existingProductModel && !existingProductModel.schema.path("videos")) {
   delete mongoose.models.Product;
-  delete mongoose.connection.models.Product;
 }
 
 const Product =
