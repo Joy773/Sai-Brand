@@ -19,7 +19,7 @@ import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
 
 const MAX_QUANTITY = 20;
 
-type PaymentType = "cod" | "online" | "paypal";
+type PaymentType = "online" | "paypal";
 
 type ShippingCountry = {
   id: string;
@@ -108,14 +108,12 @@ function CartContent() {
     phoneNumber,
     requiredField,
     paymentMethod,
-    cashOnDelivery,
     onlinePayment,
     onlinePaymentPaypal,
     price: priceLabel,
     shippingFee,
     free,
     totalAmount,
-    placeOrder,
     continueToPayment,
     orderPlaced,
     completeDeliveryAddress,
@@ -135,9 +133,8 @@ function CartContent() {
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<AddressField, string>>
   >({});
-  const [paymentType, setPaymentType] = useState<PaymentType>("cod");
+  const [paymentType, setPaymentType] = useState<PaymentType>("online");
   const [addressError, setAddressError] = useState<string | null>(null);
-  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
@@ -437,7 +434,12 @@ function CartContent() {
 
     setAddressError(null);
 
-    if (items.length === 0 || isPlacingOrder) {
+    if (items.length === 0) {
+      return;
+    }
+
+    // Stripe only prepares a checkout draft. The order is saved after payment.
+    if (paymentType !== "online") {
       return;
     }
 
@@ -446,84 +448,24 @@ function CartContent() {
       selectedCountryLabel,
     );
 
-    // Online: only prepare checkout draft. Order is saved after Stripe payment.
-    if (paymentType === "online") {
-      sessionStorage.setItem(
-        CHECKOUT_ADDRESS_KEY,
-        JSON.stringify({
-          firstName: addressForm.firstName.trim(),
-          lastName: addressForm.lastName.trim(),
-          streetAddress: addressForm.streetAddress.trim(),
-          country: selectedCountryLabel,
-          stateProvince: addressForm.stateProvince.trim(),
-          city: addressForm.city.trim(),
-          zipPostalCode: addressForm.zipPostalCode.trim(),
-          phoneNumber: addressForm.phoneNumber.trim(),
-          address: formattedAddress,
-          price: subtotal,
-          shippingFee: shippingFeeAmount,
-          total: orderTotal,
-        }),
-      );
-      router.push("/checkout");
-      return;
-    }
-
-    setIsPlacingOrder(true);
-
-    try {
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: addressForm.firstName.trim(),
-          lastName: addressForm.lastName.trim(),
-          streetAddress: addressForm.streetAddress.trim(),
-          country: selectedCountryLabel,
-          stateProvince: addressForm.stateProvince.trim(),
-          city: addressForm.city.trim(),
-          zipPostalCode: addressForm.zipPostalCode.trim(),
-          phoneNumber: addressForm.phoneNumber.trim(),
-          address: formattedAddress,
-          paymentMethod: "cod",
-          paymentStatus: "pending",
-          price: subtotal,
-          shippingFee: shippingFeeAmount,
-          total: orderTotal,
-          products: items.map((item) => ({
-            slug: item.slug,
-            name: item.name,
-            price: item.price,
-            image: item.image,
-            quantity: item.quantity,
-          })),
-        }),
-      });
-
-      const data = (await response.json()) as {
-        ok?: boolean;
-        error?: string;
-      };
-
-      if (!response.ok || !data.ok) {
-        throw new Error(data.error ?? orderFailed);
-      }
-
-      clearCart();
-      setHasSavedAddress(true);
-      setIsEditingAddress(false);
-      toast.success(orderPlaced);
-    } catch (placeOrderError) {
-      toast.error(
-        placeOrderError instanceof Error
-          ? placeOrderError.message
-          : orderFailed,
-      );
-    } finally {
-      setIsPlacingOrder(false);
-    }
+    sessionStorage.setItem(
+      CHECKOUT_ADDRESS_KEY,
+      JSON.stringify({
+        firstName: addressForm.firstName.trim(),
+        lastName: addressForm.lastName.trim(),
+        streetAddress: addressForm.streetAddress.trim(),
+        country: selectedCountryLabel,
+        stateProvince: addressForm.stateProvince.trim(),
+        city: addressForm.city.trim(),
+        zipPostalCode: addressForm.zipPostalCode.trim(),
+        phoneNumber: addressForm.phoneNumber.trim(),
+        address: formattedAddress,
+        price: subtotal,
+        shippingFee: shippingFeeAmount,
+        total: orderTotal,
+      }),
+    );
+    router.push("/checkout");
   };
 
   const fieldClassName = (field: AddressField) =>
@@ -928,7 +870,6 @@ function CartContent() {
                     className="mt-2 w-full rounded-md border border-beige bg-warm-white px-3 py-2.5 text-sm text-dark-green outline-none focus:border-dark-green"
                     aria-label={paymentMethod}
                   >
-                    <option value="cod">{cashOnDelivery}</option>
                     <option value="online">{onlinePayment}</option>
                     <option value="paypal">{onlinePaymentPaypal}</option>
                   </select>
@@ -1023,17 +964,11 @@ function CartContent() {
                     type="button"
                     onClick={() => void handlePlaceOrder()}
                     disabled={
-                      isPlacingOrder ||
-                      isLoadingCountries ||
-                      shippingCountries.length === 0
+                      isLoadingCountries || shippingCountries.length === 0
                     }
                     className="mt-6 w-full rounded-md bg-dark-green px-4 py-3.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {isPlacingOrder
-                      ? placeOrder
-                      : paymentType === "online"
-                        ? continueToPayment
-                        : placeOrder}
+                    {continueToPayment}
                   </button>
                 )}
                 {addressError ? (

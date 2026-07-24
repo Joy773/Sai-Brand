@@ -410,8 +410,7 @@
       "OTHER": "Other"
     },
     "paymentMethod": "Payment Method",
-    "cashOnDelivery": "Cash On Delivery (COD)",
-    "onlinePayment": "Online Payment - Stripe",
+    "onlinePayment": "Credit Card Payment",
     "onlinePaymentPaypal": "Online Payment - Paypal",
     "shippingFee": "Shipping Fee",
     "free": "Free",
@@ -1705,7 +1704,7 @@
       "phoneNumber": "Phone Number",
       "paymentMethod": "Payment Method",
       "paymentCod": "Cash On Delivery (COD)",
-      "paymentOnline": "Online Payment - Stripe",
+      "paymentOnline": "Credit Card Payment",
       "paymentPaypal": "Online Payment - Paypal",
       "paymentStatus": "Payment Status",
       "paymentPending": "Pending",

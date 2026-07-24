@@ -107,7 +107,7 @@ export default function AdminOrdersPage() {
             city: order.city ?? "",
             zipPostalCode: order.zipPostalCode ?? "",
             phoneNumber: order.phoneNumber ?? "",
-            paymentMethod: order.paymentMethod ?? "cod",
+            paymentMethod: order.paymentMethod ?? "online",
             paymentStatus: order.paymentStatus ?? "pending",
             price: order.price ?? order.total,
             shippingFee: order.shippingFee ?? 0,

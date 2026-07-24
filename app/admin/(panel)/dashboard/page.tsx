@@ -74,9 +74,8 @@ export default function AdminDashboardPage() {
             (order.paymentMethod === "online" ||
               order.paymentMethod === "paypal") &&
             order.paymentStatus === "paid";
-          const isCod = order.paymentMethod === "cod";
 
-          if (!isPaidOnline && !isCod) {
+          if (!isPaidOnline) {
             return sum;
           }
 

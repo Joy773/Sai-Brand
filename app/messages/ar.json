@@ -412,8 +412,7 @@
       "OTHER": "أخرى"
     },
     "paymentMethod": "طريقة الدفع",
-    "cashOnDelivery": "الدفع عند الاستلام",
-    "onlinePayment": "الدفع الإلكتروني - Stripe",
+    "onlinePayment": "الدفع ببطاقة الائتمان",
     "onlinePaymentPaypal": "الدفع الإلكتروني - Paypal",
     "shippingFee": "رسوم الشحن",
     "free": "مجاني",
@@ -1707,7 +1706,7 @@
       "phoneNumber": "رقم الهاتف",
       "paymentMethod": "طريقة الدفع",
       "paymentCod": "الدفع عند الاستلام",
-      "paymentOnline": "الدفع الإلكتروني - Stripe",
+      "paymentOnline": "الدفع ببطاقة الائتمان",
       "paymentPaypal": "الدفع الإلكتروني - Paypal",
       "paymentStatus": "حالة الدفع",
       "paymentPending": "قيد الانتظار",

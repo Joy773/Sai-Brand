@@ -410,8 +410,7 @@
       "OTHER": "Sonstiges"
     },
     "paymentMethod": "Zahlungsmethode",
-    "cashOnDelivery": "Nachnahme (COD)",
-    "onlinePayment": "Online-Zahlung - Stripe",
+    "onlinePayment": "Kreditkartenzahlung",
     "onlinePaymentPaypal": "Online-Zahlung - Paypal",
     "shippingFee": "Versandkosten",
     "free": "Kostenlos",
@@ -1705,7 +1704,7 @@
       "phoneNumber": "Telefonnummer",
       "paymentMethod": "Zahlungsmethode",
       "paymentCod": "Nachnahme (COD)",
-      "paymentOnline": "Online-Zahlung - Stripe",
+      "paymentOnline": "Kreditkartenzahlung",
       "paymentPaypal": "Online-Zahlung - Paypal",
       "paymentStatus": "Zahlungsstatus",
       "paymentPending": "Ausstehend",
