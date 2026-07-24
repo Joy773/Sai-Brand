@@ -1549,8 +1549,9 @@
     "confirmPasswordPlaceholder": "Passwort erneut eingeben",
     "submitLabel": "Konto erstellen",
     "close": "Schließen",
-    "successMessage": "Konto erfolgreich erstellt.",
+    "successMessage": "Konto erfolgreich erstellt. Bitte prüfen Sie Ihre E-Mail für den Bestätigungslink.",
     "errorMessage": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "verificationEmailFailed": "Konto erstellt, aber die Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte kontaktieren Sie den Support, falls Sie einen neuen Link benötigen.",
     "passwordMismatch": "Die Passwörter stimmen nicht überein."
   },
   "signInModal": {
@@ -1566,13 +1567,44 @@
     "close": "Schließen",
     "successMessage": "Erfolgreich angemeldet.",
     "errorMessage": "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut.",
-    "emailNotVerified": "Bitte bestaetigen Sie zuerst Ihre E-Mail-Adresse. Ein Bestaetigungslink wurde an Ihr Postfach gesendet."
+    "emailNotVerified": "Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse. Prüfen Sie Ihr Postfach auf den Bestätigungslink, der bei der Registrierung gesendet wurde.",
+    "forgotPasswordLink": "Passwort vergessen"
+  },
+  "forgotPasswordModal": {
+    "_comment": "Passwort-vergessen-Modal — verwendet in app/components/ForgotPasswordModal.tsx",
+    "title": "Passwort vergessen?",
+    "subtitleBefore": "Passwort wieder eingefallen?",
+    "signInLink": "Anmelden",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "E-Mail eingeben",
+    "submitLabel": "Reset-Link senden",
+    "close": "Schließen",
+    "successMessage": "Wenn ein Konto mit dieser E-Mail existiert, wurde ein Reset-Link gesendet.",
+    "errorMessage": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+  },
+  "resetPassword": {
+    "_comment": "Passwort-zurücksetzen-Seite — verwendet in app/reset-password/[token]",
+    "title": "Passwort zurücksetzen",
+    "subtitle": "Wählen Sie ein neues Passwort für Ihr Konto.",
+    "passwordLabel": "Neues Passwort",
+    "passwordPlaceholder": "Mindestens 8 Zeichen",
+    "confirmPasswordLabel": "Passwort bestätigen",
+    "confirmPasswordPlaceholder": "Passwort erneut eingeben",
+    "submitLabel": "Passwort aktualisieren",
+    "successMessage": "Passwort erfolgreich aktualisiert. Bitte melden Sie sich an.",
+    "errorMessage": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+    "invalidTitle": "Ungültiger oder abgelaufener Link",
+    "invalidDescription": "Dieser Passwort-Reset-Link ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.",
+    "backToSignIn": "Zur Anmeldung"
   },
   "verifyEmail": {
     "_comment": "E-Mail-Bestaetigungsseite",
     "successTitle": "E-Mail erfolgreich bestaetigt!",
     "successDescription": "Sie werden automatisch angemeldet. Diese Seite schliesst in wenigen Sekunden.",
+    "handoffDescription": "Sie sind in dem Tab angemeldet, in dem Sie Ihr Konto erstellt haben. Sie können diesen Tab schliessen.",
     "redirecting": "Anmeldung laeuft…",
+    "continueInOtherTab": "Weiter im anderen Tab…",
     "loginSuccess": "Anmeldung erfolgreich",
     "loginFailed": "E-Mail bestaetigt, aber die automatische Anmeldung ist fehlgeschlagen. Bitte melden Sie sich manuell an.",
     "invalidTitle": "Ungueltiger oder abgelaufener Link",

@@ -1,13 +1,8 @@
 "use client";
 
-import emailjs from "@emailjs/browser";
 import { FormEvent, useState } from "react";
 import { LuCheck, LuMail, LuMapPin } from "react-icons/lu";
 import { useMessages } from "@/app/i18n/LocaleProvider";
-
-const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
 type FormState = {
   firstName: string;
@@ -84,41 +79,35 @@ export default function ContactForm() {
       return;
     }
 
-    if (!serviceId || !templateId || !publicKey) {
-      setStatus("error");
-      setStatusMessage(errorMessage);
-      return;
-    }
-
-    const inquiryLabel =
+    const inquiryOptionLabel =
       inquiryOptions.find((option) => option.id === form.inquiryType)?.label ??
       form.inquiryType;
-    const fullName = `${form.firstName} ${form.lastName}`.trim();
-    const submittedAt = new Date().toLocaleString();
-    const messageBody = [
-      form.message,
-      "",
-      `Phone: ${form.phone || "N/A"}`,
-      `Inquiry: ${inquiryLabel}`,
-    ].join("\n");
 
     try {
       setIsSubmitting(true);
       setStatus("idle");
       setStatusMessage(null);
 
-      await emailjs.send(
-        serviceId,
-        templateId,
-        {
-          from_name: fullName || form.firstName,
-          from_email: form.email,
-          message: messageBody,
-          name: fullName || form.firstName,
-          time: submittedAt,
-        },
-        { publicKey },
-      );
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          phone: form.phone,
+          inquiryType: inquiryOptionLabel,
+          message: form.message,
+        }),
+      });
+
+      const data = (await response.json()) as { ok?: boolean; error?: string };
+
+      if (!response.ok || !data.ok) {
+        setStatus("error");
+        setStatusMessage(data.error ?? errorMessage);
+        return;
+      }
 
       setForm({
         ...initialFormState,

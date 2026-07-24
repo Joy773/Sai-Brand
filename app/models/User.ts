@@ -80,6 +80,12 @@ const userSchema = new mongoose.Schema(
     autoLoginToken: {
       type: String,
     },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpires: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -98,7 +104,9 @@ const existingUserModel = mongoose.models.User as
 if (
   existingUserModel &&
   (!existingUserModel.schema.path("address") ||
-    !existingUserModel.schema.path("address.streetAddress"))
+    !existingUserModel.schema.path("address.streetAddress") ||
+    !existingUserModel.schema.path("resetPasswordToken") ||
+    !existingUserModel.schema.path("resetPasswordExpires"))
 ) {
   delete mongoose.models.User;
 }

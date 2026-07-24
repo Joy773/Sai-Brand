@@ -1549,8 +1549,9 @@
     "confirmPasswordPlaceholder": "Re-enter your password",
     "submitLabel": "Create Account",
     "close": "Close",
-    "successMessage": "Account created successfully.",
+    "successMessage": "Account created successfully. Please check your email for a verification link.",
     "errorMessage": "Something went wrong. Please try again.",
+    "verificationEmailFailed": "Account created, but we could not send the verification email. Please contact support if you need a new link.",
     "passwordMismatch": "Passwords do not match."
   },
   "signInModal": {
@@ -1566,13 +1567,44 @@
     "close": "Close",
     "successMessage": "Signed in successfully.",
     "errorMessage": "Invalid email or password. Please try again.",
-    "emailNotVerified": "Please verify your email first. Check your inbox for the verification link."
+    "emailNotVerified": "Please verify your email first. Check your inbox for the verification link sent when you created your account.",
+    "forgotPasswordLink": "Forget Password"
+  },
+  "forgotPasswordModal": {
+    "_comment": "Forgot password modal used in app/components/ForgotPasswordModal.tsx",
+    "title": "Forgot Password?",
+    "subtitleBefore": "Remember your password?",
+    "signInLink": "Sign In",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email",
+    "submitLabel": "Send Reset Link",
+    "close": "Close",
+    "successMessage": "If an account exists for that email, a reset link has been sent.",
+    "errorMessage": "Something went wrong. Please try again."
+  },
+  "resetPassword": {
+    "_comment": "Reset password page used in app/reset-password/[token]",
+    "title": "Reset Password",
+    "subtitle": "Choose a new password for your account.",
+    "passwordLabel": "New Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "submitLabel": "Update Password",
+    "successMessage": "Password updated successfully. Please sign in.",
+    "errorMessage": "Something went wrong. Please try again.",
+    "passwordMismatch": "Passwords do not match.",
+    "invalidTitle": "Invalid or expired link",
+    "invalidDescription": "This password reset link is invalid or has expired. Please request a new one.",
+    "backToSignIn": "Back to Sign In"
   },
   "verifyEmail": {
     "_comment": "Email verification result page",
     "successTitle": "Email verified successfully!",
     "successDescription": "You are being signed in automatically. This page will close in a few seconds.",
+    "handoffDescription": "You are signed in on the tab where you created your account. You can close this tab.",
     "redirecting": "Signing you in…",
+    "continueInOtherTab": "Continue in your other tab…",
     "loginSuccess": "Login successful",
     "loginFailed": "Email verified, but automatic sign-in failed. Please sign in manually.",
     "invalidTitle": "Invalid or expired link",

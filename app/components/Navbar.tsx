@@ -17,6 +17,7 @@ import type { LocaleCode } from "@/app/i18n/locales";
 import { handleSectionClick } from "@/app/lib/scrollToSection";
 import SignupModal from "@/app/components/SignupModal";
 import SignInModal from "@/app/components/SignInModal";
+import ForgotPasswordModal from "@/app/components/ForgotPasswordModal";
 import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
 
 function LanguageSwitcher({
@@ -64,6 +65,7 @@ function NavbarContent() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const { navLinks, menu, cart: cartLabel, signIn, logout, logoutSuccess } =
     useMessages().navbar;
   const { status } = useSession();
@@ -72,6 +74,7 @@ function NavbarContent() {
   const itemCount = useCartStore(selectCartItemCount);
   const isAuthenticated = status === "authenticated";
   const callbackUrl = searchParams.get("callbackUrl");
+  const shouldOpenSignIn = searchParams.get("signin") === "true";
 
   const authButtonClassName =
     "rounded-full bg-dark-green px-4 py-2 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90";
@@ -80,12 +83,20 @@ function NavbarContent() {
   const openSignup = () => {
     closeMenu();
     setSignInOpen(false);
+    setForgotPasswordOpen(false);
     setSignupOpen(true);
   };
   const openSignIn = () => {
     closeMenu();
     setSignupOpen(false);
+    setForgotPasswordOpen(false);
     setSignInOpen(true);
+  };
+  const openForgotPassword = () => {
+    closeMenu();
+    setSignupOpen(false);
+    setSignInOpen(false);
+    setForgotPasswordOpen(true);
   };
   const handleLogout = async () => {
     closeMenu();
@@ -94,15 +105,23 @@ function NavbarContent() {
   };
 
   useEffect(() => {
-    if (callbackUrl && status === "unauthenticated") {
+    if ((callbackUrl || shouldOpenSignIn) && status === "unauthenticated") {
       setSignInOpen(true);
     }
-  }, [callbackUrl, status]);
+  }, [callbackUrl, shouldOpenSignIn, status]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setSignInOpen(false);
+      setSignupOpen(false);
+      setForgotPasswordOpen(false);
+    }
+  }, [status]);
 
   const handleSignInClose = () => {
     setSignInOpen(false);
 
-    if (callbackUrl) {
+    if (callbackUrl || shouldOpenSignIn) {
       router.replace("/");
     }
   };
@@ -269,7 +288,13 @@ function NavbarContent() {
         isOpen={signInOpen}
         onClose={handleSignInClose}
         onOpenSignup={openSignup}
+        onOpenForgotPassword={openForgotPassword}
         onSuccess={handleSignInSuccess}
+      />
+      <ForgotPasswordModal
+        isOpen={forgotPasswordOpen}
+        onClose={() => setForgotPasswordOpen(false)}
+        onOpenSignIn={openSignIn}
       />
     </header>
   );

@@ -4,67 +4,35 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { LuX } from "react-icons/lu";
 import { toast } from "sonner";
 import { useMessages } from "@/app/i18n/LocaleProvider";
-import { markPendingVerificationEmail } from "@/app/lib/emailVerificationHandoff";
 
-type SignupModalProps = {
+type ForgotPasswordModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onOpenSignIn?: () => void;
 };
 
-type FormState = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
-type SignupResult = {
-  ok?: boolean;
-  error?: string;
-  emailSent?: boolean;
-  user?: {
-    email?: string;
-  };
-};
-
-const initialFormState: FormState = {
-  name: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-};
-
 const inputClassName =
   "w-full rounded-xl border border-beige bg-warm-white/60 px-4 py-2.5 text-sm text-dark-green outline-none transition-colors placeholder:text-dark-green/35 focus:border-gold";
 
-export default function SignupModal({
+export default function ForgotPasswordModal({
   isOpen,
   onClose,
   onOpenSignIn,
-}: SignupModalProps) {
+}: ForgotPasswordModalProps) {
   const {
     title,
     subtitleBefore,
     signInLink,
-    nameLabel,
-    namePlaceholder,
     emailLabel,
     emailPlaceholder,
-    passwordLabel,
-    passwordPlaceholder,
-    confirmPasswordLabel,
-    confirmPasswordPlaceholder,
     submitLabel,
     close,
     successMessage,
     errorMessage,
-    passwordMismatch,
-    verificationEmailFailed,
-  } = useMessages().signupModal;
+  } = useMessages().forgotPasswordModal;
 
   const dialogRef = useRef<HTMLDivElement>(null);
-  const [form, setForm] = useState<FormState>(initialFormState);
+  const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -81,7 +49,7 @@ export default function SignupModal({
 
   useEffect(() => {
     if (!isOpen) {
-      setForm(initialFormState);
+      setEmail("");
       setIsSubmitting(false);
     }
   }, [isOpen]);
@@ -89,10 +57,6 @@ export default function SignupModal({
   if (!isOpen) {
     return null;
   }
-
-  const updateField = (field: keyof FormState, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
 
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
@@ -107,39 +71,22 @@ export default function SignupModal({
       return;
     }
 
-    if (form.password !== form.confirmPassword) {
-      toast.error(passwordMismatch);
-      return;
-    }
-
     try {
       setIsSubmitting(true);
 
-      const response = await fetch("/api/users", {
+      const response = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-        }),
+        body: JSON.stringify({ email }),
       });
 
-      const data = (await response.json()) as SignupResult;
+      const data = (await response.json()) as { ok?: boolean; error?: string };
 
       if (!response.ok || !data.ok) {
         toast.error(data.error ?? errorMessage);
         return;
       }
 
-      if (!data.emailSent) {
-        toast.error(verificationEmailFailed);
-        onClose();
-        onOpenSignIn?.();
-        return;
-      }
-
-      markPendingVerificationEmail(data.user?.email ?? form.email);
       toast.success(successMessage);
       onClose();
       onOpenSignIn?.();
@@ -160,7 +107,7 @@ export default function SignupModal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="signup-modal-title"
+        aria-labelledby="forgot-password-modal-title"
         className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl border border-beige bg-warm-white p-6 shadow-2xl sm:p-8"
       >
         <button
@@ -174,7 +121,7 @@ export default function SignupModal({
 
         <div className="pe-8">
           <h2
-            id="signup-modal-title"
+            id="forgot-password-modal-title"
             className="text-2xl font-bold text-dark-green sm:text-[1.75rem]"
           >
             {title}
@@ -194,68 +141,16 @@ export default function SignupModal({
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <label className="block">
             <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-              {nameLabel}
-            </span>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={(event) => updateField("name", event.target.value)}
-              placeholder={namePlaceholder}
-              className={inputClassName}
-              autoComplete="name"
-              required
-            />
-          </label>
-
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
               {emailLabel}
             </span>
             <input
               type="email"
               name="email"
-              value={form.email}
-              onChange={(event) => updateField("email", event.target.value)}
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               placeholder={emailPlaceholder}
               className={inputClassName}
               autoComplete="email"
-              required
-            />
-          </label>
-
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-              {passwordLabel}
-            </span>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={(event) => updateField("password", event.target.value)}
-              placeholder={passwordPlaceholder}
-              className={inputClassName}
-              autoComplete="new-password"
-              minLength={8}
-              required
-            />
-          </label>
-
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-              {confirmPasswordLabel}
-            </span>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={(event) =>
-                updateField("confirmPassword", event.target.value)
-              }
-              placeholder={confirmPasswordPlaceholder}
-              className={inputClassName}
-              autoComplete="new-password"
-              minLength={8}
               required
             />
           </label>

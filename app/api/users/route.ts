@@ -9,6 +9,11 @@ import {
   saveUserAddress,
   toUserAddress,
 } from "@/app/lib/saveUserAddress";
+import { SITE_URL } from "@/app/lib/site";
+import {
+  isEmailConfigured,
+  sendVerificationEmail,
+} from "@/app/lib/sendEmail";
 import Order from "@/app/models/Orders";
 import User, { type UserAddress } from "@/app/models/User";
 
@@ -207,14 +212,39 @@ export async function POST(request: NextRequest) {
       verificationToken,
     });
 
+    const verificationLink = `${SITE_URL}/verify-email/${verificationToken}`;
+    let emailSent = false;
+
+    if (isEmailConfigured()) {
+      try {
+        await sendVerificationEmail({
+          to: email,
+          name,
+          verificationLink,
+        });
+        emailSent = true;
+      } catch (error) {
+        console.error("[users api] Failed to send verification email", error);
+      }
+    } else {
+      console.error("[users api] SMTP is not configured");
+    }
+
     return NextResponse.json(
       {
         ok: true,
+        emailSent,
         user: {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
         },
+        ...(!emailSent
+          ? {
+              error:
+                "Account created, but we could not send the verification email.",
+            }
+          : {}),
       },
       { status: 201 },
     );

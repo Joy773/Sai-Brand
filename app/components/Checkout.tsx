@@ -9,6 +9,7 @@ import { LuArrowLeft } from "react-icons/lu";
 import { toast } from "sonner";
 import SignInModal from "@/app/components/SignInModal";
 import SignupModal from "@/app/components/SignupModal";
+import ForgotPasswordModal from "@/app/components/ForgotPasswordModal";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 import { formatPrice, parsePrice } from "@/app/lib/price";
 import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
@@ -123,6 +124,7 @@ function CheckoutContent() {
   const [isStartingCheckout, setIsStartingCheckout] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
 
   useEffect(() => {
     const checkoutStatus = searchParams.get("checkout");
@@ -170,13 +172,29 @@ function CheckoutContent() {
 
   const openSignIn = () => {
     setSignupOpen(false);
+    setForgotPasswordOpen(false);
     setSignInOpen(true);
   };
 
   const openSignup = () => {
     setSignInOpen(false);
+    setForgotPasswordOpen(false);
     setSignupOpen(true);
   };
+
+  const openForgotPassword = () => {
+    setSignInOpen(false);
+    setSignupOpen(false);
+    setForgotPasswordOpen(true);
+  };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setSignInOpen(false);
+      setSignupOpen(false);
+      setForgotPasswordOpen(false);
+    }
+  }, [status]);
 
   const handlePayNow = async () => {
     if (status !== "authenticated") {
@@ -393,7 +411,13 @@ function CheckoutContent() {
         isOpen={signInOpen}
         onClose={() => setSignInOpen(false)}
         onOpenSignup={openSignup}
+        onOpenForgotPassword={openForgotPassword}
         onSuccess={() => setSignInOpen(false)}
+      />
+      <ForgotPasswordModal
+        isOpen={forgotPasswordOpen}
+        onClose={() => setForgotPasswordOpen(false)}
+        onOpenSignIn={openSignIn}
       />
     </>
   );

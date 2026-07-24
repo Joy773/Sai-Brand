@@ -11,6 +11,7 @@ import { CHECKOUT_ADDRESS_KEY } from "@/app/components/Checkout";
 import PayPalCheckoutButtons from "@/app/components/PayPalCheckoutButtons";
 import SignInModal from "@/app/components/SignInModal";
 import SignupModal from "@/app/components/SignupModal";
+import ForgotPasswordModal from "@/app/components/ForgotPasswordModal";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 import { formatPrice, parsePrice } from "@/app/lib/price";
 import { showRemovedFromCartToast } from "@/app/lib/showAddedToCartToast";
@@ -139,6 +140,7 @@ function CartContent() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const [shippingCountries, setShippingCountries] = useState<ShippingCountry[]>(
     [],
   );
@@ -401,12 +403,20 @@ function CartContent() {
 
   const openSignIn = () => {
     setSignupOpen(false);
+    setForgotPasswordOpen(false);
     setSignInOpen(true);
   };
 
   const openSignup = () => {
     setSignInOpen(false);
+    setForgotPasswordOpen(false);
     setSignupOpen(true);
+  };
+
+  const openForgotPassword = () => {
+    setSignInOpen(false);
+    setSignupOpen(false);
+    setForgotPasswordOpen(true);
   };
 
   const handlePlaceOrder = async () => {
@@ -1049,7 +1059,13 @@ function CartContent() {
         isOpen={signInOpen}
         onClose={() => setSignInOpen(false)}
         onOpenSignup={openSignup}
+        onOpenForgotPassword={openForgotPassword}
         onSuccess={() => setSignInOpen(false)}
+      />
+      <ForgotPasswordModal
+        isOpen={forgotPasswordOpen}
+        onClose={() => setForgotPasswordOpen(false)}
+        onOpenSignIn={openSignIn}
       />
     </>
   );

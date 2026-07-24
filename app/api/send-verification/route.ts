@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { connectDB } from "@/app/lib/mongodb";
 import { getClientIp, rateLimit } from "@/app/lib/rateLimit";
+import {
+  isEmailConfigured,
+  sendVerificationEmail,
+} from "@/app/lib/sendEmail";
 import { SITE_URL } from "@/app/lib/site";
 import User from "@/app/models/User";
 
@@ -10,12 +14,6 @@ type Payload = {
   email?: string;
   password?: string;
 };
-
-const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-const TEMPLATE_ID =
-  process.env.NEXT_PUBLIC_EMAILJS_VERIFICATION_TEMPLATE_ID ||
-  process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
 export async function POST(request: NextRequest) {
   const limit = rateLimit(`send-verification:${getClientIp(request)}`, {
@@ -53,7 +51,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+  if (!isEmailConfigured()) {
     return NextResponse.json(
       { ok: false, error: "Email service is not configured." },
       { status: 500 },
@@ -92,22 +90,19 @@ export async function POST(request: NextRequest) {
 
     const verificationLink = `${SITE_URL}/verify-email/${verificationToken}`;
 
-    // Client sends via EmailJS browser SDK (works on free plan / localhost
-    // without Domains or private key).
-    return NextResponse.json({
-      ok: true,
-      email,
+    await sendVerificationEmail({
+      to: email,
+      name: user.name,
       verificationLink,
-      serviceId: SERVICE_ID,
-      templateId: TEMPLATE_ID,
-      publicKey: PUBLIC_KEY,
     });
+
+    return NextResponse.json({ ok: true, email });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("[send-verification]", error);
 
     return NextResponse.json(
-      { ok: false, error: "Failed to prepare verification email." },
+      { ok: false, error: "Failed to send verification email." },
       { status: 500 },
     );
   }

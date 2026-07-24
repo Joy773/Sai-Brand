@@ -1,6 +1,5 @@
 "use client";
 
-import emailjs from "@emailjs/browser";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
@@ -12,22 +11,13 @@ type SignInModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onOpenSignup?: () => void;
+  onOpenForgotPassword?: () => void;
   onSuccess?: () => void;
 };
 
 type FormState = {
   email: string;
   password: string;
-};
-
-type VerificationSendResult = {
-  ok?: boolean;
-  error?: string;
-  email?: string;
-  verificationLink?: string;
-  serviceId?: string;
-  templateId?: string;
-  publicKey?: string;
 };
 
 const initialFormState: FormState = {
@@ -38,42 +28,11 @@ const initialFormState: FormState = {
 const inputClassName =
   "w-full rounded-xl border border-beige bg-warm-white/60 px-4 py-2.5 text-sm text-dark-green outline-none transition-colors placeholder:text-dark-green/35 focus:border-gold";
 
-async function sendVerificationEmail(email: string, password: string) {
-  const response = await fetch("/api/send-verification", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-
-  const data = (await response.json()) as VerificationSendResult;
-
-  if (
-    !response.ok ||
-    !data.ok ||
-    !data.email ||
-    !data.verificationLink ||
-    !data.serviceId ||
-    !data.templateId ||
-    !data.publicKey
-  ) {
-    throw new Error(data.error || "Failed to prepare verification email.");
-  }
-
-  await emailjs.send(
-    data.serviceId,
-    data.templateId,
-    {
-      user_email: data.email,
-      verification_link: data.verificationLink,
-    },
-    { publicKey: data.publicKey },
-  );
-}
-
 export default function SignInModal({
   isOpen,
   onClose,
   onOpenSignup,
+  onOpenForgotPassword,
   onSuccess,
 }: SignInModalProps) {
   const {
@@ -89,6 +48,7 @@ export default function SignInModal({
     successMessage,
     errorMessage,
     emailNotVerified,
+    forgotPasswordLink,
   } = useMessages().signInModal;
 
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -130,19 +90,6 @@ export default function SignInModal({
     }
   };
 
-  const handleUnverifiedLogin = async () => {
-    try {
-      await sendVerificationEmail(form.email, form.password);
-      toast.success(emailNotVerified);
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to send verification email.";
-      // eslint-disable-next-line no-console
-      console.error("[SignInModal] verification email failed:", error);
-      toast.error(message);
-    }
-  };
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -153,24 +100,19 @@ export default function SignInModal({
     try {
       setIsSubmitting(true);
 
-      try {
-        const signInResult = await signIn("credentials", {
-          email: form.email,
-          password: form.password,
-          redirect: false,
-        });
+      const signInResult = await signIn("credentials", {
+        email: form.email,
+        password: form.password,
+        redirect: false,
+      });
 
-        if (signInResult?.error) {
-          if (signInResult.code === "email_not_verified") {
-            await handleUnverifiedLogin();
-            return;
-          }
-
-          toast.error(errorMessage);
+      if (signInResult?.error) {
+        if (signInResult.code === "email_not_verified") {
+          toast.error(emailNotVerified);
           return;
         }
-      } catch {
-        await handleUnverifiedLogin();
+
+        toast.error(errorMessage);
         return;
       }
 
@@ -264,6 +206,16 @@ export default function SignInModal({
               required
             />
           </label>
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={onOpenForgotPassword}
+              className="text-sm font-semibold text-dark-green underline-offset-2 transition-colors hover:text-dark-green/80 hover:underline"
+            >
+              {forgotPasswordLink}
+            </button>
+          </div>
 
           <button
             type="submit"
