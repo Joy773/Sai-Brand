@@ -1,5 +1,6 @@
 "use client";
 
+import { signIn } from "next-auth/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { LuX } from "react-icons/lu";
 import { toast } from "sonner";
@@ -10,6 +11,7 @@ type SignupModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onOpenSignIn?: () => void;
+  onSuccess?: () => void;
 };
 
 type FormState = {
@@ -42,6 +44,7 @@ export default function SignupModal({
   isOpen,
   onClose,
   onOpenSignIn,
+  onSuccess,
 }: SignupModalProps) {
   const {
     title,
@@ -132,17 +135,32 @@ export default function SignupModal({
         return;
       }
 
+      const email = data.user?.email ?? form.email;
+      markPendingVerificationEmail(email);
+
       if (!data.emailSent) {
         toast.error(verificationEmailFailed);
+      }
+
+      const signInResult = await signIn("credentials", {
+        email: form.email,
+        password: form.password,
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        toast.error(errorMessage);
         onClose();
         onOpenSignIn?.();
         return;
       }
 
-      markPendingVerificationEmail(data.user?.email ?? form.email);
-      toast.success(successMessage);
+      if (data.emailSent) {
+        toast.success(successMessage);
+      }
+
       onClose();
-      onOpenSignIn?.();
+      onSuccess?.();
     } catch {
       toast.error(errorMessage);
     } finally {

@@ -1,13 +1,9 @@
-import NextAuth, { CredentialsSignin } from "next-auth";
+import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { isAdminRoute, isProtectedRoute } from "@/app/lib/auth-routes";
 import { connectDB } from "@/app/lib/mongodb";
 import User from "@/app/models/User";
-
-class EmailNotVerifiedError extends CredentialsSignin {
-  code = "email_not_verified";
-}
 
 // Constant-time string comparison to avoid leaking the admin password length or
 // content through response-timing differences.
@@ -89,10 +85,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
           return null;
-        }
-
-        if (!user.emailVerified) {
-          throw new EmailNotVerifiedError("Please verify your email first.");
         }
 
         return {

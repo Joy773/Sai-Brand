@@ -47,7 +47,6 @@ export default function SignInModal({
     close,
     successMessage,
     errorMessage,
-    emailNotVerified,
     forgotPasswordLink,
   } = useMessages().signInModal;
 
@@ -107,11 +106,6 @@ export default function SignInModal({
       });
 
       if (signInResult?.error) {
-        if (signInResult.code === "email_not_verified") {
-          toast.error(emailNotVerified);
-          return;
-        }
-
         toast.error(errorMessage);
         return;
       }
@@ -207,7 +201,7 @@ export default function SignInModal({
             />
           </label>
 
-          <div className="flex justify-end">
+          <div className="flex justify-start">
             <button
               type="button"
               onClick={onOpenForgotPassword}
