@@ -442,7 +442,7 @@
     "shippingFee": "رسوم الشحن",
     "free": "مجاني",
     "totalAmount": "المبلغ الإجمالي:",
-    "payNow": "ادفع عبر Stripe",
+    "payNow": "ادفع بالبطاقة",
     "redirecting": "جارٍ التحويل إلى Stripe...",
     "checkoutFailed": "تعذر بدء الدفع. يرجى المحاولة مرة أخرى.",
     "missingAddress": "يرجى إدخال عنوان التوصيل في السلة أولاً.",

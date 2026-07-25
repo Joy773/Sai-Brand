@@ -440,7 +440,7 @@
     "shippingFee": "Shipping Fee",
     "free": "Free",
     "totalAmount": "Total Amount:",
-    "payNow": "Pay with Stripe",
+    "payNow": "Pay with Card",
     "redirecting": "Redirecting to Stripe...",
     "checkoutFailed": "Failed to start checkout. Please try again.",
     "missingAddress": "Please enter your delivery address in the cart first.",

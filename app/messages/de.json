@@ -440,7 +440,7 @@
     "shippingFee": "Versandkosten",
     "free": "Kostenlos",
     "totalAmount": "Gesamtbetrag:",
-    "payNow": "Mit Stripe bezahlen",
+    "payNow": "Mit Karte bezahlen",
     "redirecting": "Weiterleitung zu Stripe...",
     "checkoutFailed": "Checkout konnte nicht gestartet werden. Bitte versuchen Sie es erneut.",
     "missingAddress": "Bitte geben Sie zuerst Ihre Lieferadresse im Warenkorb ein.",
