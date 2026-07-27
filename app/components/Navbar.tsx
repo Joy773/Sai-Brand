@@ -5,7 +5,7 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { LuShoppingCart } from "react-icons/lu";
+import { LuChevronDown, LuShoppingCart } from "react-icons/lu";
 import { toast } from "sonner";
 import { codeToLocale } from "@/app/i18n/locales";
 import {
@@ -19,6 +19,75 @@ import SignupModal from "@/app/components/SignupModal";
 import SignInModal from "@/app/components/SignInModal";
 import ForgotPasswordModal from "@/app/components/ForgotPasswordModal";
 import { selectCartItemCount, useCartStore } from "@/app/store/cart-store";
+
+function formatGreeting(template: string, name: string) {
+  return template.replace("{name}", name);
+}
+
+function UserAuthMenu({
+  firstName,
+  greeting,
+  logout,
+  onLogout,
+  variant,
+}: {
+  firstName: string;
+  greeting: string;
+  logout: string;
+  onLogout: () => Promise<void>;
+  variant: "desktop" | "mobile";
+}) {
+  const greetingLabel = formatGreeting(greeting, firstName);
+  const greetingClassName =
+    "text-base font-medium text-dark-green transition-colors hover:text-dark-green/70";
+  const menuItemClassName =
+    "text-sm font-medium text-dark-green transition-colors hover:text-dark-green/70";
+
+  if (variant === "mobile") {
+    return (
+      <div className="flex flex-col items-start gap-2">
+        <span className={greetingClassName}>{greetingLabel}</span>
+        <button
+          type="button"
+          onClick={onLogout}
+          className={`${menuItemClassName} text-left`}
+        >
+          {logout}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="group relative hidden md:block">
+      <button
+        type="button"
+        className={`${greetingClassName} inline-flex items-center gap-1`}
+        aria-haspopup="menu"
+        aria-label={greetingLabel}
+      >
+        {greetingLabel}
+        <LuChevronDown
+          className="h-4 w-4 transition-transform group-hover:rotate-180"
+          aria-hidden
+        />
+      </button>
+      <div
+        role="menu"
+        className="pointer-events-none invisible absolute right-0 top-full z-50 min-w-full pt-1 opacity-0 transition-all group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100"
+      >
+        <button
+          type="button"
+          role="menuitem"
+          onClick={onLogout}
+          className={`${menuItemClassName} whitespace-nowrap`}
+        >
+          {logout}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function LanguageSwitcher({
   className = "",
@@ -66,15 +135,22 @@ function NavbarContent() {
   const [signupOpen, setSignupOpen] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
-  const { navLinks, menu, cart: cartLabel, signIn, logout, logoutSuccess } =
+  const { navLinks, menu, cart: cartLabel, signIn, greeting, logout, logoutSuccess } =
     useMessages().navbar;
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const [firstName, setFirstName] = useState("");
   const searchParams = useSearchParams();
   const router = useRouter();
   const itemCount = useCartStore(selectCartItemCount);
   const isAuthenticated = status === "authenticated";
   const callbackUrl = searchParams.get("callbackUrl");
   const shouldOpenSignIn = searchParams.get("signin") === "true";
+  const sessionFirstName = (() => {
+    const sessionName = session?.user?.name?.trim() ?? "";
+    const [fallbackFirstName] = sessionName.split(/\s+/);
+    return fallbackFirstName || sessionName;
+  })();
+  const displayFirstName = firstName || sessionFirstName;
 
   const authButtonClassName =
     "rounded-full bg-dark-green px-4 py-2 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90";
@@ -117,6 +193,48 @@ function NavbarContent() {
       setForgotPasswordOpen(false);
     }
   }, [status]);
+
+  useEffect(() => {
+    if (status !== "authenticated") {
+      setFirstName("");
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadProfile = async () => {
+      try {
+        const response = await fetch("/api/user/profile");
+        const data = (await response.json()) as {
+          ok?: boolean;
+          firstName?: string;
+        };
+
+        if (cancelled) {
+          return;
+        }
+
+        if (response.ok && data.ok && data.firstName) {
+          setFirstName(data.firstName);
+          return;
+        }
+      } catch {
+        // Fall back to session name below.
+      }
+
+      if (!cancelled) {
+        const sessionName = session?.user?.name?.trim() ?? "";
+        const [fallbackFirstName] = sessionName.split(/\s+/);
+        setFirstName(fallbackFirstName || sessionName);
+      }
+    };
+
+    void loadProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [status, session?.user?.name]);
 
   const handleSignInClose = () => {
     setSignInOpen(false);
@@ -170,17 +288,17 @@ function NavbarContent() {
           ))}
         </ul>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <LanguageSwitcher className="hidden md:flex" />
+        <div className="flex items-center gap-3 sm:gap-4">
+          <LanguageSwitcher className="hidden md:flex md:mr-4 lg:mr-6" />
 
           {isAuthenticated ? (
-            <button
-              type="button"
-              onClick={handleLogout}
-              className={`hidden md:inline-flex ${authButtonClassName}`}
-            >
-              {logout}
-            </button>
+            <UserAuthMenu
+              firstName={displayFirstName}
+              greeting={greeting}
+              logout={logout}
+              onLogout={handleLogout}
+              variant="desktop"
+            />
           ) : (
             <button
               type="button"
@@ -254,13 +372,13 @@ function NavbarContent() {
             ))}
             <li>
               {isAuthenticated ? (
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className={`inline-flex ${authButtonClassName}`}
-                >
-                  {logout}
-                </button>
+                <UserAuthMenu
+                  firstName={displayFirstName}
+                  greeting={greeting}
+                  logout={logout}
+                  onLogout={handleLogout}
+                  variant="mobile"
+                />
               ) : (
                 <button
                   type="button"

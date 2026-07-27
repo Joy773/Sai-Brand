@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
+import { KIT_SLUG } from "@/app/lib/products";
 import { handleSectionClick } from "@/app/lib/scrollToSection";
 
 const productsHref = "#products";
@@ -100,16 +101,22 @@ export default function Hero() {
       </div>
 
       <div className="order-1 flex w-full items-end justify-center bg-[#F1E5DC] pt-6 md:order-2 md:min-h-[calc(100svh-4rem)] md:items-center md:pt-0">
-        <Image
-          src="/hero-img.png"
-          alt={hero.imageAlt}
-          width={1920}
-          height={1440}
-          priority
-          className="h-auto w-full object-contain"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          unoptimized
-        />
+        <Link
+          href={`/${KIT_SLUG}`}
+          className="block w-full transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-green/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F1E5DC]"
+          aria-label={hero.imageAlt}
+        >
+          <Image
+            src="/hero-img.png"
+            alt={hero.imageAlt}
+            width={1920}
+            height={1440}
+            priority
+            className="h-auto w-full object-contain"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            unoptimized
+          />
+        </Link>
       </div>
     </section>
   );

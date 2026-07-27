@@ -41,6 +41,7 @@
     },
     "cart": "View cart",
     "signIn": "Sign In",
+    "greeting": "Hi, {name}",
     "logout": "Logout",
     "logoutSuccess": "Logged out"
   },

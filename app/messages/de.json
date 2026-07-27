@@ -41,6 +41,7 @@
     },
     "cart": "Warenkorb anzeigen",
     "signIn": "Anmelden",
+    "greeting": "Hallo, {name}",
     "logout": "Abmelden",
     "logoutSuccess": "Abgemeldet"
   },

@@ -1,4 +1,5 @@
-export const KIT_SLUG = "german-care-complete-kit";
+export const KIT_SLUG =
+  "full-hajj-umrah-care-kit-halal-fragrance-free-alcohol-free-made-in-germany";
 
 export const productSlugs = {
   "anti-chafing-body-cream": "/anti-chafing-main.png",
