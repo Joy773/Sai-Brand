@@ -27,12 +27,14 @@ function formatGreeting(template: string, name: string) {
 function UserAuthMenu({
   firstName,
   greeting,
+  orders,
   logout,
   onLogout,
   variant,
 }: {
   firstName: string;
   greeting: string;
+  orders: string;
   logout: string;
   onLogout: () => Promise<void>;
   variant: "desktop" | "mobile";
@@ -47,6 +49,9 @@ function UserAuthMenu({
     return (
       <div className="flex flex-col items-start gap-2">
         <span className={greetingClassName}>{greetingLabel}</span>
+        <Link href="/Orders" className={`${menuItemClassName} text-left`}>
+          {orders}
+        </Link>
         <button
           type="button"
           onClick={onLogout}
@@ -76,14 +81,23 @@ function UserAuthMenu({
         role="menu"
         className="pointer-events-none invisible absolute right-0 top-full z-50 min-w-full pt-1 opacity-0 transition-all group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100"
       >
-        <button
-          type="button"
-          role="menuitem"
-          onClick={onLogout}
-          className={`${menuItemClassName} whitespace-nowrap`}
-        >
-          {logout}
-        </button>
+        <div className="flex flex-col items-stretch gap-1 bg-[#F3E8DF] py-1">
+          <Link
+            href="/Orders"
+            role="menuitem"
+            className={`${menuItemClassName} whitespace-nowrap`}
+          >
+            {orders}
+          </Link>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={onLogout}
+            className={`${menuItemClassName} whitespace-nowrap text-left`}
+          >
+            {logout}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -135,7 +149,7 @@ function NavbarContent() {
   const [signupOpen, setSignupOpen] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
-  const { navLinks, menu, cart: cartLabel, signIn, greeting, logout, logoutSuccess } =
+  const { navLinks, menu, cart: cartLabel, signIn, greeting, orders, logout, logoutSuccess } =
     useMessages().navbar;
   const { data: session, status } = useSession();
   const [firstName, setFirstName] = useState("");
@@ -295,6 +309,7 @@ function NavbarContent() {
             <UserAuthMenu
               firstName={displayFirstName}
               greeting={greeting}
+              orders={orders}
               logout={logout}
               onLogout={handleLogout}
               variant="desktop"
@@ -375,6 +390,7 @@ function NavbarContent() {
                 <UserAuthMenu
                   firstName={displayFirstName}
                   greeting={greeting}
+                  orders={orders}
                   logout={logout}
                   onLogout={handleLogout}
                   variant="mobile"

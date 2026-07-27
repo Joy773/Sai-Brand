@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/app/auth";
@@ -8,6 +9,7 @@ import {
   hasAddressContent,
   saveUserAddress,
   toUserAddress,
+  type UserAddressInput,
 } from "@/app/lib/saveUserAddress";
 import { SITE_URL } from "@/app/lib/site";
 import {
@@ -31,6 +33,7 @@ function formatAddress(address?: UserAddress | null): string {
   }
 
   return [
+    [address.firstName, address.lastName].filter(Boolean).join(" "),
     address.streetAddress,
     [address.zipPostalCode, address.city].filter(Boolean).join(" "),
     address.stateProvince,
@@ -40,6 +43,19 @@ function formatAddress(address?: UserAddress | null): string {
     .map((part) => part?.trim())
     .filter(Boolean)
     .join("\n");
+}
+
+function toAddressFields(address?: UserAddress | null) {
+  return {
+    firstName: address?.firstName ?? "",
+    lastName: address?.lastName ?? "",
+    streetAddress: address?.streetAddress ?? "",
+    country: address?.country ?? "",
+    stateProvince: address?.stateProvince ?? "",
+    city: address?.city ?? "",
+    zipPostalCode: address?.zipPostalCode ?? "",
+    phoneNumber: address?.phoneNumber ?? "",
+  };
 }
 
 export async function GET() {
@@ -70,6 +86,8 @@ export async function GET() {
       const emails = usersMissingAddress.map((user) => user.email);
       const latestOrders = await Order.aggregate<{
         _id: string;
+        firstName?: string;
+        lastName?: string;
         streetAddress?: string;
         country?: string;
         stateProvince?: string;
@@ -82,6 +100,8 @@ export async function GET() {
         {
           $group: {
             _id: "$email",
+            firstName: { $first: "$firstName" },
+            lastName: { $first: "$lastName" },
             streetAddress: { $first: "$streetAddress" },
             country: { $first: "$country" },
             stateProvince: { $first: "$stateProvince" },
@@ -94,6 +114,8 @@ export async function GET() {
 
       for (const order of latestOrders) {
         const address = toUserAddress({
+          firstName: order.firstName ?? "",
+          lastName: order.lastName ?? "",
           streetAddress: order.streetAddress ?? "",
           country: order.country ?? "",
           stateProvince: order.stateProvince ?? "",
@@ -124,6 +146,7 @@ export async function GET() {
           name: user.name,
           email: user.email,
           address: formatAddress(address),
+          addressFields: toAddressFields(address),
           createdAt: user.createdAt,
         };
       }),
@@ -133,6 +156,166 @@ export async function GET() {
 
     return NextResponse.json(
       { ok: false, error: "Failed to load users. Please try again." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  const session = await auth();
+
+  if (session?.user?.role !== "admin") {
+    return NextResponse.json(
+      { ok: false, error: "Unauthorized." },
+      { status: 401 },
+    );
+  }
+
+  let body: Partial<UserAddressInput> & { id?: string };
+
+  try {
+    body = (await request.json()) as Partial<UserAddressInput> & { id?: string };
+  } catch {
+    return NextResponse.json(
+      { ok: false, error: "Invalid JSON payload." },
+      { status: 400 },
+    );
+  }
+
+  const userId = body.id?.trim() ?? "";
+
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    return NextResponse.json(
+      { ok: false, error: "Valid user id is required." },
+      { status: 400 },
+    );
+  }
+
+  const addressInput: UserAddressInput = {
+    firstName: body.firstName?.trim() ?? "",
+    lastName: body.lastName?.trim() ?? "",
+    streetAddress: body.streetAddress?.trim() ?? "",
+    country: body.country?.trim() ?? "",
+    stateProvince: body.stateProvince?.trim() ?? "",
+    city: body.city?.trim() ?? "",
+    zipPostalCode: body.zipPostalCode?.trim() ?? "",
+    phoneNumber: body.phoneNumber?.trim() ?? "",
+  };
+
+  if (
+    !addressInput.streetAddress ||
+    !addressInput.country ||
+    !addressInput.city ||
+    !addressInput.zipPostalCode ||
+    !addressInput.phoneNumber
+  ) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "Street address, country, city, zip/postal code, and phone number are required.",
+      },
+      { status: 400 },
+    );
+  }
+
+  try {
+    await connectDB();
+
+    const user = await User.findById(userId).select("email").lean();
+
+    if (!user) {
+      return NextResponse.json(
+        { ok: false, error: "User not found." },
+        { status: 404 },
+      );
+    }
+
+    const updatedUser = await saveUserAddress(user.email, addressInput, {
+      userId,
+    });
+
+    if (!updatedUser) {
+      return NextResponse.json(
+        { ok: false, error: "Failed to update address." },
+        { status: 500 },
+      );
+    }
+
+    const address = toUserAddress(addressInput);
+
+    return NextResponse.json({
+      ok: true,
+      id: userId,
+      address: formatAddress(address),
+      addressFields: toAddressFields(address),
+    });
+  } catch (error) {
+    console.error("[users api] Failed to update address", error);
+
+    return NextResponse.json(
+      { ok: false, error: "Failed to update address. Please try again." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const session = await auth();
+
+  if (session?.user?.role !== "admin") {
+    return NextResponse.json(
+      { ok: false, error: "Unauthorized." },
+      { status: 401 },
+    );
+  }
+
+  let userId = request.nextUrl.searchParams.get("id")?.trim() ?? "";
+
+  if (!userId) {
+    try {
+      const body = (await request.json()) as { id?: string };
+      userId = body.id?.trim() ?? "";
+    } catch {
+      userId = "";
+    }
+  }
+
+  if (!userId) {
+    return NextResponse.json(
+      { ok: false, error: "User id is required." },
+      { status: 400 },
+    );
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return NextResponse.json(
+      { ok: false, error: "Invalid user id." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    await connectDB();
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return NextResponse.json(
+        { ok: false, error: "User not found." },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json({
+      ok: true,
+      id: deletedUser._id.toString(),
+    });
+  } catch (error) {
+    console.error("[users api] Failed to delete user", error);
+
+    return NextResponse.json(
+      { ok: false, error: "Failed to delete user. Please try again." },
       { status: 500 },
     );
   }
