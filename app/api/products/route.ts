@@ -19,6 +19,7 @@ type CreateProductPayload = {
   de?: ProductLocalePayload;
   ar?: ProductLocalePayload;
   price?: string | number;
+  discountPrice?: string | number | null;
   sizeMl?: string | number;
   kitSize?: string;
   status?: "in_stock" | "low_stock";
@@ -92,6 +93,10 @@ function serializeProduct(
     slug: product.slug,
     productType: product.productType ?? "single",
     price: formatPrice(product.price),
+    discountPrice:
+      product.discountPrice != null && !Number.isNaN(product.discountPrice)
+        ? formatPrice(product.discountPrice)
+        : null,
     size:
       product.productType === "kit"
         ? product.kitSize
@@ -142,6 +147,15 @@ function parseProductPayload(body: CreateProductPayload) {
       ? body.price
       : Number.parseFloat(String(body.price ?? ""));
 
+  const rawDiscountPrice =
+    body.discountPrice === null ||
+    body.discountPrice === undefined ||
+    String(body.discountPrice).trim() === ""
+      ? null
+      : typeof body.discountPrice === "number"
+        ? body.discountPrice
+        : Number.parseFloat(String(body.discountPrice));
+
   const productType = body.productType === "kit" ? "kit" : "single";
   const kitSize = body.kitSize?.trim() ?? "";
   const sizeValue =
@@ -156,6 +170,19 @@ function parseProductPayload(body: CreateProductPayload) {
       status: 400,
     };
   }
+
+  if (
+    rawDiscountPrice !== null &&
+    (Number.isNaN(rawDiscountPrice) || rawDiscountPrice < 0)
+  ) {
+    return {
+      ok: false as const,
+      error: "Invalid discount price.",
+      status: 400,
+    };
+  }
+
+  const discountPriceValue = rawDiscountPrice;
 
   if (productType === "single") {
     if (Number.isNaN(sizeValue) || sizeValue < 1) {
@@ -237,6 +264,7 @@ function parseProductPayload(body: CreateProductPayload) {
       ar,
       productType: productType as "single" | "kit",
       priceValue,
+      discountPriceValue,
       sizeValue,
       kitSize,
       status: status as "in_stock" | "low_stock",
@@ -321,6 +349,7 @@ export async function POST(request: NextRequest) {
     ar,
     productType,
     priceValue,
+    discountPriceValue,
     sizeValue,
     kitSize,
     status,
@@ -345,6 +374,7 @@ export async function POST(request: NextRequest) {
       slug,
       productType,
       price: priceValue,
+      discountPrice: discountPriceValue,
       sizeMl: productType === "single" ? sizeValue : undefined,
       kitSize: productType === "kit" ? kitSize : "",
       status,
@@ -353,12 +383,18 @@ export async function POST(request: NextRequest) {
       translations: { en, de, ar },
     });
 
-    // Bypass any stale mongoose schema cache so videos are always stored.
+    // Bypass any stale mongoose schema cache so newer fields are always stored.
     await Product.collection.updateOne(
       { _id: product._id },
-      { $set: { videos: productVideos } },
+      {
+        $set: {
+          videos: productVideos,
+          discountPrice: discountPriceValue,
+        },
+      },
     );
     product.videos = productVideos;
+    product.discountPrice = discountPriceValue ?? undefined;
 
     return NextResponse.json(
       {
@@ -437,6 +473,7 @@ export async function PUT(request: NextRequest) {
     ar,
     productType,
     priceValue,
+    discountPriceValue,
     sizeValue,
     kitSize,
     status,
@@ -471,6 +508,7 @@ export async function PUT(request: NextRequest) {
     existingProduct.slug = slug;
     existingProduct.productType = productType;
     existingProduct.price = priceValue;
+    existingProduct.set("discountPrice", discountPriceValue);
     if (productType === "single") {
       existingProduct.sizeMl = sizeValue;
       existingProduct.kitSize = "";
@@ -487,12 +525,18 @@ export async function PUT(request: NextRequest) {
 
     await existingProduct.save();
 
-    // Bypass any stale mongoose schema cache so videos are always stored.
+    // Bypass any stale mongoose schema cache so newer fields are always stored.
     await Product.collection.updateOne(
       { _id: existingProduct._id },
-      { $set: { videos: productVideos } },
+      {
+        $set: {
+          videos: productVideos,
+          discountPrice: discountPriceValue,
+        },
+      },
     );
     existingProduct.videos = productVideos;
+    existingProduct.discountPrice = discountPriceValue ?? undefined;
 
     return NextResponse.json({
       ok: true,

@@ -7,13 +7,19 @@ import {
   LuArrowLeft,
   LuCheck,
   LuMinus,
+  LuPlay,
   LuPlus,
   LuShoppingCart,
+  LuX,
 } from "react-icons/lu";
 import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
+import ProductPrice, {
+  getEffectivePrice,
+} from "@/app/components/ProductPrice";
 import {
   buildProductMedia,
   getCartImageFromMedia,
+  type ProductMediaItem,
 } from "@/app/lib/productMedia";
 import { showAddedToCartToast } from "@/app/lib/showAddedToCartToast";
 import { useCartStore } from "@/app/store/cart-store";
@@ -24,6 +30,8 @@ const tabIds = [
   "ingredients",
   "safetyNotes",
 ] as const;
+
+const MAX_VISIBLE_IMAGE_THUMBS = 5;
 
 type TabId = (typeof tabIds)[number];
 
@@ -41,6 +49,7 @@ type StoreProduct = {
   slug: string;
   productType: "single" | "kit";
   price: string;
+  discountPrice?: string | null;
   size: string;
   image: string;
   images: string[];
@@ -52,6 +61,239 @@ type StoreProduct = {
 type ProductDetailProps = {
   slug: string;
 };
+
+type IndexedMedia = {
+  item: ProductMediaItem;
+  index: number;
+};
+
+function ProductMediaGallery({
+  productId,
+  productName,
+  media,
+  activeMedia,
+  onSelect,
+  videoLabel,
+  fullViewLabel,
+}: {
+  productId: string;
+  productName: string;
+  media: ProductMediaItem[];
+  activeMedia: number;
+  onSelect: (index: number) => void;
+  videoLabel: string;
+  fullViewLabel: string;
+}) {
+  const [isFullViewOpen, setIsFullViewOpen] = useState(false);
+  const activeItem = media[activeMedia] ?? media[0];
+
+  const imageMedia = media
+    .map((item, index) => ({ item, index }))
+    .filter(({ item }) => item.type === "image") as IndexedMedia[];
+  const videoMedia = media
+    .map((item, index) => ({ item, index }))
+    .filter(({ item }) => item.type === "video") as IndexedMedia[];
+
+  const visibleImages = imageMedia.slice(0, MAX_VISIBLE_IMAGE_THUMBS);
+  const overflowImageCount = Math.max(
+    0,
+    imageMedia.length - MAX_VISIBLE_IMAGE_THUMBS,
+  );
+  const firstOverflowIndex =
+    overflowImageCount > 0
+      ? imageMedia[MAX_VISIBLE_IMAGE_THUMBS]?.index
+      : null;
+  const isOverflowActive =
+    firstOverflowIndex != null &&
+    imageMedia
+      .slice(MAX_VISIBLE_IMAGE_THUMBS)
+      .some(({ index }) => index === activeMedia);
+  const showSidebar = media.length > 1;
+
+  useEffect(() => {
+    if (!isFullViewOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsFullViewOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isFullViewOpen]);
+
+  const thumbClassName = (isActive: boolean) =>
+    `relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition-colors sm:h-16 sm:w-16 ${
+      isActive
+        ? "border-dark-green"
+        : "border-dark-green/15 hover:border-dark-green/40"
+    }`;
+
+  return (
+    <>
+      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-start lg:w-1/2">
+        {showSidebar ? (
+          <div className="flex shrink-0 gap-2 overflow-x-auto pb-1 sm:max-h-[34rem] sm:flex-col sm:overflow-x-visible sm:overflow-y-auto sm:pb-0">
+            {visibleImages.map(({ item, index }) => (
+              <button
+                key={`${productId}-thumb-image-${item.url}-${index}`}
+                type="button"
+                onClick={() => onSelect(index)}
+                aria-label={`Show image ${index + 1}`}
+                aria-current={activeMedia === index ? "true" : undefined}
+                className={thumbClassName(activeMedia === index)}
+              >
+                <Image
+                  src={item.url}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="64px"
+                  unoptimized
+                />
+              </button>
+            ))}
+
+            {overflowImageCount > 0 && firstOverflowIndex != null ? (
+              <button
+                type="button"
+                onClick={() => onSelect(firstOverflowIndex)}
+                aria-label={`Show ${overflowImageCount} more images`}
+                aria-current={isOverflowActive ? "true" : undefined}
+                className={`${thumbClassName(isOverflowActive)} bg-beige/60`}
+              >
+                <span className="flex h-full w-full items-center justify-center text-sm font-bold text-dark-green">
+                  {overflowImageCount}+
+                </span>
+              </button>
+            ) : null}
+
+            {videoMedia.map(({ item, index }, videoOrder) => (
+              <div
+                key={`${productId}-thumb-video-${item.url}-${index}`}
+                className="flex shrink-0 flex-col items-center gap-1"
+              >
+                <button
+                  type="button"
+                  onClick={() => onSelect(index)}
+                  aria-label={`Show video ${videoOrder + 1}`}
+                  aria-current={activeMedia === index ? "true" : undefined}
+                  className={`${thumbClassName(activeMedia === index)} bg-dark-green/85`}
+                >
+                  <span className="flex h-full w-full items-center justify-center text-warm-white">
+                    <LuPlay className="h-5 w-5 fill-current" aria-hidden />
+                  </span>
+                </button>
+                <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-dark-green/50">
+                  {videoLabel}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          <button
+            type="button"
+            onClick={() => setIsFullViewOpen(true)}
+            aria-label={fullViewLabel}
+            className="relative aspect-square w-full overflow-hidden rounded-2xl bg-[#F3E8DF] text-left sm:rounded-3xl lg:aspect-auto lg:h-[34rem] lg:rounded-l-3xl"
+          >
+            {media.map((item, index) =>
+              item.type === "video" ? (
+                <video
+                  key={`${productId}-video-${item.url}-${index}`}
+                  src={item.url}
+                  className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ${
+                    activeMedia === index
+                      ? "opacity-100"
+                      : "pointer-events-none opacity-0"
+                  }`}
+                  playsInline
+                  muted
+                  loop
+                  autoPlay={activeMedia === index}
+                  aria-hidden={activeMedia !== index}
+                />
+              ) : (
+                <Image
+                  key={`${productId}-image-${item.url}-${index}`}
+                  src={item.url}
+                  alt={productName}
+                  fill
+                  className={`object-contain object-center transition-opacity duration-500 ${
+                    activeMedia === index
+                      ? "opacity-100"
+                      : "pointer-events-none opacity-0"
+                  }`}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority={index === 0}
+                  unoptimized
+                  aria-hidden={activeMedia !== index}
+                />
+              ),
+            )}
+          </button>
+          <p className="mt-2 text-center text-sm text-dark-green/60">
+            {fullViewLabel}
+          </p>
+        </div>
+      </div>
+
+      {isFullViewOpen && activeItem ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <button
+            type="button"
+            className="absolute inset-0 bg-dark-green/70"
+            aria-label="Close full view"
+            onClick={() => setIsFullViewOpen(false)}
+          />
+          <div className="relative z-10 flex max-h-[90vh] w-full max-w-5xl flex-col items-center">
+            <button
+              type="button"
+              onClick={() => setIsFullViewOpen(false)}
+              className="absolute -top-2 right-0 z-20 rounded-full bg-warm-white p-2 text-dark-green shadow-md transition-colors hover:bg-beige sm:-right-2"
+              aria-label="Close full view"
+            >
+              <LuX className="h-5 w-5" aria-hidden />
+            </button>
+            <div className="relative h-[70vh] w-full overflow-hidden rounded-2xl bg-[#F3E8DF]">
+              {activeItem.type === "video" ? (
+                <video
+                  src={activeItem.url}
+                  className="h-full w-full object-contain"
+                  controls
+                  playsInline
+                  autoPlay
+                />
+              ) : (
+                <Image
+                  src={activeItem.url}
+                  alt={productName}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                  unoptimized
+                  priority
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
+}
 
 export default function ProductDetail({ slug }: ProductDetailProps) {
   const { locale } = useLocale();
@@ -133,7 +375,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
     addItem({
       slug: product.slug,
       name: product.name,
-      price: product.price,
+      price: getEffectivePrice(product.price, product.discountPrice),
       image: getCartImageFromMedia(media, activeMedia, product.image),
       quantity,
     });
@@ -190,61 +432,15 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
         </Link>
 
         <article className="mt-8 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:rounded-3xl lg:mt-10 lg:flex-row lg:items-start lg:overflow-visible">
-          <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-[#F3E8DF] lg:sticky lg:top-8 lg:aspect-auto lg:h-[34rem] lg:w-1/2 lg:rounded-l-3xl">
-            {media.map((item, index) =>
-              item.type === "video" ? (
-                <video
-                  key={`${product.id}-video-${item.url}-${index}`}
-                  src={item.url}
-                  className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ${
-                    activeMedia === index
-                      ? "opacity-100"
-                      : "pointer-events-none opacity-0"
-                  }`}
-                  controls={activeMedia === index}
-                  playsInline
-                  muted
-                  loop
-                  aria-hidden={activeMedia !== index}
-                />
-              ) : (
-                <Image
-                  key={`${product.id}-image-${item.url}-${index}`}
-                  src={item.url}
-                  alt={product.name}
-                  fill
-                  className={`object-contain object-center transition-opacity duration-500 ${
-                    activeMedia === index
-                      ? "opacity-100"
-                      : "pointer-events-none opacity-0"
-                  }`}
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority={index === 0}
-                  unoptimized
-                  aria-hidden={activeMedia !== index}
-                />
-              ),
-            )}
-
-            {media.length > 1 ? (
-              <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center gap-2">
-                {media.map((item, index) => (
-                  <button
-                    key={`${product.id}-dot-${item.type}-${item.url}-${index}`}
-                    type="button"
-                    onClick={() => setActiveMedia(index)}
-                    aria-label={`Show media ${index + 1}`}
-                    aria-current={activeMedia === index ? "true" : undefined}
-                    className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                      activeMedia === index
-                        ? "bg-dark-green"
-                        : "bg-dark-green/30 hover:bg-dark-green/50"
-                    }`}
-                  />
-                ))}
-              </div>
-            ) : null}
-          </div>
+          <ProductMediaGallery
+            productId={product.id}
+            productName={product.name}
+            media={media}
+            activeMedia={activeMedia}
+            onSelect={setActiveMedia}
+            videoLabel={productPage.videoLabel}
+            fullViewLabel={productPage.fullViewLabel}
+          />
 
           <div className="flex flex-1 flex-col p-6 sm:p-8 lg:p-10">
             <h1 className="text-2xl font-bold text-dark-green sm:text-3xl lg:text-4xl">
@@ -287,9 +483,12 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
                   <p className="text-xs font-medium uppercase tracking-[0.14em] text-dark-green/50">
                     {productPage.price}
                   </p>
-                  <p className="mt-1 text-base font-semibold text-dark-green">
-                    {product.price}
-                  </p>
+                  <ProductPrice
+                    price={product.price}
+                    discountPrice={product.discountPrice}
+                    className="mt-1 text-base font-semibold text-dark-green"
+                    originalClassName="ml-2 font-medium text-dark-green/45 line-through"
+                  />
                 </div>
               </div>
 

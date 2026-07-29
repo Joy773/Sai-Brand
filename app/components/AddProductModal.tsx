@@ -27,6 +27,7 @@ export type NewProductInput = {
   de: ProductLocaleContent;
   ar: ProductLocaleContent;
   price: string;
+  discountPrice: string;
   sizeMl: string;
   kitSize: string;
   status: ProductStatus;
@@ -59,6 +60,7 @@ const initialFormState: FormState = {
   de: emptyLocaleContent(),
   ar: emptyLocaleContent(),
   price: "",
+  discountPrice: "",
   sizeMl: "",
   kitSize: "",
   status: "in_stock",
@@ -960,7 +962,7 @@ export default function AddProductModal({
           </div>
 
           <div
-            className={`grid gap-4 ${form.productType === "single" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+            className={`grid gap-4 ${form.productType === "single" ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"}`}
           >
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
@@ -976,6 +978,24 @@ export default function AddProductModal({
                 min="0"
                 step="0.01"
                 required
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+                {modal.discountPriceLabel}
+              </span>
+              <input
+                type="number"
+                name="discountPrice"
+                value={form.discountPrice}
+                onChange={(event) =>
+                  updateField("discountPrice", event.target.value)
+                }
+                placeholder={modal.discountPricePlaceholder}
+                className={inputClassName}
+                min="0"
+                step="0.01"
               />
             </label>
 

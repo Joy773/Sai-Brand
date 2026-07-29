@@ -18,6 +18,7 @@ type AdminProduct = {
   slug: string;
   productType: ProductType;
   price: string;
+  discountPrice?: string | null;
   size: string;
   sizeMl?: number | null;
   kitSize?: string;
@@ -52,6 +53,9 @@ function toFormValues(product: AdminProduct): NewProductInput {
     de: product.translations?.de ?? emptyLocaleContent(),
     ar: product.translations?.ar ?? emptyLocaleContent(),
     price: product.price.replace(/[^\d.]/g, ""),
+    discountPrice: product.discountPrice
+      ? product.discountPrice.replace(/[^\d.]/g, "")
+      : "",
     sizeMl:
       product.sizeMl != null
         ? String(product.sizeMl)

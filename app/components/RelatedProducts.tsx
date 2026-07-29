@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LuShoppingCart } from "react-icons/lu";
 import { useLocale, useMessages } from "@/app/i18n/LocaleProvider";
+import ProductPrice, {
+  getEffectivePrice,
+} from "@/app/components/ProductPrice";
 import ProductTags from "@/app/components/ProductTags";
 import {
   buildProductMedia,
@@ -38,6 +41,7 @@ type StoreProduct = {
   slug: string;
   productType: "single" | "kit";
   price: string;
+  discountPrice?: string | null;
   size: string;
   image: string;
   images: string[];
@@ -185,9 +189,11 @@ function RelatedKitCard({
           />
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-            <p className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl">
-              {product.price}
-            </p>
+            <ProductPrice
+              price={product.price}
+              discountPrice={product.discountPrice}
+              className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl"
+            />
 
             <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
               <Link href={`/${product.slug}`} className={moreInfoButton}>
@@ -324,9 +330,11 @@ function RelatedSingleProductCard({
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
-          <p className="text-sm font-bold text-dark-green sm:text-base lg:text-lg">
-            {product.price}
-          </p>
+          <ProductPrice
+            price={product.price}
+            discountPrice={product.discountPrice}
+            className="text-sm font-bold text-dark-green sm:text-base lg:text-lg"
+          />
 
           <div className="flex flex-wrap gap-2">
             <Link href={`/${product.slug}`} className={productMoreInfoButton}>
@@ -430,7 +438,7 @@ export default function RelatedProducts({ slug }: RelatedProductsProps) {
     addItem({
       slug: product.slug,
       name: product.name,
-      price: product.price,
+      price: getEffectivePrice(product.price, product.discountPrice),
       image: image ?? product.image,
     });
     showAddedToCartToast(addedToCart);

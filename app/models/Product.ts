@@ -56,6 +56,11 @@ const productSchema = new mongoose.Schema(
       required: [true, "Price is required"],
       min: [0, "Price must be zero or greater"],
     },
+    discountPrice: {
+      type: Number,
+      min: [0, "Discount price must be zero or greater"],
+      default: null,
+    },
     sizeMl: {
       type: Number,
       min: [1, "Size must be at least 1 ml"],
@@ -107,10 +112,14 @@ const existingProductModel = mongoose.models.Product as
   | Model<ProductDocument>
   | undefined;
 
-// Next.js HMR can keep a Product model compiled before `videos` existed.
-// Without this, saves silently drop videos under mongoose strict mode,
-// and GET responses omit videos even when they exist in MongoDB.
-if (existingProductModel && !existingProductModel.schema.path("videos")) {
+// Next.js HMR can keep a Product model compiled before newer fields existed.
+// Without this, saves silently drop those fields under mongoose strict mode,
+// and GET responses omit them even when they exist in MongoDB.
+if (
+  existingProductModel &&
+  (!existingProductModel.schema.path("videos") ||
+    !existingProductModel.schema.path("discountPrice"))
+) {
   delete mongoose.models.Product;
 }
 
