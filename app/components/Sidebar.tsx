@@ -9,6 +9,7 @@ import {
   LuLogOut,
   LuPackage,
   LuShoppingBag,
+  LuStar,
   LuTruck,
   LuUsers,
   LuX,
@@ -21,6 +22,7 @@ const navIcons = {
   products: LuPackage,
   orders: LuShoppingBag,
   users: LuUsers,
+  reviews: LuStar,
   shipping: LuTruck,
 } as const;
 

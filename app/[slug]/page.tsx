@@ -5,6 +5,7 @@ import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar";
 import ProductDetail from "@/app/components/ProductDetail";
 import RelatedProducts from "@/app/components/RelatedProducts";
+import Review from "@/app/components/Review";
 import TrustStrip from "@/app/components/TrustStrip";
 import { CookieConsentProvider } from "@/app/i18n/CookieConsentProvider";
 import { LocaleProvider } from "@/app/i18n/LocaleProvider";
@@ -243,6 +244,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <Navbar />
           <TrustStrip />
           <ProductDetail slug={slug} />
+          <Review productName={product.name} />
           <RelatedProducts slug={slug} />
           <Footer />
         </div>

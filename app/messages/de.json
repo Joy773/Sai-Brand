@@ -1697,6 +1697,11 @@
         "href": "/admin/users"
       },
       {
+        "id": "reviews",
+        "label": "Bewertungen",
+        "href": "/admin/reviews"
+      },
+      {
         "id": "shipping",
         "label": "Versandkosten",
         "href": "/admin/Shipping"

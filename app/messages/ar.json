@@ -1699,6 +1699,11 @@
         "href": "/admin/users"
       },
       {
+        "id": "reviews",
+        "label": "المراجعات",
+        "href": "/admin/reviews"
+      },
+      {
         "id": "shipping",
         "label": "أسعار الشحن",
         "href": "/admin/Shipping"
