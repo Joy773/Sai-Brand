@@ -28,6 +28,7 @@ function UserAuthMenu({
   firstName,
   greeting,
   orders,
+  profileSettings,
   logout,
   onLogout,
   variant,
@@ -35,6 +36,7 @@ function UserAuthMenu({
   firstName: string;
   greeting: string;
   orders: string;
+  profileSettings: string;
   logout: string;
   onLogout: () => Promise<void>;
   variant: "desktop" | "mobile";
@@ -51,6 +53,12 @@ function UserAuthMenu({
         <span className={greetingClassName}>{greetingLabel}</span>
         <Link href="/Orders" className={`${menuItemClassName} text-left`}>
           {orders}
+        </Link>
+        <Link
+          href="/profile-settings"
+          className={`${menuItemClassName} text-left`}
+        >
+          {profileSettings}
         </Link>
         <button
           type="button"
@@ -88,6 +96,13 @@ function UserAuthMenu({
             className={`${menuItemClassName} whitespace-nowrap`}
           >
             {orders}
+          </Link>
+          <Link
+            href="/profile-settings"
+            role="menuitem"
+            className={`${menuItemClassName} whitespace-nowrap`}
+          >
+            {profileSettings}
           </Link>
           <button
             type="button"
@@ -149,8 +164,17 @@ function NavbarContent() {
   const [signupOpen, setSignupOpen] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
-  const { navLinks, menu, cart: cartLabel, signIn, greeting, orders, logout, logoutSuccess } =
-    useMessages().navbar;
+  const {
+    navLinks,
+    menu,
+    cart: cartLabel,
+    signIn,
+    greeting,
+    orders,
+    profileSettings,
+    logout,
+    logoutSuccess,
+  } = useMessages().navbar;
   const { data: session, status } = useSession();
   const [firstName, setFirstName] = useState("");
   const searchParams = useSearchParams();
@@ -310,6 +334,7 @@ function NavbarContent() {
               firstName={displayFirstName}
               greeting={greeting}
               orders={orders}
+              profileSettings={profileSettings}
               logout={logout}
               onLogout={handleLogout}
               variant="desktop"
@@ -391,6 +416,7 @@ function NavbarContent() {
                   firstName={displayFirstName}
                   greeting={greeting}
                   orders={orders}
+                  profileSettings={profileSettings}
                   logout={logout}
                   onLogout={handleLogout}
                   variant="mobile"

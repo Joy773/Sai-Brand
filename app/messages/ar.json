@@ -43,6 +43,7 @@
     "signIn": "تسجيل الدخول",
     "greeting": "مرحبًا، {name}",
     "orders": "الطلبات",
+    "profileSettings": "إعدادات الملف الشخصي",
     "logout": "تسجيل الخروج",
     "logoutSuccess": "تم تسجيل الخروج"
   },

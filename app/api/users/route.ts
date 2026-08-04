@@ -58,98 +58,118 @@ function toAddressFields(address?: UserAddress | null) {
   };
 }
 
+type LeanUserRecord = {
+  _id: mongoose.Types.ObjectId;
+  name: string;
+  email: string;
+  address?: UserAddress | null;
+  createdAt: Date;
+};
+
+async function resolveAddressesForUsers(users: LeanUserRecord[]) {
+  const usersMissingAddress = users.filter(
+    (user) => !hasAddressContent(user.address),
+  );
+
+  const latestOrderByEmail = new Map<string, UserAddress>();
+
+  if (usersMissingAddress.length > 0) {
+    const emails = usersMissingAddress.map((user) => user.email);
+    const latestOrders = await Order.aggregate<{
+      _id: string;
+      firstName?: string;
+      lastName?: string;
+      streetAddress?: string;
+      country?: string;
+      stateProvince?: string;
+      city?: string;
+      zipPostalCode?: string;
+      phoneNumber?: string;
+    }>([
+      { $match: { email: { $in: emails } } },
+      { $sort: { orderPlaceTime: -1 } },
+      {
+        $group: {
+          _id: "$email",
+          firstName: { $first: "$firstName" },
+          lastName: { $first: "$lastName" },
+          streetAddress: { $first: "$streetAddress" },
+          country: { $first: "$country" },
+          stateProvince: { $first: "$stateProvince" },
+          city: { $first: "$city" },
+          zipPostalCode: { $first: "$zipPostalCode" },
+          phoneNumber: { $first: "$phoneNumber" },
+        },
+      },
+    ]);
+
+    for (const order of latestOrders) {
+      const address = toUserAddress({
+        firstName: order.firstName ?? "",
+        lastName: order.lastName ?? "",
+        streetAddress: order.streetAddress ?? "",
+        country: order.country ?? "",
+        stateProvince: order.stateProvince ?? "",
+        city: order.city ?? "",
+        zipPostalCode: order.zipPostalCode ?? "",
+        phoneNumber: order.phoneNumber ?? "",
+      });
+
+      if (!hasAddressContent(address)) {
+        continue;
+      }
+
+      latestOrderByEmail.set(order._id, address);
+      await saveUserAddress(order._id, address);
+    }
+  }
+
+  return users.map((user) => {
+    const address =
+      (hasAddressContent(user.address) ? user.address : null) ??
+      latestOrderByEmail.get(user.email) ??
+      null;
+
+    return {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      address: formatAddress(address),
+      addressFields: toAddressFields(address),
+      createdAt: user.createdAt,
+    };
+  });
+}
+
 export async function GET() {
   const session = await auth();
 
-  if (session?.user?.role !== "admin") {
+  if (!session?.user?.email) {
     return NextResponse.json(
       { ok: false, error: "Unauthorized." },
       { status: 401 },
     );
   }
 
+  const isAdmin = session.user.role === "admin";
+
   try {
     await connectDB();
 
-    const users = await User.find()
-      .select("name email address createdAt")
-      .sort({ createdAt: -1 })
-      .lean();
-
-    const usersMissingAddress = users.filter(
-      (user) => !hasAddressContent(user.address),
-    );
-
-    const latestOrderByEmail = new Map<string, UserAddress>();
-
-    if (usersMissingAddress.length > 0) {
-      const emails = usersMissingAddress.map((user) => user.email);
-      const latestOrders = await Order.aggregate<{
-        _id: string;
-        firstName?: string;
-        lastName?: string;
-        streetAddress?: string;
-        country?: string;
-        stateProvince?: string;
-        city?: string;
-        zipPostalCode?: string;
-        phoneNumber?: string;
-      }>([
-        { $match: { email: { $in: emails } } },
-        { $sort: { orderPlaceTime: -1 } },
-        {
-          $group: {
-            _id: "$email",
-            firstName: { $first: "$firstName" },
-            lastName: { $first: "$lastName" },
-            streetAddress: { $first: "$streetAddress" },
-            country: { $first: "$country" },
-            stateProvince: { $first: "$stateProvince" },
-            city: { $first: "$city" },
-            zipPostalCode: { $first: "$zipPostalCode" },
-            phoneNumber: { $first: "$phoneNumber" },
-          },
-        },
-      ]);
-
-      for (const order of latestOrders) {
-        const address = toUserAddress({
-          firstName: order.firstName ?? "",
-          lastName: order.lastName ?? "",
-          streetAddress: order.streetAddress ?? "",
-          country: order.country ?? "",
-          stateProvince: order.stateProvince ?? "",
-          city: order.city ?? "",
-          zipPostalCode: order.zipPostalCode ?? "",
-          phoneNumber: order.phoneNumber ?? "",
-        });
-
-        if (!hasAddressContent(address)) {
-          continue;
-        }
-
-        latestOrderByEmail.set(order._id, address);
-        await saveUserAddress(order._id, address);
-      }
-    }
+    const users = (
+      isAdmin
+        ? await User.find()
+            .select("name email address createdAt")
+            .sort({ createdAt: -1 })
+            .lean()
+        : await User.find({ email: session.user.email.trim().toLowerCase() })
+            .select("name email address createdAt")
+            .lean()
+    ) as LeanUserRecord[];
 
     return NextResponse.json({
       ok: true,
-      users: users.map((user) => {
-        const address =
-          (hasAddressContent(user.address) ? user.address : null) ??
-          latestOrderByEmail.get(user.email) ??
-          null;
-
-        return {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          address: formatAddress(address),
-          addressFields: toAddressFields(address),
-          createdAt: user.createdAt,
-        };
-      }),
+      users: await resolveAddressesForUsers(users),
     });
   } catch (error) {
     console.error("[users api] Failed to fetch users", error);
@@ -164,17 +184,28 @@ export async function GET() {
 export async function PATCH(request: NextRequest) {
   const session = await auth();
 
-  if (session?.user?.role !== "admin") {
+  if (!session?.user?.email) {
     return NextResponse.json(
       { ok: false, error: "Unauthorized." },
       { status: 401 },
     );
   }
 
-  let body: Partial<UserAddressInput> & { id?: string };
+  const isAdmin =
+    session.user.role === "admin" || session.user.id === "admin";
+
+  let body: Partial<UserAddressInput> & {
+    id?: string;
+    name?: string;
+    email?: string;
+  };
 
   try {
-    body = (await request.json()) as Partial<UserAddressInput> & { id?: string };
+    body = (await request.json()) as Partial<UserAddressInput> & {
+      id?: string;
+      name?: string;
+      email?: string;
+    };
   } catch {
     return NextResponse.json(
       { ok: false, error: "Invalid JSON payload." },
@@ -219,10 +250,31 @@ export async function PATCH(request: NextRequest) {
     );
   }
 
+  const rawName = typeof body.name === "string" ? body.name : null;
+  const rawEmail = typeof body.email === "string" ? body.email : null;
+  const hasNameUpdate = rawName !== null;
+  const hasEmailUpdate = rawEmail !== null;
+  const nextName = hasNameUpdate ? rawName.trim() : "";
+  const nextEmail = hasEmailUpdate ? rawEmail.trim().toLowerCase() : "";
+
+  if (hasNameUpdate && !nextName) {
+    return NextResponse.json(
+      { ok: false, error: "Name is required." },
+      { status: 400 },
+    );
+  }
+
+  if (hasEmailUpdate && (!nextEmail || !emailPattern.test(nextEmail))) {
+    return NextResponse.json(
+      { ok: false, error: "A valid email is required." },
+      { status: 400 },
+    );
+  }
+
   try {
     await connectDB();
 
-    const user = await User.findById(userId).select("email").lean();
+    const user = await User.findById(userId).select("name email").lean();
 
     if (!user) {
       return NextResponse.json(
@@ -231,30 +283,122 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const updatedUser = await saveUserAddress(user.email, addressInput, {
+    const sessionEmail = session.user.email.trim().toLowerCase();
+    const isOwnProfile =
+      user.email.trim().toLowerCase() === sessionEmail ||
+      session.user.id === userId;
+
+    if (!isAdmin && !isOwnProfile) {
+      return NextResponse.json(
+        { ok: false, error: "Unauthorized." },
+        { status: 401 },
+      );
+    }
+
+    if (hasEmailUpdate && nextEmail !== user.email.trim().toLowerCase()) {
+      const emailTaken = await User.exists({
+        email: nextEmail,
+        _id: { $ne: user._id },
+      });
+
+      if (emailTaken) {
+        return NextResponse.json(
+          { ok: false, error: "That email is already in use." },
+          { status: 409 },
+        );
+      }
+    }
+
+    const address = toUserAddress(addressInput);
+    const emailChanged =
+      hasEmailUpdate && nextEmail !== user.email.trim().toLowerCase();
+    const verificationToken = emailChanged ? uuidv4() : null;
+
+    const updateFields: {
+      address: UserAddress;
+      name?: string;
+      email?: string;
+      emailVerified?: boolean;
+      verificationToken?: string;
+    } = { address };
+
+    if (hasNameUpdate) {
+      updateFields.name = nextName;
+    }
+
+    if (hasEmailUpdate) {
+      updateFields.email = nextEmail;
+    }
+
+    if (emailChanged && verificationToken) {
+      updateFields.emailVerified = false;
+      updateFields.verificationToken = verificationToken;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
       userId,
-    });
+      {
+        $set: updateFields,
+        ...(emailChanged ? { $unset: { autoLoginToken: 1 } } : {}),
+      },
+      { returnDocument: "after" },
+    ).select("name email address");
 
     if (!updatedUser) {
       return NextResponse.json(
-        { ok: false, error: "Failed to update address." },
+        { ok: false, error: "Failed to update user." },
         { status: 500 },
       );
     }
 
-    const address = toUserAddress(addressInput);
+    let verificationEmailSent = false;
+
+    if (emailChanged && verificationToken) {
+      const verificationLink = `${SITE_URL}/verify-email/${verificationToken}`;
+      const recipientName = updatedUser.name;
+
+      if (isEmailConfigured()) {
+        try {
+          await sendVerificationEmail({
+            to: updatedUser.email,
+            name: recipientName,
+            verificationLink,
+          });
+          verificationEmailSent = true;
+        } catch (error) {
+          console.error(
+            "[users api] Failed to send email-change verification",
+            error,
+          );
+        }
+      } else {
+        console.error(
+          "[users api] SMTP is not configured; skipped email-change verification",
+        );
+      }
+    }
 
     return NextResponse.json({
       ok: true,
       id: userId,
-      address: formatAddress(address),
-      addressFields: toAddressFields(address),
+      name: updatedUser.name,
+      email: updatedUser.email,
+      address: formatAddress(updatedUser.address),
+      addressFields: toAddressFields(updatedUser.address),
+      emailChanged,
+      verificationEmailSent,
+      ...(!verificationEmailSent && emailChanged
+        ? {
+            error:
+              "Profile updated, but we could not send the verification email.",
+          }
+        : {}),
     });
   } catch (error) {
-    console.error("[users api] Failed to update address", error);
+    console.error("[users api] Failed to update user", error);
 
     return NextResponse.json(
-      { ok: false, error: "Failed to update address. Please try again." },
+      { ok: false, error: "Failed to update user. Please try again." },
       { status: 500 },
     );
   }

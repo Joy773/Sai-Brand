@@ -43,6 +43,7 @@
     "signIn": "Sign In",
     "greeting": "Hi, {name}",
     "orders": "Orders",
+    "profileSettings": "Profile Settings",
     "logout": "Logout",
     "logoutSuccess": "Logged out"
   },

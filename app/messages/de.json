@@ -43,6 +43,7 @@
     "signIn": "Anmelden",
     "greeting": "Hallo, {name}",
     "orders": "Bestellungen",
+    "profileSettings": "Profileinstellungen",
     "logout": "Abmelden",
     "logoutSuccess": "Abgemeldet"
   },
