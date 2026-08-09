@@ -98,8 +98,14 @@ function KitCard({
 
   return (
     <article
-      className={`group mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row lg:items-center ${cardHover} hover:shadow-dark-green/10`}
+      className={`group relative mb-4 flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:mb-6 sm:rounded-3xl lg:flex-row lg:items-center ${cardHover} hover:shadow-dark-green/10`}
     >
+      <Link
+        href={`/${product.slug}`}
+        className="absolute inset-0 z-[1]"
+        aria-label={product.name}
+      />
+
       <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-beige/40 lg:w-1/2">
         {media.map((item, index) =>
           item.type === "video" ? (
@@ -108,7 +114,7 @@ function KitCard({
               src={item.url}
               className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
                 activeMedia === index
-                  ? "opacity-100"
+                  ? "pointer-events-auto z-[2] opacity-100"
                   : "pointer-events-none opacity-0"
               }`}
               controls={activeMedia === index}
@@ -136,7 +142,7 @@ function KitCard({
         )}
 
         {media.length > 1 ? (
-          <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-2 sm:bottom-4">
+          <div className="pointer-events-auto absolute inset-x-0 bottom-3 z-[2] flex justify-center gap-2 sm:bottom-4">
             {media.map((item, index) => (
               <button
                 key={`${product.id}-dot-${item.type}-${item.url}-${index}`}
@@ -158,16 +164,14 @@ function KitCard({
         ) : null}
       </div>
 
-      <div className="flex flex-1 flex-col justify-between gap-6 p-4 sm:p-6 lg:p-8">
+      <div className="pointer-events-none relative z-[2] flex flex-1 flex-col justify-between gap-6 p-4 sm:p-6 lg:p-8">
         <div>
-          <Link href={`/${product.slug}`} className="group/link block">
-            <h3 className="text-xl font-semibold text-dark-green transition-colors group-hover/link:text-dark-green/80 sm:text-2xl lg:text-3xl">
-              {product.name}
-            </h3>
-            <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
-              {product.description}
-            </p>
-          </Link>
+          <h3 className="text-xl font-semibold text-dark-green sm:text-2xl lg:text-3xl">
+            {product.name}
+          </h3>
+          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-dark-green/70 sm:text-base lg:text-lg">
+            {product.description}
+          </p>
           {product.size ? (
             <p className="mt-3 text-sm font-bold text-dark-green sm:text-base">
               {product.size}
@@ -193,7 +197,7 @@ function KitCard({
               className="text-lg font-bold text-dark-green sm:text-xl lg:text-2xl"
             />
 
-            <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+            <div className="pointer-events-auto flex flex-col gap-2 sm:flex-row sm:gap-3">
               <Link href={`/${product.slug}`} className={moreInfoButton}>
                 {labels.moreInfo}
                 <span className="sr-only"> – {product.name}</span>
@@ -246,8 +250,14 @@ function SingleProductCard({
 
   return (
     <article
-      className={`group flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:flex-row sm:items-start sm:rounded-3xl ${cardHover} hover:shadow-dark-green/10`}
+      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-warm-white sm:flex-row sm:items-start sm:rounded-3xl ${cardHover} hover:shadow-dark-green/10`}
     >
+      <Link
+        href={`/${product.slug}`}
+        className="absolute inset-0 z-[1]"
+        aria-label={product.name}
+      />
+
       <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-white sm:w-52 sm:max-w-[48%] lg:w-64 lg:max-w-[17rem]">
         {media.map((item, index) =>
           item.type === "video" ? (
@@ -256,7 +266,7 @@ function SingleProductCard({
               src={item.url}
               className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ease-in-out motion-reduce:transition-none ${
                 activeMedia === index
-                  ? "opacity-100"
+                  ? "pointer-events-auto z-[2] opacity-100"
                   : "pointer-events-none opacity-0"
               }`}
               controls={activeMedia === index}
@@ -284,7 +294,7 @@ function SingleProductCard({
         )}
 
         {media.length > 1 ? (
-          <div className="absolute inset-x-0 bottom-2 z-10 flex justify-center gap-1.5 sm:bottom-3">
+          <div className="pointer-events-auto absolute inset-x-0 bottom-2 z-[2] flex justify-center gap-1.5 sm:bottom-3">
             {media.map((item, index) => (
               <button
                 key={`${product.id}-dot-${item.type}-${item.url}-${index}`}
@@ -306,13 +316,11 @@ function SingleProductCard({
         ) : null}
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:p-4 lg:gap-5 lg:p-6">
+      <div className="pointer-events-none relative z-[2] flex min-w-0 flex-1 flex-col justify-between gap-3 p-3 sm:gap-4 sm:p-4 lg:gap-5 lg:p-6">
         <div className="min-w-0">
-          <Link href={`/${product.slug}`}>
-            <h3 className="line-clamp-2 text-sm font-semibold text-dark-green transition-colors hover:text-dark-green/80 sm:text-base lg:text-xl">
-              {product.name}
-            </h3>
-          </Link>
+          <h3 className="line-clamp-2 text-sm font-semibold text-dark-green sm:text-base lg:text-xl">
+            {product.name}
+          </h3>
           <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dark-green/70 sm:mt-2 sm:text-sm">
             {product.description}
           </p>
@@ -331,7 +339,7 @@ function SingleProductCard({
             className="text-sm font-bold text-dark-green sm:text-base lg:text-lg"
           />
 
-          <div className="flex flex-wrap gap-2">
+          <div className="pointer-events-auto flex flex-wrap gap-2">
             <Link href={`/${product.slug}`} className={productMoreInfoButton}>
               {labels.moreInfo}
               <span className="sr-only"> – {product.name}</span>

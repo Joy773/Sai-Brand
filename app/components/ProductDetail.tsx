@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import {
   LuArrowLeft,
   LuCheck,
+  LuChevronLeft,
+  LuChevronRight,
   LuMinus,
   LuPlay,
   LuPlus,
@@ -109,6 +111,26 @@ function ProductMediaGallery({
       .slice(MAX_VISIBLE_IMAGE_THUMBS)
       .some(({ index }) => index === activeMedia);
   const showSidebar = media.length > 1;
+  const canNavigateMedia = media.length > 1;
+
+  const goToPreviousMedia = () => {
+    if (!canNavigateMedia) {
+      return;
+    }
+
+    const previousIndex =
+      activeMedia <= 0 ? media.length - 1 : activeMedia - 1;
+    onSelect(previousIndex);
+  };
+
+  const goToNextMedia = () => {
+    if (!canNavigateMedia) {
+      return;
+    }
+
+    const nextIndex = activeMedia >= media.length - 1 ? 0 : activeMedia + 1;
+    onSelect(nextIndex);
+  };
 
   useEffect(() => {
     if (!isFullViewOpen) {
@@ -121,6 +143,18 @@ function ProductMediaGallery({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsFullViewOpen(false);
+        return;
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        goToPreviousMedia();
+        return;
+      }
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goToNextMedia();
       }
     };
 
@@ -130,7 +164,7 @@ function ProductMediaGallery({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isFullViewOpen]);
+  }, [isFullViewOpen, activeMedia, media.length]);
 
   const thumbClassName = (isActive: boolean) =>
     `relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition-colors sm:h-16 sm:w-16 ${
@@ -287,6 +321,27 @@ function ProductMediaGallery({
                   priority
                 />
               )}
+
+              {canNavigateMedia ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={goToPreviousMedia}
+                    className="absolute start-16 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-warm-white/95 text-dark-green shadow-md transition-colors hover:bg-warm-white sm:start-24 sm:h-11 sm:w-11 lg:start-32"
+                    aria-label="Previous media"
+                  >
+                    <LuChevronLeft className="h-6 w-6" aria-hidden />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={goToNextMedia}
+                    className="absolute end-16 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-warm-white/95 text-dark-green shadow-md transition-colors hover:bg-warm-white sm:end-24 sm:h-11 sm:w-11 lg:end-32"
+                    aria-label="Next media"
+                  >
+                    <LuChevronRight className="h-6 w-6" aria-hidden />
+                  </button>
+                </>
+              ) : null}
             </div>
           </div>
         </div>
