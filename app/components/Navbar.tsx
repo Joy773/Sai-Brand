@@ -87,28 +87,29 @@ function UserAuthMenu({
       </button>
       <div
         role="menu"
-        className="pointer-events-none invisible absolute right-0 top-full z-50 min-w-full pt-1 opacity-0 transition-all group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100"
+        className="pointer-events-none invisible absolute end-0 top-full z-50 min-w-[12.5rem] pt-2 opacity-0 transition-all group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100"
       >
-        <div className="flex flex-col items-stretch gap-1 bg-[#F3E8DF] py-1">
+        <div className="overflow-hidden rounded-2xl border border-dark-green/10 bg-warm-white py-1.5 shadow-lg shadow-dark-green/10">
           <Link
             href="/Orders"
             role="menuitem"
-            className={`${menuItemClassName} whitespace-nowrap`}
+            className={`${menuItemClassName} block px-4 py-2.5 whitespace-nowrap hover:bg-beige/60`}
           >
             {orders}
           </Link>
           <Link
             href="/profile-settings"
             role="menuitem"
-            className={`${menuItemClassName} whitespace-nowrap`}
+            className={`${menuItemClassName} block px-4 py-2.5 whitespace-nowrap hover:bg-beige/60`}
           >
             {profileSettings}
           </Link>
+          <div className="my-1 border-t border-dark-green/10" aria-hidden />
           <button
             type="button"
             role="menuitem"
             onClick={onLogout}
-            className={`${menuItemClassName} whitespace-nowrap text-left`}
+            className={`${menuItemClassName} block w-full px-4 py-2.5 text-left whitespace-nowrap hover:bg-beige/60`}
           >
             {logout}
           </button>
