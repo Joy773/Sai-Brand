@@ -128,13 +128,50 @@ function CheckoutContent() {
 
   useEffect(() => {
     const checkoutStatus = searchParams.get("checkout");
+    const stripeSessionId = searchParams.get("session_id")?.trim() || "";
 
     if (checkoutStatus === "success") {
-      clearCart();
-      sessionStorage.removeItem(CHECKOUT_ADDRESS_KEY);
-      toast.success(paymentSuccess);
-      router.replace("/cart");
-      return;
+      let cancelled = false;
+
+      const finalizeSuccess = async () => {
+        // Browser-side fulfillment so an order is saved even if the webhook
+        // is delayed or misconfigured. Idempotent with the webhook.
+        if (stripeSessionId) {
+          try {
+            const response = await fetch("/api/checkout/confirm", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ sessionId: stripeSessionId }),
+            });
+
+            if (!response.ok) {
+              // eslint-disable-next-line no-console
+              console.error(
+                "[checkout] Failed to confirm Stripe session",
+                await response.text(),
+              );
+            }
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error("[checkout] Stripe confirm request failed", error);
+          }
+        }
+
+        if (cancelled) {
+          return;
+        }
+
+        clearCart();
+        sessionStorage.removeItem(CHECKOUT_ADDRESS_KEY);
+        toast.success(paymentSuccess);
+        router.replace("/cart");
+      };
+
+      void finalizeSuccess();
+
+      return () => {
+        cancelled = true;
+      };
     }
 
     if (checkoutStatus === "cancel") {

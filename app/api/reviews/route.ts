@@ -6,8 +6,6 @@ import { getClientIp, rateLimit } from "@/app/lib/rateLimit";
 import Review from "@/app/models/Review";
 
 type CreateReviewPayload = {
-  name?: string;
-  email?: string;
   productName?: string;
   comment?: string;
   rating?: number;
@@ -15,19 +13,22 @@ type CreateReviewPayload = {
 
 const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-function serializeReview(review: {
-  _id: { toString(): string };
-  name: string;
-  email: string;
-  productName: string;
-  comment: string;
-  rating: number;
-  createdAt?: Date;
-}) {
+function serializeReview(
+  review: {
+    _id: { toString(): string };
+    name: string;
+    email: string;
+    productName: string;
+    comment: string;
+    rating: number;
+    createdAt?: Date;
+  },
+  options: { includeEmail?: boolean } = {},
+) {
   return {
     id: String(review._id),
     name: review.name,
-    email: review.email,
+    ...(options.includeEmail ? { email: review.email } : {}),
     productName: review.productName,
     comment: review.comment,
     rating: review.rating,
@@ -37,6 +38,8 @@ function serializeReview(review: {
 
 export async function GET(request: NextRequest) {
   const productName = request.nextUrl.searchParams.get("productName")?.trim() ?? "";
+  const session = await auth();
+  const isAdmin = session?.user?.role === "admin";
 
   try {
     await connectDB();
@@ -47,7 +50,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       ok: true,
-      reviews: reviews.map((review) => serializeReview(review)),
+      reviews: reviews.map((review) =>
+        serializeReview(review, { includeEmail: isAdmin }),
+      ),
     });
   } catch (error) {
     console.error("[reviews api] Failed to load reviews", error);
@@ -87,12 +92,21 @@ export async function POST(request: NextRequest) {
   }
 
   const session = await auth();
-  const name =
-    body.name?.trim() || session?.user?.name?.trim() || "";
-  const email =
-    body.email?.trim().toLowerCase() ||
-    session?.user?.email?.trim().toLowerCase() ||
-    "";
+
+  if (!session?.user?.email) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Please sign in to submit a review.",
+      },
+      { status: 401 },
+    );
+  }
+
+  // Always take identity from the session so callers cannot spoof another
+  // customer's name/email.
+  const name = session.user.name?.trim() || "";
+  const email = session.user.email.trim().toLowerCase();
   const comment = body.comment?.trim() ?? "";
   const productName = body.productName?.trim() ?? "";
   const rating = Number(body.rating);
@@ -118,19 +132,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (!name || !email) {
+  if (!name || !emailPattern.test(email)) {
     return NextResponse.json(
       {
         ok: false,
-        error: "Name and email are required. Please sign in to submit a review.",
+        error: "Your account profile is incomplete. Please update your name and try again.",
       },
-      { status: 401 },
-    );
-  }
-
-  if (!emailPattern.test(email)) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid email address." },
       { status: 400 },
     );
   }
@@ -149,7 +156,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         ok: true,
-        review: serializeReview(review),
+        // Never return email on the public create response.
+        review: serializeReview(review, { includeEmail: false }),
       },
       { status: 201 },
     );

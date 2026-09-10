@@ -97,5 +97,14 @@ export async function getPayPalAccessToken() {
   return data.access_token;
 }
 
+export async function refundPayPalCapture(captureId: string) {
+  const client = getPayPalClient();
+  const refundRequest = new checkoutNodeJssdk.payments.CapturesRefundRequest(
+    captureId,
+  );
+  refundRequest.requestBody({});
+  return client.execute(refundRequest);
+}
+
 export default getPayPalClient;
 export { checkoutNodeJssdk as paypal };

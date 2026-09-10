@@ -51,6 +51,20 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+/** Stacked label/value for multi-column invoice meta (avoids cramped side-by-side wrap). */
+function MetaField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="min-w-0">
+      <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-dark-green/50">
+        {label}
+      </dt>
+      <dd className="mt-1 whitespace-nowrap text-sm font-medium text-dark-green">
+        {value || "—"}
+      </dd>
+    </div>
+  );
+}
+
 export default function OrdersInvoices() {
   const { status } = useSession();
   const copy = useMessages().ordersPage;
@@ -215,13 +229,13 @@ export default function OrdersInvoices() {
               {order.orderNumber}
             </h2>
             <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <DetailRow label={copy.orderNumber} value={order.orderNumber} />
-              <DetailRow label={copy.invoiceDate} value={order.invoiceDate} />
-              <DetailRow
+              <MetaField label={copy.orderNumber} value={order.orderNumber} />
+              <MetaField label={copy.invoiceDate} value={order.invoiceDate} />
+              <MetaField
                 label={copy.paymentDate}
                 value={order.paymentDate || "—"}
               />
-              <DetailRow
+              <MetaField
                 label={copy.paymentStatus}
                 value={paymentStatusLabel(order.paymentStatus)}
               />

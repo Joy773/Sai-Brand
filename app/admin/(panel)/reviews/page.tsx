@@ -19,7 +19,7 @@ type ReviewsApiResponse = {
   reviews?: Array<{
     id: string;
     name: string;
-    email: string;
+    email?: string;
     productName: string;
     comment: string;
     rating: number;
@@ -85,7 +85,7 @@ export default function AdminReviewsPage() {
           data.reviews.map((review) => ({
             id: review.id,
             name: review.name,
-            email: review.email,
+            email: review.email ?? "",
             productName: review.productName,
             comment: review.comment,
             rating: review.rating,

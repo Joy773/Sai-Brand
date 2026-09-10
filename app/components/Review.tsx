@@ -197,8 +197,6 @@ export default function Review({ productName }: { productName: string }) {
           comment: trimmedComment,
           rating,
           productName,
-          name: session?.user?.name ?? "",
-          email: session?.user?.email ?? "",
         }),
       });
 

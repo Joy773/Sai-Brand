@@ -204,7 +204,7 @@ export async function POST(request: NextRequest) {
       payment_method_types: ["card"],
       customer_email: email,
       line_items: lineItems,
-      success_url: `${origin}/checkout?checkout=success`,
+      success_url: `${origin}/checkout?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout?checkout=cancel`,
       metadata: {
         userId: session.user.id ?? "",

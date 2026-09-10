@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
-import { resolveOrderPricing } from "@/app/lib/orderPricing";
+import { fromCents, resolveOrderPricing } from "@/app/lib/orderPricing";
 import { getPayPalClient, paypal } from "@/app/lib/paypal";
 import { saveUserAddress } from "@/app/lib/saveUserAddress";
+import Order from "@/app/models/Orders";
 
 type PayPalProductPayload = {
   slug?: string;
@@ -35,10 +36,6 @@ type PayPalOrderResult = {
 
 const CURRENCY = "EUR";
 
-function toCents(value: number) {
-  return Math.round(value * 100);
-}
-
 function centsToPayPalAmount(cents: number) {
   return (cents / 100).toFixed(2);
 }
@@ -60,6 +57,29 @@ function getOrigin(request: NextRequest) {
     process.env.NEXT_PUBLIC_APP_URL?.trim() ||
     "http://localhost:3000"
   );
+}
+
+function formatDeliveryAddress(input: {
+  firstName: string;
+  lastName: string;
+  streetAddress: string;
+  country: string;
+  stateProvince: string;
+  city: string;
+  zipPostalCode: string;
+  phoneNumber: string;
+}) {
+  return [
+    `${input.firstName} ${input.lastName}`.trim(),
+    input.streetAddress,
+    [input.city, input.stateProvince, input.zipPostalCode]
+      .filter(Boolean)
+      .join(", "),
+    input.country,
+    input.phoneNumber,
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 function getPayPalErrorMessage(error: unknown) {
@@ -145,6 +165,8 @@ export async function POST(request: NextRequest) {
   }
 
   const email = session.user.email?.trim().toLowerCase() ?? "";
+  const customerName =
+    session.user.name?.trim() || `${firstName} ${lastName}`.trim() || email;
 
   if (!email) {
     return NextResponse.json(
@@ -152,6 +174,19 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
+
+  const deliveryAddress =
+    address ||
+    formatDeliveryAddress({
+      firstName,
+      lastName,
+      streetAddress,
+      country,
+      stateProvince,
+      city,
+      zipPostalCode,
+      phoneNumber,
+    });
 
   // Prices and shipping are resolved from the database, never trusted from the
   // client, to prevent amount tampering.
@@ -164,25 +199,22 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let productsTotalCents = 0;
   const items = pricing.products.map((product) => {
-    const unitCents = toCents(product.unitPrice);
-    productsTotalCents += unitCents * product.quantity;
-
     return {
       name: product.name.slice(0, 127),
       sku: product.slug.slice(0, 127),
       unit_amount: {
         currency_code: CURRENCY,
-        value: centsToPayPalAmount(unitCents),
+        value: centsToPayPalAmount(product.unitPriceCents),
       },
       quantity: String(product.quantity),
       category: "PHYSICAL_GOODS" as const,
     };
   });
 
-  const shippingCents = toCents(pricing.shippingFee);
-  const orderTotalCents = productsTotalCents + shippingCents;
+  const productsTotalCents = pricing.productsTotalCents;
+  const shippingCents = pricing.shippingFeeCents;
+  const orderTotalCents = pricing.totalCents;
   const origin = getOrigin(request);
 
   const amountBreakdown: Record<string, { currency_code: string; value: string }> =
@@ -211,7 +243,9 @@ export async function POST(request: NextRequest) {
         {
           reference_id: "sai-cart",
           description: "German Care order",
-          custom_id: (session.user.id ?? email).slice(0, 127),
+          // Prefer email so the webhook can recover the customer if the
+          // browser never finishes capture-order.
+          custom_id: email.slice(0, 127),
           amount: {
             currency_code: CURRENCY,
             value: centsToPayPalAmount(orderTotalCents),
@@ -240,8 +274,59 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Persist a pending order as soon as PayPal accepts the checkout. If the
+    // browser dies after payment, the webhook can mark this paid (or rebuild
+    // from PayPal if this write somehow failed).
     try {
       await connectDB();
+
+      const existing = await Order.findOne({ paypalOrderId: orderId });
+      if (!existing) {
+        const orderTime = new Date();
+        try {
+          await Order.create({
+            name: customerName,
+            email,
+            firstName,
+            lastName,
+            streetAddress,
+            country,
+            stateProvince,
+            city,
+            zipPostalCode,
+            phoneNumber,
+            address: deliveryAddress,
+            paymentMethod: "paypal",
+            paymentStatus: "pending",
+            price: fromCents(productsTotalCents),
+            shippingFee: fromCents(shippingCents),
+            products: pricing.products.map((product) => ({
+              slug: product.slug,
+              name: product.name,
+              price: product.price,
+              image: product.image,
+              quantity: product.quantity,
+            })),
+            total: fromCents(orderTotalCents),
+            orderPlaceTime: orderTime,
+            orderTime,
+            status: "pending",
+            paypalOrderId: orderId,
+          });
+        } catch (createError) {
+          // Duplicate is fine (retry / race). Anything else must not block PayPal.
+          const isDuplicate =
+            createError &&
+            typeof createError === "object" &&
+            "code" in createError &&
+            createError.code === 11000;
+
+          if (!isDuplicate) {
+            throw createError;
+          }
+        }
+      }
+
       await saveUserAddress(
         email,
         {
@@ -259,12 +344,11 @@ export async function POST(request: NextRequest) {
           role: session.user.role,
         },
       );
-    } catch (addressError) {
-      // Address save must not block checkout once PayPal order exists.
+    } catch (persistError) {
       // eslint-disable-next-line no-console
       console.error(
-        "[paypal api] PayPal order created but address save failed",
-        addressError,
+        "[paypal api] PayPal order created but pending order/address save failed",
+        { orderId, persistError },
       );
     }
 

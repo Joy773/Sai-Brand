@@ -40,6 +40,13 @@ declare module "@paypal/checkout-server-sdk" {
     constructor(orderId: string);
   }
 
+  class CapturesRefundRequest {
+    constructor(captureId: string);
+    prefer(preference: string): this;
+    payPalRequestId(id: string): this;
+    requestBody(body?: Record<string, unknown>): this;
+  }
+
   const checkoutNodeJssdk: {
     core: {
       PayPalEnvironment: typeof PayPalEnvironment;
@@ -52,7 +59,9 @@ declare module "@paypal/checkout-server-sdk" {
       OrdersCaptureRequest: typeof OrdersCaptureRequest;
       OrdersGetRequest: typeof OrdersGetRequest;
     };
-    payments: Record<string, unknown>;
+    payments: {
+      CapturesRefundRequest: typeof CapturesRefundRequest;
+    };
   };
 
   export = checkoutNodeJssdk;

@@ -16,17 +16,22 @@ export type ResolvedOrderProduct = {
   name: string;
   price: string;
   unitPrice: number;
+  unitPriceCents: number;
   image: string;
   quantity: number;
   lineTotal: number;
+  lineTotalCents: number;
 };
 
 export type OrderPricingSuccess = {
   ok: true;
   products: ResolvedOrderProduct[];
   productsTotal: number;
+  productsTotalCents: number;
   shippingFee: number;
+  shippingFeeCents: number;
   total: number;
+  totalCents: number;
   country: string;
 };
 
@@ -42,8 +47,16 @@ function formatEuro(amount: number): string {
   return `€${amount.toFixed(2)}`;
 }
 
-function roundMoney(amount: number): number {
-  return Math.round(amount * 100) / 100;
+export function toCents(value: number) {
+  return Math.round(value * 100);
+}
+
+export function fromCents(cents: number) {
+  return cents / 100;
+}
+
+export function amountsMatch(left: number, right: number) {
+  return Math.abs(left - right) <= 0.01;
 }
 
 /**
@@ -109,13 +122,13 @@ export async function resolveOrderPricing(input: {
 
   const slugs = [...new Set(requested.map((item) => item.slug))];
   const dbProducts = await Product.find({ slug: { $in: slugs } })
-    .select("slug price images translations")
+    .select("slug price discountPrice images translations")
     .lean();
 
   const bySlug = new Map(dbProducts.map((product) => [product.slug, product]));
 
   const resolved: ResolvedOrderProduct[] = [];
-  let productsTotal = 0;
+  let productsTotalCents = 0;
 
   for (const item of requested) {
     const dbProduct = bySlug.get(item.slug);
@@ -128,30 +141,46 @@ export async function resolveOrderPricing(input: {
       };
     }
 
-    const unitPrice =
+    const listPrice =
       typeof dbProduct.price === "number" ? dbProduct.price : Number.NaN;
 
-    if (!Number.isFinite(unitPrice) || unitPrice < 0) {
+    if (!Number.isFinite(listPrice) || listPrice < 0) {
       return { ok: false, error: "Invalid product price.", status: 400 };
     }
 
-    const lineTotal = roundMoney(unitPrice * item.quantity);
-    productsTotal += lineTotal;
+    // Must mirror getEffectivePrice() in ProductPrice.tsx: the storefront carts
+    // the discount price when one is set, so checkout has to charge the same.
+    const discountPrice = dbProduct.discountPrice;
+    const unitPrice =
+      typeof discountPrice === "number" &&
+      Number.isFinite(discountPrice) &&
+      discountPrice >= 0
+        ? discountPrice
+        : listPrice;
+
+    // Round per unit first, then multiply. PayPal/Stripe both total
+    // unit_amount (cents) * quantity, so this must match that.
+    const unitPriceCents = toCents(unitPrice);
+    const lineTotalCents = unitPriceCents * item.quantity;
+    productsTotalCents += lineTotalCents;
 
     const dbImage =
       Array.isArray(dbProduct.images) && dbProduct.images.length > 0
         ? dbProduct.images[0]
         : "";
     const dbName = dbProduct.translations?.en?.name ?? "";
+    const unitPriceExact = fromCents(unitPriceCents);
 
     resolved.push({
       slug: item.slug,
       name: item.name || dbName,
-      price: formatEuro(unitPrice),
-      unitPrice,
+      price: formatEuro(unitPriceExact),
+      unitPrice: unitPriceExact,
+      unitPriceCents,
       image: item.image || dbImage,
       quantity: item.quantity,
-      lineTotal,
+      lineTotal: fromCents(lineTotalCents),
+      lineTotalCents,
     });
   }
 
@@ -173,15 +202,18 @@ export async function resolveOrderPricing(input: {
       ? shippingRate.price
       : 0;
 
-  productsTotal = roundMoney(productsTotal);
-  const total = roundMoney(productsTotal + shippingFee);
+  const shippingFeeCents = toCents(shippingFee);
+  const totalCents = productsTotalCents + shippingFeeCents;
 
   return {
     ok: true,
     products: resolved,
-    productsTotal,
-    shippingFee,
-    total,
+    productsTotal: fromCents(productsTotalCents),
+    productsTotalCents,
+    shippingFee: fromCents(shippingFeeCents),
+    shippingFeeCents,
+    total: fromCents(totalCents),
+    totalCents,
     country,
   };
 }
