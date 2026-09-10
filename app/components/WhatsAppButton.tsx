@@ -7,7 +7,7 @@ const WHATSAPP_MESSAGE =
   "Hello! 👋 I’m interested in your products and would like to know more about your offerings. Could you please provide me with some details?";
 
 type WhatsAppButtonProps = {
-  /** Digits only with country code, e.g. "491701234567". Falls back to NEXT_PUBLIC_WHATSAPP_NUMBER. */
+  /** Digits only with country code, e.g. "8801749804081". */
   phone?: string;
   /** Visible button label (ignored when floating). */
   label?: string;
@@ -34,8 +34,7 @@ export default function WhatsAppButton({
   floating = false,
 }: WhatsAppButtonProps) {
   const pathname = usePathname();
-  const resolvedPhone =
-    phone?.trim() || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() || "";
+  const resolvedPhone = phone?.trim() || "";
 
   if (!resolvedPhone) {
     return null;

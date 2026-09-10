@@ -62,7 +62,14 @@ export default function RootLayout({
         <AuthSessionProvider>
           {children}
           <AppToaster />
-          <WhatsAppButton floating />
+          <WhatsAppButton
+            floating
+            phone={
+              process.env.WHATSAPP_NUMBER?.trim() ||
+              process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() ||
+              ""
+            }
+          />
         </AuthSessionProvider>
       </body>
     </html>
