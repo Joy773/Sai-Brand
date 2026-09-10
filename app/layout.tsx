@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import AppToaster from "@/app/components/AppToaster";
 import AuthSessionProvider from "@/app/components/SessionProvider";
+import WhatsAppButton from "@/app/components/WhatsAppButton";
 import { SITE_URL } from "@/app/lib/site";
 import "./globals.css";
 
@@ -61,6 +62,7 @@ export default function RootLayout({
         <AuthSessionProvider>
           {children}
           <AppToaster />
+          <WhatsAppButton floating />
         </AuthSessionProvider>
       </body>
     </html>
