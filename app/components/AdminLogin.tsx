@@ -82,9 +82,13 @@ export default function AdminLogin() {
 
     setIsSendingOtp(true);
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 25_000);
+
     try {
       const response = await fetch("/api/admin/forgot-password", {
         method: "POST",
+        signal: controller.signal,
       });
       const data = (await response.json()) as {
         ok?: boolean;
@@ -102,10 +106,15 @@ export default function AdminLogin() {
       setStep("otp");
       toast.success(forgotPasswordSuccess);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : forgotPasswordError,
-      );
+      if (error instanceof DOMException && error.name === "AbortError") {
+        toast.error(forgotPasswordError);
+      } else {
+        toast.error(
+          error instanceof Error ? error.message : forgotPasswordError,
+        );
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       setIsSendingOtp(false);
     }
   };

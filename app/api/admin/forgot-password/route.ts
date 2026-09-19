@@ -42,9 +42,12 @@ export async function POST(request: NextRequest) {
     // eslint-disable-next-line no-console
     console.error("[admin forgot-password] Failed to send OTP", error);
 
-    return NextResponse.json(
-      { ok: false, error: "Failed to send OTP email. Please try again." },
-      { status: 500 },
-    );
+    const message =
+      error instanceof Error &&
+      /timeout|ETIMEDOUT|ECONNREFUSED|ENOTFOUND|connection/i.test(error.message)
+        ? "Could not reach the email server. Check SMTP settings or outbound SMTP access on the host."
+        : "Failed to send OTP email. Please try again.";
+
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }

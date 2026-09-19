@@ -72,6 +72,10 @@ function createTransport() {
     port,
     secure,
     auth,
+    // Fail fast in production (e.g. DO droplets that block outbound SMTP).
+    connectionTimeout: 15_000,
+    greetingTimeout: 15_000,
+    socketTimeout: 20_000,
   });
 }
 
