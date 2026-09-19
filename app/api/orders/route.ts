@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import mongoose from "mongoose";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/app/lib/mongodb";
 import Order from "@/app/models/Orders";
@@ -84,6 +85,68 @@ export async function GET() {
 
     return NextResponse.json(
       { ok: false, error: "Failed to load orders. Please try again." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const session = await auth();
+
+  if (session?.user?.role !== "admin") {
+    return NextResponse.json(
+      { ok: false, error: "Unauthorized." },
+      { status: 401 },
+    );
+  }
+
+  let orderId = request.nextUrl.searchParams.get("id")?.trim() ?? "";
+
+  if (!orderId) {
+    try {
+      const body = (await request.json()) as { id?: string };
+      orderId = body.id?.trim() ?? "";
+    } catch {
+      orderId = "";
+    }
+  }
+
+  if (!orderId) {
+    return NextResponse.json(
+      { ok: false, error: "Order id is required." },
+      { status: 400 },
+    );
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(orderId)) {
+    return NextResponse.json(
+      { ok: false, error: "Invalid order id." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    await connectDB();
+
+    const deletedOrder = await Order.findByIdAndDelete(orderId);
+
+    if (!deletedOrder) {
+      return NextResponse.json(
+        { ok: false, error: "Order not found." },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json({
+      ok: true,
+      id: deletedOrder._id.toString(),
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("[orders api] Failed to delete order", error);
+
+    return NextResponse.json(
+      { ok: false, error: "Failed to delete order. Please try again." },
       { status: 500 },
     );
   }

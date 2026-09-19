@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+import { LuChevronDown, LuChevronUp, LuTrash2 } from "react-icons/lu";
 import { toast } from "sonner";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 import { formatPrice } from "@/app/lib/price";
@@ -83,6 +83,7 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [activeFilter, setActiveFilter] = useState<OrderFilter>("all");
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -143,6 +144,47 @@ export default function AdminOrdersPage() {
       ),
     );
     toast.success(statusUpdated);
+  };
+
+  const handleDeleteOrder = async (order: AdminOrder) => {
+    const confirmed = window.confirm(
+      `Delete order ${order.orderId}? This cannot be undone.`,
+    );
+
+    if (!confirmed || deletingId) {
+      return;
+    }
+
+    setDeletingId(order.id);
+
+    try {
+      const response = await fetch(
+        `/api/orders?id=${encodeURIComponent(order.id)}`,
+        { method: "DELETE" },
+      );
+      const data = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error ?? "Failed to delete order.");
+      }
+
+      setOrders((current) => current.filter((item) => item.id !== order.id));
+      if (expandedOrderId === order.id) {
+        setExpandedOrderId(null);
+      }
+      toast.success("Order deleted.");
+    } catch (deleteError) {
+      toast.error(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Failed to delete order.",
+      );
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const paymentLabel = (method: PaymentMethod) => {
@@ -266,6 +308,16 @@ export default function AdminOrdersPage() {
                       ) : (
                         <LuChevronDown className="h-4 w-4" aria-hidden />
                       )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void handleDeleteOrder(order)}
+                      disabled={deletingId === order.id}
+                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-red-200 px-3 py-2 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                      aria-label={`Delete order ${order.orderId}`}
+                    >
+                      <LuTrash2 className="h-4 w-4" aria-hidden />
+                      {deletingId === order.id ? "Deleting…" : "Delete"}
                     </button>
                   </div>
                 </div>
