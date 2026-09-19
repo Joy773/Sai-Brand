@@ -12,6 +12,8 @@ type FormState = {
   password: string;
 };
 
+type ResetStep = "signin" | "otp" | "reset";
+
 const initialFormState: FormState = {
   email: "",
   password: "",
@@ -28,6 +30,29 @@ export default function AdminLogin() {
     emailPlaceholder,
     passwordLabel,
     passwordPlaceholder,
+    forgotPasswordLink,
+    forgotPasswordSending,
+    forgotPasswordSuccess,
+    forgotPasswordError,
+    otpTitle,
+    otpSubtitle,
+    otpLabel,
+    otpPlaceholder,
+    otpSubmitLabel,
+    otpVerifying,
+    otpError,
+    otpSuccess,
+    resetTitle,
+    resetSubtitle,
+    newPasswordLabel,
+    newPasswordPlaceholder,
+    confirmPasswordLabel,
+    confirmPasswordPlaceholder,
+    resetSubmitLabel,
+    resetSaving,
+    resetSuccess,
+    resetError,
+    backToSignIn,
     submitLabel,
     successMessage,
     errorMessage,
@@ -36,10 +61,135 @@ export default function AdminLogin() {
 
   const router = useRouter();
   const [form, setForm] = useState<FormState>(initialFormState);
+  const [step, setStep] = useState<ResetStep>("signin");
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [resetToken, setResetToken] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
 
   const updateField = (field: keyof FormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleForgotPassword = async () => {
+    if (isSendingOtp || isSubmitting || isVerifyingOtp || isResettingPassword) {
+      return;
+    }
+
+    setIsSendingOtp(true);
+
+    try {
+      const response = await fetch("/api/admin/forgot-password", {
+        method: "POST",
+      });
+      const data = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error ?? forgotPasswordError);
+      }
+
+      setOtp("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setResetToken("");
+      setStep("otp");
+      toast.success(forgotPasswordSuccess);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : forgotPasswordError,
+      );
+    } finally {
+      setIsSendingOtp(false);
+    }
+  };
+
+  const handleVerifyOtp = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (isVerifyingOtp) {
+      return;
+    }
+
+    setIsVerifyingOtp(true);
+
+    try {
+      const response = await fetch("/api/admin/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ otp: otp.trim() }),
+      });
+      const data = (await response.json()) as {
+        ok?: boolean;
+        resetToken?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok || !data.resetToken) {
+        throw new Error(data.error ?? otpError);
+      }
+
+      setResetToken(data.resetToken);
+      setStep("reset");
+      toast.success(otpSuccess);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : otpError);
+    } finally {
+      setIsVerifyingOtp(false);
+    }
+  };
+
+  const handleResetPassword = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (isResettingPassword) {
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error(resetError);
+      return;
+    }
+
+    setIsResettingPassword(true);
+
+    try {
+      const response = await fetch("/api/admin/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resetToken,
+          password: newPassword,
+          confirmPassword,
+        }),
+      });
+      const data = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error ?? resetError);
+      }
+
+      toast.success(resetSuccess);
+      setStep("signin");
+      setOtp("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setResetToken("");
+      setForm((prev) => ({ ...prev, password: "" }));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : resetError);
+    } finally {
+      setIsResettingPassword(false);
+    }
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -99,56 +249,181 @@ export default function AdminLogin() {
       <div className="w-full max-w-md rounded-3xl border border-beige bg-warm-white p-6 shadow-2xl sm:p-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-dark-green sm:text-[1.75rem]">
-            {title}
+            {step === "otp"
+              ? otpTitle
+              : step === "reset"
+                ? resetTitle
+                : title}
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-dark-green/70">
-            {subtitle}
+            {step === "otp"
+              ? otpSubtitle
+              : step === "reset"
+                ? resetSubtitle
+                : subtitle}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-                  {emailLabel}
-                </span>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={(event) => updateField("email", event.target.value)}
-                  placeholder={emailPlaceholder}
-                  className={inputClassName}
-                  autoComplete="email"
-                  required
-                />
-              </label>
+        {step === "signin" ? (
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+                {emailLabel}
+              </span>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={(event) => updateField("email", event.target.value)}
+                placeholder={emailPlaceholder}
+                className={inputClassName}
+                autoComplete="email"
+                required
+              />
+            </label>
 
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
-                  {passwordLabel}
-                </span>
-                <input
-                  type="password"
-                  name="password"
-                  value={form.password}
-                  onChange={(event) =>
-                    updateField("password", event.target.value)
-                  }
-                  placeholder={passwordPlaceholder}
-                  className={inputClassName}
-                  autoComplete="current-password"
-                  required
-                />
-              </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+                {passwordLabel}
+              </span>
+              <input
+                type="password"
+                name="password"
+                value={form.password}
+                onChange={(event) =>
+                  updateField("password", event.target.value)
+                }
+                placeholder={passwordPlaceholder}
+                className={inputClassName}
+                autoComplete="current-password"
+                required
+              />
+            </label>
 
+            <div className="flex justify-start">
               <button
-                type="submit"
-                disabled={isSubmitting}
-                className="mt-2 w-full rounded-full bg-dark-green px-5 py-2.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
+                type="button"
+                onClick={() => void handleForgotPassword()}
+                disabled={isSendingOtp || isSubmitting}
+                className="text-sm font-semibold text-dark-green underline-offset-2 transition-colors hover:text-dark-green/80 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {submitLabel}
+                {isSendingOtp ? forgotPasswordSending : forgotPasswordLink}
               </button>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="mt-2 w-full rounded-full bg-dark-green px-5 py-2.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {submitLabel}
+            </button>
           </form>
+        ) : null}
+
+        {step === "otp" ? (
+          <form onSubmit={handleVerifyOtp} className="mt-6 space-y-4">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+                {otpLabel}
+              </span>
+              <input
+                type="text"
+                name="otp"
+                inputMode="numeric"
+                pattern="\d{4}"
+                maxLength={4}
+                value={otp}
+                onChange={(event) =>
+                  setOtp(event.target.value.replace(/\D/g, "").slice(0, 4))
+                }
+                placeholder={otpPlaceholder}
+                className={inputClassName}
+                autoComplete="one-time-code"
+                required
+              />
+            </label>
+
+            <button
+              type="submit"
+              disabled={isVerifyingOtp || otp.length !== 4}
+              className="mt-2 w-full rounded-full bg-dark-green px-5 py-2.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isVerifyingOtp ? otpVerifying : otpSubmitLabel}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setStep("signin");
+                setOtp("");
+              }}
+              className="w-full text-sm font-semibold text-dark-green/70 transition-colors hover:text-dark-green"
+            >
+              {backToSignIn}
+            </button>
+          </form>
+        ) : null}
+
+        {step === "reset" ? (
+          <form onSubmit={handleResetPassword} className="mt-6 space-y-4">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+                {newPasswordLabel}
+              </span>
+              <input
+                type="password"
+                name="newPassword"
+                value={newPassword}
+                onChange={(event) => setNewPassword(event.target.value)}
+                placeholder={newPasswordPlaceholder}
+                className={inputClassName}
+                autoComplete="new-password"
+                minLength={8}
+                required
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+                {confirmPasswordLabel}
+              </span>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                placeholder={confirmPasswordPlaceholder}
+                className={inputClassName}
+                autoComplete="new-password"
+                minLength={8}
+                required
+              />
+            </label>
+
+            <button
+              type="submit"
+              disabled={isResettingPassword}
+              className="mt-2 w-full rounded-full bg-dark-green px-5 py-2.5 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isResettingPassword ? resetSaving : resetSubmitLabel}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setStep("signin");
+                setOtp("");
+                setNewPassword("");
+                setConfirmPassword("");
+                setResetToken("");
+              }}
+              className="w-full text-sm font-semibold text-dark-green/70 transition-colors hover:text-dark-green"
+            >
+              {backToSignIn}
+            </button>
+          </form>
+        ) : null}
       </div>
     </div>
   );

@@ -29,6 +29,11 @@ export type SendPasswordResetEmailOptions = {
   resetLink: string;
 };
 
+export type SendAdminOtpEmailOptions = {
+  to: string;
+  otp: string;
+};
+
 function escapeHtml(value: string) {
   return value
     .replaceAll("&", "&amp;")
@@ -281,5 +286,51 @@ export async function sendPasswordResetEmail({
     subject: "Reset your sa'i password",
     html,
     text: `Hi ${name?.trim() || "there"},\n\nWe received a request to reset your password. Open this link to choose a new one (expires in 1 hour):\n${resetLink}\n\nIf you did not request this, you can ignore this email.\n`,
+  });
+}
+
+export async function sendAdminOtpEmail({ to, otp }: SendAdminOtpEmailOptions) {
+  const safeOtp = escapeHtml(otp);
+
+  const html = `
+    <div style="margin:0;padding:0;background:#f7f1ea;font-family:Georgia,'Times New Roman',serif;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f1ea;padding:32px 16px;">
+        <tr>
+          <td align="center">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#fffdf9;border:1px solid #e6d8c8;border-radius:24px;overflow:hidden;">
+              <tr>
+                <td style="padding:28px 28px 8px;background:#1f3d2b;color:#fffdf9;">
+                  <p style="margin:0;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.8;">sa'i by German Care</p>
+                  <h1 style="margin:10px 0 0;font-size:28px;line-height:1.2;font-weight:700;">Admin password reset code</h1>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:28px;">
+                  <p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#1f3d2b;">
+                    Hi Admin,
+                  </p>
+                  <p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:#1f3d2b;">
+                    Use this 4-digit code to reset your admin password. It expires in 10 minutes.
+                  </p>
+                  <p style="margin:0 0 28px;text-align:center;font-size:36px;letter-spacing:0.35em;font-weight:700;color:#1f3d2b;">
+                    ${safeOtp}
+                  </p>
+                  <p style="margin:0;font-size:13px;line-height:1.6;color:#5c6b61;">
+                    If you did not request this code, you can ignore this email.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `.trim();
+
+  return sendEmail({
+    to,
+    subject: "Your admin password reset code",
+    html,
+    text: `Hi Admin,\n\nYour 4-digit admin password reset code is: ${otp}\n\nThis code expires in 10 minutes.\n\nIf you did not request this, you can ignore this email.\n`,
   });
 }

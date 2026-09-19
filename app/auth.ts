@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { isAdminRoute, isProtectedRoute } from "@/app/lib/auth-routes";
 import { connectDB } from "@/app/lib/mongodb";
+import AdminCredential from "@/app/models/AdminCredential";
 import User from "@/app/models/User";
 
 // Constant-time string comparison to avoid leaking the admin password length or
@@ -39,19 +40,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
         const adminPassword = process.env.ADMIN_PASSWORD;
 
-        if (
-          adminEmail &&
-          adminPassword &&
-          email === adminEmail &&
-          typeof password === "string" &&
-          constantTimeEqual(password, adminPassword)
-        ) {
-          return {
-            id: "admin",
-            name: "Admin",
-            email: adminEmail,
-            role: "admin",
-          };
+        if (adminEmail && email === adminEmail && typeof password === "string") {
+          await connectDB();
+
+          const adminCredential = await AdminCredential.findOne({ key: "admin" })
+            .select("+passwordHash")
+            .lean();
+
+          // Prefer the password set via forgot-password reset when present.
+          if (adminCredential?.passwordHash) {
+            const matchesOverride = await bcrypt.compare(
+              password,
+              adminCredential.passwordHash,
+            );
+
+            if (!matchesOverride) {
+              return null;
+            }
+
+            return {
+              id: "admin",
+              name: "Admin",
+              email: adminEmail,
+              role: "admin",
+            };
+          }
+
+          if (adminPassword && constantTimeEqual(password, adminPassword)) {
+            return {
+              id: "admin",
+              name: "Admin",
+              email: adminEmail,
+              role: "admin",
+            };
+          }
+
+          return null;
         }
 
         await connectDB();
