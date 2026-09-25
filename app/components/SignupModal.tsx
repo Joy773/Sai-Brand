@@ -138,10 +138,6 @@ export default function SignupModal({
       const email = data.user?.email ?? form.email;
       markPendingVerificationEmail(email);
 
-      if (!data.emailSent) {
-        toast.error(verificationEmailFailed);
-      }
-
       const signInResult = await signIn("credentials", {
         email: form.email,
         password: form.password,
@@ -157,6 +153,8 @@ export default function SignupModal({
 
       if (data.emailSent) {
         toast.success(successMessage);
+      } else {
+        toast.error(data.error ?? verificationEmailFailed);
       }
 
       onClose();

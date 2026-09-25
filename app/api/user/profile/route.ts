@@ -25,7 +25,9 @@ export async function GET() {
     await connectDB();
 
     const email = session.user.email.trim().toLowerCase();
-    const user = await User.findOne({ email }).select("name address").lean();
+    const user = await User.findOne({ email })
+      .select("name address emailVerified")
+      .lean();
 
     if (!user) {
       return NextResponse.json(
@@ -37,6 +39,7 @@ export async function GET() {
     return NextResponse.json({
       ok: true,
       firstName: getUserFirstName(user),
+      emailVerified: Boolean(user.emailVerified),
     });
   } catch (error) {
     console.error("[user profile api] Failed to load profile", error);

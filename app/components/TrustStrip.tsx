@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import VerifyAccountPrompt from "@/app/components/VerifyAccountPrompt";
 import { useMessages } from "@/app/i18n/LocaleProvider";
 
 const iconMap: Record<string, string> = {
@@ -25,6 +26,7 @@ export default function TrustStrip() {
     }));
 
   return (
+    <>
     <div
       className="overflow-x-auto bg-dark-green py-3 sm:py-3.5"
       aria-label={ariaLabel}
@@ -49,5 +51,7 @@ export default function TrustStrip() {
         ))}
       </div>
     </div>
+    <VerifyAccountPrompt />
+    </>
   );
 }

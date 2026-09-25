@@ -1,8 +1,12 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid";
 import { auth } from "@/app/auth";
+import {
+  emailOtpExpiresAt,
+  generateEmailOtp,
+  hashEmailOtp,
+} from "@/app/lib/emailOtp";
 import { connectDB } from "@/app/lib/mongodb";
 import { getClientIp, rateLimit } from "@/app/lib/rateLimit";
 import {
@@ -11,7 +15,6 @@ import {
   toUserAddress,
   type UserAddressInput,
 } from "@/app/lib/saveUserAddress";
-import { SITE_URL } from "@/app/lib/site";
 import {
   isEmailConfigured,
   sendVerificationEmail,
@@ -312,14 +315,18 @@ export async function PATCH(request: NextRequest) {
     const address = toUserAddress(addressInput);
     const emailChanged =
       hasEmailUpdate && nextEmail !== user.email.trim().toLowerCase();
-    const verificationToken = emailChanged ? uuidv4() : null;
+    const verificationOtp = emailChanged ? generateEmailOtp() : null;
+    const verificationOtpHash = verificationOtp
+      ? await hashEmailOtp(verificationOtp)
+      : null;
 
     const updateFields: {
       address: UserAddress;
       name?: string;
       email?: string;
       emailVerified?: boolean;
-      verificationToken?: string;
+      verificationOtpHash?: string;
+      verificationOtpExpires?: Date;
     } = { address };
 
     if (hasNameUpdate) {
@@ -330,16 +337,19 @@ export async function PATCH(request: NextRequest) {
       updateFields.email = nextEmail;
     }
 
-    if (emailChanged && verificationToken) {
+    if (emailChanged && verificationOtpHash) {
       updateFields.emailVerified = false;
-      updateFields.verificationToken = verificationToken;
+      updateFields.verificationOtpHash = verificationOtpHash;
+      updateFields.verificationOtpExpires = emailOtpExpiresAt();
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
         $set: updateFields,
-        ...(emailChanged ? { $unset: { autoLoginToken: 1 } } : {}),
+        ...(emailChanged
+          ? { $unset: { autoLoginToken: 1, verificationToken: 1 } }
+          : {}),
       },
       { returnDocument: "after" },
     ).select("name email address");
@@ -353,8 +363,7 @@ export async function PATCH(request: NextRequest) {
 
     let verificationEmailSent = false;
 
-    if (emailChanged && verificationToken) {
-      const verificationLink = `${SITE_URL}/verify-email/${verificationToken}`;
+    if (emailChanged && verificationOtp) {
       const recipientName = updatedUser.name;
 
       if (isEmailConfigured()) {
@@ -362,7 +371,7 @@ export async function PATCH(request: NextRequest) {
           await sendVerificationEmail({
             to: updatedUser.email,
             name: recipientName,
-            verificationLink,
+            otp: verificationOtp,
           });
           verificationEmailSent = true;
         } catch (error) {
@@ -528,7 +537,8 @@ export async function POST(request: NextRequest) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const verificationToken = uuidv4();
+    const verificationOtp = generateEmailOtp();
+    const verificationOtpHash = await hashEmailOtp(verificationOtp);
 
     // Address is intentionally not set at signup. It is saved when the user places an order.
     const user = await User.create({
@@ -536,10 +546,10 @@ export async function POST(request: NextRequest) {
       email,
       password: hashedPassword,
       emailVerified: false,
-      verificationToken,
+      verificationOtpHash,
+      verificationOtpExpires: emailOtpExpiresAt(),
     });
 
-    const verificationLink = `${SITE_URL}/verify-email/${verificationToken}`;
     let emailSent = false;
 
     if (isEmailConfigured()) {
@@ -547,7 +557,7 @@ export async function POST(request: NextRequest) {
         await sendVerificationEmail({
           to: email,
           name,
-          verificationLink,
+          otp: verificationOtp,
         });
         emailSent = true;
       } catch (error) {

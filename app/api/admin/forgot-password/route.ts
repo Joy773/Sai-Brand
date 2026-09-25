@@ -3,7 +3,10 @@ import { generateAdminOtp, storeAdminOtp } from "@/app/lib/adminOtp";
 import { getClientIp, rateLimit } from "@/app/lib/rateLimit";
 import { isEmailConfigured, sendAdminOtpEmail } from "@/app/lib/sendEmail";
 
-const ADMIN_OTP_RECIPIENT = "info@german-care.com";
+const ADMIN_OTP_RECIPIENT =
+  process.env.CONTACT_TO_EMAIL?.trim() ||
+  process.env.ADMIN_EMAIL?.trim() ||
+  "info@german-care.com";
 
 export async function POST(request: NextRequest) {
   const limit = rateLimit(`admin-forgot-password:${getClientIp(request)}`, {

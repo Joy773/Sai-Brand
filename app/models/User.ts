@@ -77,6 +77,13 @@ const userSchema = new mongoose.Schema(
     verificationToken: {
       type: String,
     },
+    verificationOtpHash: {
+      type: String,
+      select: false,
+    },
+    verificationOtpExpires: {
+      type: Date,
+    },
     autoLoginToken: {
       type: String,
     },
@@ -106,7 +113,8 @@ if (
   (!existingUserModel.schema.path("address") ||
     !existingUserModel.schema.path("address.streetAddress") ||
     !existingUserModel.schema.path("resetPasswordToken") ||
-    !existingUserModel.schema.path("resetPasswordExpires"))
+    !existingUserModel.schema.path("resetPasswordExpires") ||
+    !existingUserModel.schema.path("verificationOtpHash"))
 ) {
   delete mongoose.models.User;
 }

@@ -95,6 +95,22 @@
     ],
     "_badges_comment": "id wird in Hero.tsx Icons zugeordnet"
   },
+  "verifyAccount": {
+    "_comment": "Wird unter dem Vertrauensstreifen für angemeldete, unbestätigte Konten angezeigt",
+    "prompt": "Konto bestätigen",
+    "title": "Konto bestätigen",
+    "subtitle": "Geben Sie den 4-stelligen Code ein, den wir an Ihre E-Mail gesendet haben. Er läuft in 10 Minuten ab.",
+    "otpLabel": "Bestätigungscode",
+    "otpPlaceholder": "1234",
+    "submitLabel": "Code bestätigen",
+    "verifying": "Wird bestätigt…",
+    "error": "Ungültiger oder abgelaufener Code. Bitte versuchen Sie es erneut.",
+    "success": "Ihr Konto ist bestätigt.",
+    "resend": "Code erneut senden",
+    "resendSending": "Code wird gesendet…",
+    "resendSuccess": "Ein neuer Bestätigungscode wurde gesendet.",
+    "close": "Schließen"
+  },
   "trustStrip": {
     "_comment": "Vertrauens-Streifen — verwendet in app/components/TrustStrip.tsx",
     "ariaLabel": "Produkt-Vertrauensabzeichen",
@@ -1590,10 +1606,21 @@
     "confirmPasswordPlaceholder": "Passwort erneut eingeben",
     "submitLabel": "Konto erstellen",
     "close": "Schließen",
-    "successMessage": "Konto erfolgreich erstellt. Bitte prüfen Sie Ihre E-Mail für den Bestätigungslink.",
+    "successMessage": "Prüfen Sie Ihre E-Mail und bestätigen Sie Ihr Konto.",
     "errorMessage": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
-    "verificationEmailFailed": "Konto erstellt, aber die Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte kontaktieren Sie den Support, falls Sie einen neuen Link benötigen.",
-    "passwordMismatch": "Die Passwörter stimmen nicht überein."
+    "verificationEmailFailed": "Konto erstellt, aber der Bestätigungscode konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+    "otpTitle": "E-Mail bestätigen",
+    "otpSubtitle": "Geben Sie den 4-stelligen Code ein, den wir an Ihre E-Mail gesendet haben. Er läuft in 10 Minuten ab.",
+    "otpLabel": "Bestätigungscode",
+    "otpPlaceholder": "1234",
+    "otpSubmitLabel": "E-Mail bestätigen",
+    "otpVerifying": "Wird bestätigt…",
+    "otpError": "Ungültiger oder abgelaufener Code. Bitte versuchen Sie es erneut.",
+    "otpSuccess": "E-Mail bestätigt. Sie sind angemeldet.",
+    "resendCode": "Code erneut senden",
+    "resendSending": "Code wird gesendet…",
+    "resendSuccess": "Ein neuer Bestätigungscode wurde gesendet."
   },
   "signInModal": {
     "_comment": "Anmeldemodal — verwendet in app/components/SignInModal.tsx",
@@ -1608,7 +1635,7 @@
     "close": "Schließen",
     "successMessage": "Erfolgreich angemeldet.",
     "errorMessage": "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut.",
-    "emailNotVerified": "Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse. Prüfen Sie Ihr Postfach auf den Bestätigungslink, der bei der Registrierung gesendet wurde.",
+    "emailNotVerified": "Bitte bestätigen Sie zuerst Ihre E-Mail. Prüfen Sie Ihr Postfach auf den 4-stelligen Code.",
     "forgotPasswordLink": "Passwort vergessen"
   },
   "forgotPasswordModal": {

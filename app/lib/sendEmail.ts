@@ -6,12 +6,16 @@ export type SendEmailOptions = {
   html: string;
   text?: string;
   replyTo?: string;
+  /** Optional EmailJS template override for this send */
+  templateId?: string;
+  /** Extra EmailJS template variables */
+  templateParams?: Record<string, string>;
 };
 
 export type SendVerificationEmailOptions = {
   to: string;
   name?: string;
-  verificationLink: string;
+  otp: string;
 };
 
 export type SendContactEmailOptions = {
@@ -43,6 +47,77 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#39;");
 }
 
+function htmlToText(html: string) {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getDefaultRecipient() {
+  return (
+    process.env.CONTACT_TO_EMAIL?.trim() ||
+    process.env.ADMIN_EMAIL?.trim() ||
+    process.env.SMTP_FROM?.trim() ||
+    process.env.SMTP_USER?.trim() ||
+    "info@german-care.com"
+  );
+}
+
+function getEmailJsConfig() {
+  const serviceId =
+    process.env.EMAILJS_SERVICE_ID?.trim() ||
+    process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID?.trim();
+  const publicKey =
+    process.env.EMAILJS_PUBLIC_KEY?.trim() ||
+    process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY?.trim();
+  const defaultTemplateId =
+    process.env.EMAILJS_TEMPLATE_ID?.trim() ||
+    process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID?.trim();
+  const privateKey =
+    process.env.EMAILJS_PRIVATE_KEY?.trim() ||
+    process.env.EMAILJS_ACCESS_TOKEN?.trim();
+
+  if (!serviceId || !publicKey || !defaultTemplateId) {
+    return null;
+  }
+
+  return {
+    serviceId,
+    publicKey,
+    defaultTemplateId,
+    privateKey,
+    contactTemplateId:
+      process.env.EMAILJS_CONTACT_TEMPLATE_ID?.trim() ||
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID?.trim() ||
+      defaultTemplateId,
+    verificationTemplateId:
+      process.env.EMAILJS_VERIFICATION_TEMPLATE_ID?.trim() ||
+      process.env.NEXT_PUBLIC_EMAILJS_VERIFICATION_TEMPLATE_ID?.trim() ||
+      defaultTemplateId,
+    resetTemplateId:
+      process.env.EMAILJS_RESET_TEMPLATE_ID?.trim() ||
+      process.env.NEXT_PUBLIC_EMAILJS_RESET_TEMPLATE_ID?.trim() ||
+      defaultTemplateId,
+    adminOtpTemplateId:
+      process.env.EMAILJS_ADMIN_OTP_TEMPLATE_ID?.trim() ||
+      process.env.NEXT_PUBLIC_EMAILJS_ADMIN_OTP_TEMPLATE_ID?.trim() ||
+      defaultTemplateId,
+  };
+}
+
+function isSmtpConfigured() {
+  return Boolean(
+    process.env.SMTP_HOST?.trim() &&
+      process.env.SMTP_USER?.trim() &&
+      process.env.SMTP_PASSWORD,
+  );
+}
+
+export function isEmailConfigured() {
+  return Boolean(getEmailJsConfig()) || isSmtpConfigured();
+}
+
 function getSmtpConfig() {
   const host = process.env.SMTP_HOST?.trim();
   const port = Number(process.env.SMTP_PORT || 465);
@@ -72,22 +147,71 @@ function createTransport() {
     port,
     secure,
     auth,
-    // Fail fast in production (e.g. DO droplets that block outbound SMTP).
     connectionTimeout: 15_000,
     greetingTimeout: 15_000,
     socketTimeout: 20_000,
   });
 }
 
-export function isEmailConfigured() {
-  return Boolean(
-    process.env.SMTP_HOST?.trim() &&
-      process.env.SMTP_USER?.trim() &&
-      process.env.SMTP_PASSWORD,
-  );
+async function sendViaEmailJs({
+  to,
+  subject,
+  html,
+  text,
+  replyTo,
+  templateId,
+  templateParams = {},
+}: SendEmailOptions) {
+  const config = getEmailJsConfig();
+
+  if (!config) {
+    throw new Error(
+      "EmailJS is not configured. Set EMAILJS_SERVICE_ID (or NEXT_PUBLIC_EMAILJS_SERVICE_ID), EMAILJS_PUBLIC_KEY, and EMAILJS_TEMPLATE_ID.",
+    );
+  }
+
+  const toAddress = Array.isArray(to) ? to.join(", ") : to;
+  const plainText = text || htmlToText(html);
+
+  const payload: Record<string, unknown> = {
+    service_id: config.serviceId,
+    template_id: templateId || config.defaultTemplateId,
+    user_id: config.publicKey,
+    template_params: {
+      to_email: toAddress,
+      user_email: toAddress,
+      reply_to: replyTo || toAddress,
+      subject,
+      message: plainText,
+      html_content: html,
+      html,
+      title: subject,
+      // Default email to recipient; callers can override (e.g. contact form).
+      email: toAddress,
+      ...templateParams,
+    },
+  };
+
+  if (config.privateKey) {
+    payload.accessToken = config.privateKey;
+  }
+
+  const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(20_000),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    throw new Error(
+      `EmailJS failed (${response.status})${detail ? `: ${detail}` : ""}`,
+    );
+  }
 }
 
-export async function sendEmail({
+async function sendViaSmtp({
   to,
   subject,
   html,
@@ -102,22 +226,48 @@ export async function sendEmail({
     to,
     subject,
     html,
-    text:
-      text ||
-      html
-        .replace(/<[^>]+>/g, " ")
-        .replace(/\s+/g, " ")
-        .trim(),
+    text: text || htmlToText(html),
     replyTo,
   });
+}
+
+export async function sendEmail(options: SendEmailOptions) {
+  const emailJs = getEmailJsConfig();
+
+  if (emailJs) {
+    try {
+      await sendViaEmailJs(options);
+      return;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("[sendEmail] EmailJS failed, trying SMTP fallback", error);
+
+      if (!isSmtpConfigured()) {
+        throw error;
+      }
+    }
+  }
+
+  if (!isSmtpConfigured()) {
+    throw new Error(
+      "No email provider configured. Set EmailJS (EMAILJS_SERVICE_ID, EMAILJS_PUBLIC_KEY, EMAILJS_TEMPLATE_ID) or SMTP_* vars.",
+    );
+  }
+
+  return sendViaSmtp(options);
 }
 
 export async function sendVerificationEmail({
   to,
   name,
-  verificationLink,
+  otp,
 }: SendVerificationEmailOptions) {
-  const displayName = name?.trim() || "there";
+  const displayName = escapeHtml(name?.trim() || "there");
+  const plainName = name?.trim() || "there";
+  const safeOtp = escapeHtml(otp);
+  const emailJs = getEmailJsConfig();
+  const subject = "Verify your sa'i account";
+  const text = `Hi ${plainName},\n\nYour 4-digit email confirmation code is: ${otp}\n\nThis code expires in 10 minutes.\n\nIf you did not create an account, you can ignore this email.\n`;
 
   const html = `
     <div style="margin:0;padding:0;background:#f7f1ea;font-family:Georgia,'Times New Roman',serif;">
@@ -128,7 +278,7 @@ export async function sendVerificationEmail({
               <tr>
                 <td style="padding:28px 28px 8px;background:#1f3d2b;color:#fffdf9;">
                   <p style="margin:0;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.8;">sa'i by German Care</p>
-                  <h1 style="margin:10px 0 0;font-size:28px;line-height:1.2;font-weight:700;">Verify your email</h1>
+                  <h1 style="margin:10px 0 0;font-size:28px;line-height:1.2;font-weight:700;">Confirm your email</h1>
                 </td>
               </tr>
               <tr>
@@ -137,18 +287,13 @@ export async function sendVerificationEmail({
                     Hi ${displayName},
                   </p>
                   <p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:#1f3d2b;">
-                    Thanks for creating your account. Please confirm your email address by clicking the button below.
+                    Use this 4-digit code to confirm your email address. It expires in 10 minutes.
                   </p>
-                  <p style="margin:0 0 28px;text-align:center;">
-                    <a href="${verificationLink}" style="display:inline-block;background:#1f3d2b;color:#fffdf9;text-decoration:none;padding:14px 28px;border-radius:999px;font-size:15px;font-weight:700;">
-                      Verify email
-                    </a>
+                  <p style="margin:0 0 28px;text-align:center;font-size:36px;letter-spacing:0.35em;font-weight:700;color:#1f3d2b;">
+                    ${safeOtp}
                   </p>
-                  <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#5c6b61;">
-                    Or copy and paste this link into your browser:
-                  </p>
-                  <p style="margin:0;font-size:13px;line-height:1.5;word-break:break-all;color:#8a6a2f;">
-                    ${verificationLink}
+                  <p style="margin:0;font-size:13px;line-height:1.6;color:#5c6b61;">
+                    If you did not create an account, you can ignore this email.
                   </p>
                 </td>
               </tr>
@@ -159,11 +304,24 @@ export async function sendVerificationEmail({
     </div>
   `.trim();
 
-  return sendEmail({
+  if (!emailJs) {
+    throw new Error(
+      "EmailJS is not configured. Set EMAILJS_SERVICE_ID, EMAILJS_PUBLIC_KEY, and EMAILJS_TEMPLATE_ID.",
+    );
+  }
+
+  return sendViaEmailJs({
     to,
-    subject: "Verify your sa'i account",
+    subject,
     html,
-    text: `Hi ${displayName},\n\nThanks for creating your account. Verify your email by opening this link:\n${verificationLink}\n`,
+    text,
+    templateId: emailJs.verificationTemplateId,
+    templateParams: {
+      name: plainName,
+      otp,
+      code: otp,
+      passcode: otp,
+    },
   });
 }
 
@@ -175,11 +333,8 @@ export async function sendContactEmail({
   inquiryType,
   message,
 }: SendContactEmailOptions) {
-  const { from } = getSmtpConfig();
-  const recipient =
-    process.env.CONTACT_TO_EMAIL?.trim() ||
-    process.env.ADMIN_EMAIL?.trim() ||
-    from;
+  const emailJs = getEmailJsConfig();
+  const recipient = getDefaultRecipient();
   const fullName = `${firstName} ${lastName ?? ""}`.trim() || firstName;
   const submittedAt = new Date().toLocaleString();
   const safeName = escapeHtml(fullName);
@@ -232,6 +387,22 @@ export async function sendContactEmail({
       message,
     ].join("\n"),
     replyTo: email,
+    templateId: emailJs?.contactTemplateId,
+    templateParams: {
+      // EmailJS "Contact Us" template variables
+      name: fullName,
+      title: `Contact form: ${inquiryType} — ${fullName}`,
+      time: submittedAt,
+      // Customer email must win over recipient for {{email}} / Reply-To
+      email,
+      from_name: fullName,
+      from_email: email,
+      phone: phone?.trim() || "N/A",
+      inquiry_type: inquiryType,
+      inquiryType,
+      submitted_at: submittedAt,
+      message,
+    },
   });
 }
 
@@ -241,6 +412,7 @@ export async function sendPasswordResetEmail({
   resetLink,
 }: SendPasswordResetEmailOptions) {
   const displayName = escapeHtml(name?.trim() || "there");
+  const emailJs = getEmailJsConfig();
 
   const html = `
     <div style="margin:0;padding:0;background:#f7f1ea;font-family:Georgia,'Times New Roman',serif;">
@@ -285,16 +457,29 @@ export async function sendPasswordResetEmail({
     </div>
   `.trim();
 
-  return sendEmail({
+  if (!emailJs) {
+    throw new Error(
+      "EmailJS is not configured. Set EMAILJS_SERVICE_ID, EMAILJS_PUBLIC_KEY, and EMAILJS_TEMPLATE_ID.",
+    );
+  }
+
+  return sendViaEmailJs({
     to,
     subject: "Reset your sa'i password",
     html,
     text: `Hi ${name?.trim() || "there"},\n\nWe received a request to reset your password. Open this link to choose a new one (expires in 1 hour):\n${resetLink}\n\nIf you did not request this, you can ignore this email.\n`,
+    templateId: emailJs.resetTemplateId,
+    templateParams: {
+      name: name?.trim() || "there",
+      reset_link: resetLink,
+      link: resetLink,
+    },
   });
 }
 
 export async function sendAdminOtpEmail({ to, otp }: SendAdminOtpEmailOptions) {
   const safeOtp = escapeHtml(otp);
+  const emailJs = getEmailJsConfig();
 
   const html = `
     <div style="margin:0;padding:0;background:#f7f1ea;font-family:Georgia,'Times New Roman',serif;">
@@ -331,10 +516,22 @@ export async function sendAdminOtpEmail({ to, otp }: SendAdminOtpEmailOptions) {
     </div>
   `.trim();
 
-  return sendEmail({
+  if (!emailJs) {
+    throw new Error(
+      "EmailJS is not configured. Set EMAILJS_SERVICE_ID, EMAILJS_PUBLIC_KEY, and EMAILJS_TEMPLATE_ID.",
+    );
+  }
+
+  return sendViaEmailJs({
     to,
     subject: "Your admin password reset code",
     html,
     text: `Hi Admin,\n\nYour 4-digit admin password reset code is: ${otp}\n\nThis code expires in 10 minutes.\n\nIf you did not request this, you can ignore this email.\n`,
+    templateId: emailJs.adminOtpTemplateId,
+    templateParams: {
+      otp,
+      code: otp,
+      passcode: otp,
+    },
   });
 }

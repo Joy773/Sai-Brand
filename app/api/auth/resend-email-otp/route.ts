@@ -1,5 +1,5 @@
-import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/app/auth";
 import {
   emailOtpExpiresAt,
   generateEmailOtp,
@@ -13,16 +13,12 @@ import {
 } from "@/app/lib/sendEmail";
 import User from "@/app/models/User";
 
-type Payload = {
-  email?: string;
-  password?: string;
-};
-
 export async function POST(request: NextRequest) {
-  const limit = rateLimit(`send-verification:${getClientIp(request)}`, {
+  const limit = rateLimit(`resend-email-otp:${getClientIp(request)}`, {
     limit: 5,
     windowMs: 60_000,
   });
+
   if (!limit.allowed) {
     return NextResponse.json(
       { ok: false, error: "Too many attempts. Please try again shortly." },
@@ -33,24 +29,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let body: Payload;
-
-  try {
-    body = (await request.json()) as Payload;
-  } catch {
+  const session = await auth();
+  if (!session?.user?.id) {
     return NextResponse.json(
-      { ok: false, error: "Invalid JSON payload." },
-      { status: 400 },
-    );
-  }
-
-  const email = body.email?.trim().toLowerCase();
-  const password = body.password;
-
-  if (!email || !password) {
-    return NextResponse.json(
-      { ok: false, error: "Email and password are required." },
-      { status: 400 },
+      { ok: false, error: "Please sign in again." },
+      { status: 401 },
     );
   }
 
@@ -64,19 +47,14 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    const user = await User.findOne({ email }).select("+password");
-    if (!user || !user.password) {
-      return NextResponse.json(
-        { ok: false, error: "Invalid email or password." },
-        { status: 401 },
-      );
-    }
+    const user = await User.findById(session.user.id).select(
+      "+verificationOtpHash",
+    );
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
+    if (!user) {
       return NextResponse.json(
-        { ok: false, error: "Invalid email or password." },
-        { status: 401 },
+        { ok: false, error: "User not found." },
+        { status: 404 },
       );
     }
 
@@ -94,15 +72,15 @@ export async function POST(request: NextRequest) {
     await user.save();
 
     await sendVerificationEmail({
-      to: email,
+      to: user.email,
       name: user.name,
       otp,
     });
 
-    return NextResponse.json({ ok: true, email });
+    return NextResponse.json({ ok: true, email: user.email });
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error("[send-verification]", error);
+    console.error("[resend-email-otp]", error);
 
     return NextResponse.json(
       { ok: false, error: "Failed to send verification email." },

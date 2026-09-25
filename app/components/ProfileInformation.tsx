@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 type AddressFields = {
@@ -138,6 +138,10 @@ export default function ProfileInformation() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pendingOtpEmail, setPendingOtpEmail] = useState<string | null>(null);
+  const [otp, setOtp] = useState("");
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [isResendingOtp, setIsResendingOtp] = useState(false);
 
   useEffect(() => {
     if (status === "loading") {
@@ -300,8 +304,10 @@ export default function ProfileInformation() {
       setIsEditing(false);
 
       if (data.emailChanged && data.verificationEmailSent) {
+        setPendingOtpEmail(data.email?.trim() || form.email.trim());
+        setOtp("");
         toast.success(
-          "Changes saved. Please verify your new email — we sent a link to your inbox.",
+          "Changes saved. We sent a 4-digit confirmation code to your new email.",
         );
       } else if (data.emailChanged && !data.verificationEmailSent) {
         toast.error(
@@ -319,6 +325,83 @@ export default function ProfileInformation() {
       );
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleVerifyEmailOtp = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!pendingOtpEmail || isVerifyingOtp || otp.length !== 4) {
+      return;
+    }
+
+    try {
+      setIsVerifyingOtp(true);
+
+      const response = await fetch("/api/auth/verify-email-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: pendingOtpEmail,
+          otp,
+        }),
+      });
+
+      const data = (await response.json()) as { ok?: boolean; error?: string };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error ?? "Invalid or expired code.");
+      }
+
+      setPendingOtpEmail(null);
+      setOtp("");
+      toast.success("Email confirmed.");
+    } catch (verifyError) {
+      toast.error(
+        verifyError instanceof Error
+          ? verifyError.message
+          : "Invalid or expired code.",
+      );
+    } finally {
+      setIsVerifyingOtp(false);
+    }
+  };
+
+  const handleResendEmailOtp = async () => {
+    if (isResendingOtp) {
+      return;
+    }
+
+    try {
+      setIsResendingOtp(true);
+
+      const response = await fetch("/api/auth/resend-email-otp", {
+        method: "POST",
+      });
+
+      const data = (await response.json()) as {
+        ok?: boolean;
+        email?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error ?? "Failed to send the code.");
+      }
+
+      if (data.email) {
+        setPendingOtpEmail(data.email);
+      }
+      setOtp("");
+      toast.success("A new confirmation code was sent.");
+    } catch (resendError) {
+      toast.error(
+        resendError instanceof Error
+          ? resendError.message
+          : "Failed to send the code.",
+      );
+    } finally {
+      setIsResendingOtp(false);
     }
   };
 
@@ -399,6 +482,51 @@ export default function ProfileInformation() {
                 type="email"
               />
             </dl>
+
+            {pendingOtpEmail ? (
+              <form
+                onSubmit={(event) => void handleVerifyEmailOtp(event)}
+                className="max-w-sm rounded-2xl border border-beige bg-beige/20 px-4 py-4"
+              >
+                <p className="text-sm leading-relaxed text-dark-green/80">
+                  Enter the 4-digit code sent to {pendingOtpEmail}.
+                </p>
+                <label className="mt-3 block">
+                  <span className="mb-1.5 block text-sm font-medium text-dark-green/70">
+                    Confirmation code
+                  </span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={4}
+                    value={otp}
+                    onChange={(event) =>
+                      setOtp(event.target.value.replace(/\D/g, "").slice(0, 4))
+                    }
+                    placeholder="1234"
+                    className="w-full rounded-xl border border-beige bg-warm-white px-4 py-2.5 text-sm text-dark-green outline-none transition-colors placeholder:text-dark-green/35 focus:border-gold"
+                  />
+                </label>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <button
+                    type="submit"
+                    disabled={isVerifyingOtp || otp.length !== 4}
+                    className="rounded-full bg-dark-green px-4 py-2 text-sm font-semibold text-warm-white transition-colors hover:bg-dark-green/90 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isVerifyingOtp ? "Confirming…" : "Confirm email"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void handleResendEmailOtp()}
+                    disabled={isResendingOtp}
+                    className="text-sm font-semibold text-dark-green underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isResendingOtp ? "Sending code…" : "Resend code"}
+                  </button>
+                </div>
+              </form>
+            ) : null}
 
             {isEditing ||
             (addressFields && hasAddressFields(addressFields)) ? (

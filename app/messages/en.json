@@ -95,6 +95,22 @@
     ],
     "_badges_comment": "id maps to icons in Hero.tsx"
   },
+  "verifyAccount": {
+    "_comment": "Shown under the trust strip for signed-in users who have not confirmed their email",
+    "prompt": "Verify your account",
+    "title": "Verify your account",
+    "subtitle": "Enter the 4-digit code we sent to your email. It expires in 10 minutes.",
+    "otpLabel": "Confirmation code",
+    "otpPlaceholder": "1234",
+    "submitLabel": "Confirm code",
+    "verifying": "Confirming…",
+    "error": "Invalid or expired code. Please try again.",
+    "success": "Your account is verified.",
+    "resend": "Resend code",
+    "resendSending": "Sending code…",
+    "resendSuccess": "A new confirmation code was sent.",
+    "close": "Close"
+  },
   "trustStrip": {
     "_comment": "Trust strip marquee used in app/components/TrustStrip.tsx",
     "ariaLabel": "Product trust badges",
@@ -1590,10 +1606,21 @@
     "confirmPasswordPlaceholder": "Re-enter your password",
     "submitLabel": "Create Account",
     "close": "Close",
-    "successMessage": "Account created successfully. Please check your email for a verification link.",
+    "successMessage": "Check your email and verify your account.",
     "errorMessage": "Something went wrong. Please try again.",
-    "verificationEmailFailed": "Account created, but we could not send the verification email. Please contact support if you need a new link.",
-    "passwordMismatch": "Passwords do not match."
+    "verificationEmailFailed": "Account created, but we could not send the confirmation code. Please try again.",
+    "passwordMismatch": "Passwords do not match.",
+    "otpTitle": "Confirm your email",
+    "otpSubtitle": "Enter the 4-digit code we sent to your email. It expires in 10 minutes.",
+    "otpLabel": "Confirmation code",
+    "otpPlaceholder": "1234",
+    "otpSubmitLabel": "Confirm email",
+    "otpVerifying": "Confirming…",
+    "otpError": "Invalid or expired code. Please try again.",
+    "otpSuccess": "Email confirmed. You are signed in.",
+    "resendCode": "Resend code",
+    "resendSending": "Sending code…",
+    "resendSuccess": "A new confirmation code was sent."
   },
   "signInModal": {
     "_comment": "Sign in modal used in app/components/SignInModal.tsx",
@@ -1608,7 +1635,7 @@
     "close": "Close",
     "successMessage": "Signed in successfully.",
     "errorMessage": "Invalid email or password. Please try again.",
-    "emailNotVerified": "Please verify your email first. Check your inbox for the verification link sent when you created your account.",
+    "emailNotVerified": "Please confirm your email first. Check your inbox for the 4-digit code.",
     "forgotPasswordLink": "Forget Password"
   },
   "forgotPasswordModal": {
